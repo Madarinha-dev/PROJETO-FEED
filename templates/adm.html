@@ -401,7 +401,7 @@
             <!-- <div>tabela (com opções de filtrar)</div> -->
 
             <!-- área de adicionar -->
-        <div id="aba-atividades" style="display: non;">
+        <div id="aba-atividades" style="display: none;">
 
             <p style="
             font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
@@ -454,7 +454,7 @@
 
             <p style="
             font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-            color: rgb(255, 156, 156);
+            color: white;
             font-size: 17px;
             display: none;
             " id="campovazioAtividade">Todos os campos são obrigatórios...</p>
@@ -688,41 +688,47 @@
             let armazenna = document.getElementById("selectArmazenna?");
             let empresa = document.getElementById("inputEmpresa");
             let data = document.getElementById("inputDATA");
-            alert(tipoDeServico.value);
-            alert(descricao.value);
-            alert(quem.value);
-            alert(armazenna.value);
-            alert(empresa.value);
-            alert(data.value);
+            let recado = document.getElementById("campovazioAtividade");
 
-
-            const dados = {
-                tipoDeservico: tipoDeServico.value,
-                descricao: descricao.value,
-                quem: quem.value,
-                armazenna: armazenna.value,
-                empresa: empresa.value,
-                data: data.value
-            }
-
-
-            const resposta = await fetch('/adicionarAtividade', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(dados)
-            });
-
-            if (resposta.ok) {
-                alert("atividade enviada...");
-
-                const resultado = await resposta.json();
-                // manipulaçãõ de dados
+            
+            if (tipoDeServico.value == '' || descricao.value == '' || quem.value == '' || armazenna.value == '' || empresa.value == '' || data.value == '') {
+                recado.style.display = 'block';
             } else {
-                alert("ERRO AO ADICIONAR A ATIVIDADE (servidor)...")
+                recado.style.display = 'none';
+
+                const dados = {
+                    tipoDeservico: tipoDeServico.value,
+                    descricao: descricao.value,
+                    quem: quem.value,
+                    armazenna: armazenna.value,
+                    empresa: empresa.value,
+                    data: data.value
+                }
+
+                const resposta = await fetch('/adicionarAtividade', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(dados)
+                });
+
+                if (resposta.ok) {
+                    alert("atividade enviada...");
+
+                    const resultado = await resposta.json();
+                // manipulaçãõ de dados
+                } else {
+                    alert("ERRO AO ADICIONAR A ATIVIDADE (servidor)...")
+                }
+                // ATUALIZAR A TABELA APÓS ADICIONAR / EXCLUIR / ALTERAR
             }
-            // ATUALIZAR A TABELA APÓS ADICIONAR / EXCLUIR / ALTERAR
+            tipoDeServico.value = '';
+            descricao.value = '';
+            quem.value = '';
+            armazenna.value = '';
+            empresa.value = '';
+            data.value = '';
 
         }
 

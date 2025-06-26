@@ -218,41 +218,12 @@ def cadastrar_funcionario():
 @app.route('/adicionarAtividade', methods=['POST'])
 def adicionarAtividade():
     dados = request.get_json()
-    print(")")
-    print(")")
-    print(")")
-    print(")")
-    print(")")
-    print(")")
-    print(")")
-    print(")")
-
-
-
-
-
-
-
-
     criar_tabela_atividade()
-    print("AQUI ONDE VOU TRABALHAR..")
-    print("")
-    print(f'DADOS COLETADOS: {dados}')
-
-
-
-
-
-
-
-
-
-    print(")")
-    print(")")
-    print(")")
-    print(")")
-    print(")")
-    print(")")
+    conectar = conectar_db()
+    cursor = conectar.cursor()
+    cursor.execute('INSERT INTO atividades (tipo_de_servico, descricao, quem, armazenna, empresa, data) VALUES (?, ?, ?, ?, ?, ?)', (dados['tipoDeservico'], dados['descricao'], dados['quem'], dados['armazenna'], dados['empresa'], dados['data']))
+    conectar.commit()
+    conectar.close()
     return jsonify({
         'msg':'01'
     }), 200
@@ -288,6 +259,36 @@ def excluirFuncionario():
         return jsonify({
             "msg":'1'
         }), 200
+    
+@app.route('/excluiratividade', methods=['POST'])
+def excluiratividade():
+    print("(")
+    print("(")
+    print("(")
+    print("(")
+    print("(")
+    print("(")
+    print("(")
+    print("(")
+    print("(")
+    print("(")
+    dados = request.get_json()
+    print("Aqui onde vou montar a lógica para excluir as atividade, mesma lógica")
+
+
+    print("(")
+    print("(")
+    print("(")
+    print("(")
+    print("(")
+    print("(")
+    print("(")
+    print("(")
+    print("(")
+    print("(")
+    return jsonify({
+        'msg':'01'
+    }), 200
     
 
 
@@ -341,6 +342,39 @@ def alterarfuncionario():
     return jsonify({
         'msg':'1'
     }), 200
+
+@app.route('/alterarAtividade', methods=['POST'])
+def alterarAtividade():
+    print("(")
+    print("(")
+    print("(")
+    print("(")
+    print("(")
+    print("(")
+    print("(")
+    print("(")
+    print("(")
+    print("(")
+    dados = request.get_json()
+    print("Aqui onde vou montar a lógica para alterar as atividades, mesma lógica")
+    print("Depois vai faltar o de ordenar os dados para visualização")
+
+
+    print("(")
+    print("(")
+    print("(")
+    print("(")
+    print("(")
+    print("(")
+    print("(")
+    print("(")
+    print("(")
+    print("(")
+    return jsonify({
+        'msg':'01'
+    }), 200
+
+
 
 
 @app.route('/ordenarfuncionarios', methods=['POST'])
