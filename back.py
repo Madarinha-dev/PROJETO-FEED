@@ -262,34 +262,28 @@ def excluirFuncionario():
     
 @app.route('/excluiratividade', methods=['POST'])
 def excluiratividade():
-    print("(")
-    print("(")
-    print("(")
-    print("(")
-    print("(")
-    print("(")
-    print("(")
-    print("(")
-    print("(")
-    print("(")
     dados = request.get_json()
-    print("Aqui onde vou montar a lógica para excluir as atividade, mesma lógica")
+    id = dados['id_atividade']
+    conectar = conectar_db()
+    cursor = conectar.cursor()
+    cursor.execute("SELECT id_atividade FROM atividades WHERE id_atividade = ?", (id,))
+    atividade = cursor.fetchone()
 
-
-    print("(")
-    print("(")
-    print("(")
-    print("(")
-    print("(")
-    print("(")
-    print("(")
-    print("(")
-    print("(")
-    print("(")
-    return jsonify({
-        'msg':'01'
-    }), 200
+    if atividade is None:
+        conectar.commit()
+        conectar.close()
+        return jsonify({
+            "msg":"0"
+        }), 200
     
+    else:
+        cursor.execute("DELETE FROM atividades WHERE id_atividade = ?", (id, ))
+        conectar.commit()
+        conectar.close()
+        return jsonify({
+            "msg":"1"
+        }), 200
+
 
 
 @app.route('/alterarfuncionario', methods=['POST'])

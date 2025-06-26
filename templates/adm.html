@@ -330,41 +330,6 @@
         </div>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         <div id="bloco">
             <p id="titulo-das-tabelas">Atividades
                 <button onclick="adicionaratividades()" style="background-color: rgb(0, 255, 136);" id="adicionar-atividades" class="botoes-das-tabelas">+</button>
@@ -386,6 +351,9 @@
             <div>
                 <table>
                     <tr>
+                        <th>X</th>
+                        <th>X</th>
+                        <th>X</th>
                         <th>X</th>
                         <th>X</th>
                         <th>X</th>
@@ -462,6 +430,100 @@
             <br>
         </div>
 
+        <div id="aba-excluir-atividade" 
+        style="
+        display: none;
+        margin: 0 auto;
+        background-color: rgb(255, 101, 101);
+        margin-top: -110px;
+        width: 70dvw;
+        border-radius: 5px;
+        padding: 5px;
+         ">
+
+            <p style="
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+            color: white;
+            font-size: 20px;
+            margin: 0px 0px 10px 0px;
+                ">Excluir Atividade</p>
+            <input type="text" name="" id="inputIdAtividade" placeholder="  Digite o ID da atividade...">
+            <br>
+            
+            <button 
+            style="
+            border-radius: 5px;
+            width: 170px;
+            margin-bottom: 10px;
+            " id="excluir_atividade" onclick="excluindoAtividade()">Deletar Atividade</button>
+            <br>
+
+            <p style="
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+            color: white;
+            font-size: 17px;
+            display: none;
+            " id="recado_excluir_atividade">O campo ID é obrigatório para identificação...</p>
+        </div>
+
+
+        <div id="aba-alterar-atividade" style="
+        display: non;
+        margin: 0 auto;
+        margin-top: -110px;
+        width: 70dvw;
+        border-radius: 5px;
+        padding: 5px;
+        background-color: burlywood;">
+
+            <p style="
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+            color: white;
+            font-size: 20px;
+            margin: 0px 0px 10px 0px;
+                ">Modificar a Atividade</p>
+                
+            <input type="number" name="" id="inputAtividade" placeholder="  Digite o ID">
+            <br>
+            <select name="" id="" style="
+            width: 165px;
+            ">
+                <option value="">-- TIPO DE SERVIÇO --</option>
+            </select>
+            <br>
+            <input type="text" name="" id="inputDescricaoAtividade" placeholder="  Descrição..">
+            <br>
+            <input type="number" name="" id="inputPessoasAtividade" placeholder="  Pessoas...">
+            <br>
+            <select name="" id="" style="
+            width: 165px;
+            ">
+                <option value="">-- ARMAZENNAS --</option>
+            </select>
+            <br>
+            <input type="text" name="" id="inputEmpresaAtividade" placeholder="  Empresa...">
+            <br>
+            <input type="date" name="" id="inputDataAtividade" style="width: 165px;">
+            <br>
+            <input type="text" name="" id="inputStatusAtividade" placeholder="  R / N.R...">
+            <br>
+
+            <button 
+            style="
+            border-radius: 5px;
+            width: 170px;
+            margin-bottom: 10px;
+            " id="funcionariomodificar" onclick="alterarAtividadae()">ALTERAR</button>
+            <br>
+
+            <p style="
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+            color: white;
+            font-size: 17px;
+            display: none;
+            " id="campovaziomodificar">Sem o ID não conseguimos identificar...</p>
+        </div>
+
 
 
 
@@ -515,44 +577,6 @@
         // selecao.addEventListener('change', async function() {
         selecao.addEventListener('change', tabelafuncionario );
             
-
-            // // montar o pacote
-            // const orde = {
-            //     ordenar_por: selecao.value
-            // }
-            
-            // const resposta = await fetch('/ordenarfuncionarios', {
-            //     method: 'POST',
-            //     headers: {
-            //         'Content-Type': 'application/json'
-            //     },
-            //     body: JSON.stringify(orde)
-            // });
-
-            // if (resposta.ok){
-            //     // alert("RECEBEMOS dados");
-            //     const funcionarios = await resposta.json();
-            //     console.log(funcionarios);
-
-            //     tbody.innerHTML = '';
-            //     funcionarios.forEach(funcionario => {
-            //         const row = document.createElement('tr');
-            //         row.innerHTML = `
-            //         <td>${funcionario.id}</td>
-            //         <td>${funcionario.nome}</td>
-            //         <td>${funcionario.senha}</td>
-            //         <td>${funcionario.cpf}</td>
-            //         <td>${funcionario.funcao}</td>
-            //         `;
-            //         tbody.appendChild(row);
-            //     });
-                
-
-            // } else {
-            //     alert("ERRO AO RECEBER A LISTA...");
-            // }
-        // })
-        
 
         async function tabelafuncionario() {
             // montar o pacote
@@ -729,6 +753,66 @@
             armazenna.value = '';
             empresa.value = '';
             data.value = '';
+
+        }
+
+
+        function excluiratividades(){
+            let aba_excluir_atividade = document.getElementById("aba-excluir-atividade");
+            let aba_adicionar_atividades = document.getElementById("");
+            let aba_alterar_atividades = document.getElementById("");
+
+            if (aba_excluir_atividade.style.display == 'none') {
+                aba_excluir_atividade.style.display = 'block';
+            } else {
+                aba_excluir_atividade.style.display = 'none';
+            }
+        }
+
+        async function excluindoAtividade() {
+            let inputId = document.getElementById('inputIdAtividade');
+            let recado = document.getElementById('recado_excluir_atividade');
+
+        
+            if (inputId.value == '') {
+                recado.style.display = 'block';
+            } else {
+                recado.style.display = 'none';
+
+            
+                const dados = {
+                    id_atividade: inputId.value
+                }
+
+
+                const resposta = await fetch('/excluiratividade', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type':'application/json'
+                    },
+                    body: JSON.stringify(dados)
+                });
+
+
+                if (resposta.ok) {
+                    // ok deu certo
+                    const resultado = await resposta.json()
+                    // aqui faço a manipulação de dados;
+
+                } else {
+                    alert("ERRO AO EXCLUIR A ATIVIDADE (servidor)...");
+                }
+                inputId.value = '';
+
+            }
+        }
+
+        function alteraratividades() {
+            alert("alterar atividade");
+            let aba_adicionar_atividades = document.getElementById("");
+            let aba_excluir_atividade = document.getElementById("");
+            let aba_alterar_atividades = document.getElementById("");
+
 
         }
 
