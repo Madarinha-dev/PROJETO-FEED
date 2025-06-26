@@ -201,6 +201,7 @@ def recuperar():
 @app.route('/cadastrar_funcionario', methods=['POST'])
 def cadastrar_funcionario():
     dados = request.get_json()
+    criar_tabela()
     conectar = conectar_db()
     cursor = conectar.cursor()
 
@@ -211,6 +212,8 @@ def cadastrar_funcionario():
     return jsonify({
         'msg':'01'
     }), 200
+
+
 
 @app.route('/adicionarAtividade', methods=['POST'])
 def adicionarAtividade():
