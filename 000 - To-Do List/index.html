@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de tarefas (praticando) </title>
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+    <!-- <ul>
+        <li>Ordenar listar por ordem alfabética.</li>
+        <li>Ordenar por data / tempo de criação, algo similar.</li>
+        <li>Adicionar caixa de texto (inpunt), para recado.</li>
+        <li>Adicionar caixa para guardar fotos ("input"), para registar 
+            a atividade.
+        </li>
+    </ul> -->
+
+
+    <!-- Div, área para montar a lista de tarefas -->
+    <div class="container"> 
+        <!-- h1, título da tarefa -->
+        <h1>FEED GROUP</h1>
+
+        <input type="text" id="taskInput" placeholder="Adicione uma tarefa...">
+        
+        <button class="comum" onclick="addTask()" 
+        style="
+        margin-left: 20px;
+        width: 40px; 
+        height: 40px; 
+        border-radius: 20px;
+        border: none;
+        font-size: 25px;">
+            +
+        </button>
+
+        <ul id="taskList">
+            <!-- aqui fica as tarefas -->
+        </ul>
+
+    </div>
+
+    <script src="script.js">
+
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: rgb(18, 18, 235);
+        }
+
+        #topo {
+            background-color: rgb(0, 0, 197);
+            height: 65px;
+            width: 100dvw;
+            display: flex;
+        }
+
+        
+        #p-feed {
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+            color: white;
+            font-size: 25px;
+            padding-top: 15px;
+            padding-left: 8px;
+        }
+
+        #espaco-externo {
+            background-color: white;
+            border-radius: 10px;
+            /* height: 500px; */
+            width: 400px;
+            display: flex;
+            padding-top: 40px;
+            padding-bottom: 40px;
+            /* align-items: center; */
+            justify-content: center;
+            margin-top: 120px;
+
+            justify-self: center;
+        }
+
+        #espaco-interno {
+            background-color: red;
+            height: 10px;
+            width: 10px;
+        }
+
+        #bem-vindo-externo {
+            /* background-color: rgb(186, 186, 186); */
+            padding: 10px;
+            display: flex;
+            justify-content: center;
+        }
+
+        #bem-vindo-interno {
+            color: black;
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+            font-size: 30px;
+        }
+        input {
+            border: none;
+            background-color: rgb(222, 222, 222);
+            width: 300px;
+            padding: 10px;
+            margin-top: 5px;
+            margin-bottom: 5px;
+            border-radius: 3px;
+            border-width: 3px;
+            border-color: rgba(0, 110, 255, 0.747);
+        }
+
+        #entrar {
+            border: none;
+            width: 320px;
+            padding: 10px;
+            background-color: rgb(54, 54, 255);
+            color: white;
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+            border-radius: 3px;
+        }
+
+        #entrar:hover {
+            background-color: rgb(0, 0, 196);
+        }
+
+        #esqueceu-senha-externo {
+            /* background-color: red; */
+            margin: 20px 0 2px 0;
+            padding: 10px;
+            display: flex;
+            justify-content: center;
+        }
+
+        #esqueceu-senha-texto {
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+
+        }
+
+        #recuperar {
+            border: none;
+            width: 320px;
+            padding: 10px;
+            background-color: rgb(54, 54, 255);
+            color: white;
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+            border-radius: 3px;
+        }
+
+        #recuperar:hover {
+            background-color: rgb(0, 0, 196);
+        }
+
+
+        /* aqui é uma adaptação de telas menores, quando a tela
+        chegar em 430px, essas configurações vão acontecer (max-width: 430px;) 
+        isso eu digo que quando a tela chegar em 430px; */
+        @media (max-width: 430px) {
+            #espaco-externo {
+                /* background-color: red; */
+                width: 300px;
+            }
+
+            #recuperar {
+                width: 250px;
+            }
+
+            #entrar {
+                width: 250px;
+            }
+
+            input {
+                width: 230px;
+            }
+        }
+
+
+    </style>
+</head>
+<body>
+
+   <div id="topo">
+    <div id="topo-filho">
+        <p id="p-feed">
+            FEED GROUP
+        </p>
+    </div>
+   </div>
+
+   <main id="espaco-externo"> 
+ 
+
+    <div>
+        <div id="bem-vindo-externo">
+            <div id="bem-vindo-interno">Bem Vindo</div>
+        </div>
+
+        <input type="text" name="funcionario" id="funcionario" placeholder="Nome"> <br>
+
+        <p id="nome-vazio" 
+        style="
+        color: red;
+        font-size: 15px;
+        display: none;
+        font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+        ">Campo vázio.</p>
+
+        <input type="text" name="senha-do-funcionario" id="senha-do-funcionario" placeholder="Senha"> <br>
+        
+        <p id="senha/vazio" 
+        style="
+        color: red;
+        font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+        font-size: 15px;
+        display: none;
+        ">Campo senha vazio / inválido</p>
+
+        <button type="submit" id="entrar" onclick="entrar()">Entrar</button>
+        <br>
+        <p
+        id="dadosInvalidos"
+        style="
+        color: red;
+        font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+        font-size: 15px;
+        display: none;
+        ">
+            Dados Inválidos. Tente novamente
+        </p>
+
+        <div id="esqueceu-senha-externo">
+            <div id="esqueceu-senha-texto">Caso tenha esquecido a Senha:</div>
+            
+        </div>
+
+        <input type="text" name="email" id="cpf" placeholder="Digite seu CPF, para recuperação da senha"><br>
+        <button type="submit" id="recuperar" onclick="recuperar()">Recuperar</button>
+        <br>
+        <p
+        id="recuperacao"
+        style="
+        color: red;
+        font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+        font-size: 15px;
+        display: none;
+        ">
+            Para recuperar, preencha esse campo.
+        </p>
+        <p
+        id="dados_recuperados"
+        style="
+        color: rgb(26, 255, 0);
+        font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+        font-size: 15px;
+        display: none;
+        ">
+            Dados coletados com sucesso...
+        </p>
+    
+     </div>
+    
+   </main>
+
+   <script>
+    function entrar() {
+        let inputnome = document.getElementById('funcionario');
+        let inputsenha = document.getElementById('senha-do-funcionario');
+
+        let nomevazio = document.getElementById('nome-vazio');
+        let senhavazio = document.getElementById('senha/vazio');
+
+        if (inputnome.value == '' && inputsenha.value == '') {
+            nomevazio.style.display = "block";
+            senhavazio.style.display = "block";
+
+        } else if (inputnome.value == '') {
+            nomevazio.style.display = "block";
+            senhavazio.style.display = 'none';
+
+        } else if (inputsenha.value == '') {
+            senhavazio.style.display = 'block';
+            nomevazio.style.display = 'none';
+
+        } else {
+            nomevazio.style.display = 'none';
+            senhavazio.style.display = 'none';
+
+            const dados = {
+                funcionario: inputnome.value,
+                senha: inputsenha.value
+            };
+
+            enviarDadosParaServidor();
+            // const data = new Date();
+            // let dia = data.getDate();
+            // // let mes = data.getMonth();
+            // let hora = data.getHours();
+            // let minuto = data.getMinutes();
+            // let segundo = data.getSeconds();
+            // let ano = data.getFullYear();
+
+            
+        }
+
+    }
+
+    async function enviarDadosParaServidor() {
+        let dados_recuperados = document.getElementById("dados_recuperados");
+        let inputnome = document.getElementById('funcionario');
+        let inputsenha = document.getElementById('senha-do-funcionario');
+        let recado = document.getElementById('dadosInvalidos');
+
+        let funcionario = inputnome.value;
+        let senha = inputsenha.value;
+
+        const dados = {
+            nome: funcionario,
+            senhar: senha
+        }
+        
+        const resposta = await fetch('/receber_dados', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(dados)
+        });
+
+        if (resposta.ok) {
+            const resultado = await resposta.json();
+            
+            // aqui eu olho oq vem dentro de (resultado)
+            console.log(resultado);
+            if (resultado.status === 'sucesso') {
+                recado.style.display = 'none';
+
+                if (resultado.funcao === 'pintura'){
+                    window.location = '/pintura';
+
+                } else if (resultado.funcao === 'eletrica'){
+                    alert('deu certo 02');
+
+                } else if (resultado.funcao === 'adm'){
+                    // alert('deu certo 03');
+                    window.location = '/adm';
+
+                } else if (resultado.funcao === 'telhado'){
+                    alert('deu certo 04');
+                }
+
+                const data = new Date();
+                let dia = data.getDate();
+                let mes = data.getMonth();
+                mes = mes +1;
+
+                let hora = data.getHours();
+                let minuto = data.getMinutes();
+                let segundo = data.getSeconds();
+                let ano = data.getFullYear();
+
+                if (dia < 10) {
+                    dia = ('0'+dia);
+                }
+
+                if (mes < 10) {
+                    mes = ('0'+mes);
+                }
+
+                if (hora < 10) {
+                    hora = ('0'+hora);
+                }
+
+                if (minuto < 10) {
+                    minuto = ('0'+minuto);
+                }
+
+                if (segundo < 10){
+                    segundo = ('0'+segundo);
+                }
+
+                
+                const registro_frequencia = {
+                    nome: inputnome.value,
+                    dia:dia,
+                    mes:mes,
+                    ano:ano,
+                    hora:hora,
+                    minuto:minuto,
+                    segundo:segundo,
+                    funcao:resultado.funcao
+                }
+
+                const resposta = await fetch('/frequencia', {
+                method: 'POST',
+                headers: {
+                    'Content-Type':'application/json'
+                },
+                body: JSON.stringify(registro_frequencia)
+                });
+
+                // if (resposta.ok) {
+
+                //     const resultado = await resposta.json();
+                //     // aqui posso consultar o objeto (resultado)
+                //     console.log(resultado);
+
+
+                // } else {
+                //     console.log("erro ao registrar a frequência desse acesso");
+                // }
+
+
+                console.log(registro_frequencia);
+
+            } else {
+                alert("NEGADO 001");
+            }
+                
+        } else {
+            recado.style.display = 'block';
+
+
+        }
+
+        inputnome.value = '';
+        inputsenha.value = '';
+        dados_recuperados.style.display = 'none';
+    }
+
+
+
+    async function recuperar() {
+        let dados_recuperados = document.getElementById("dados_recuperados");
+        let inputnome = document.getElementById('funcionario');
+        let inputsenha = document.getElementById('senha-do-funcionario');
+        let nomerecuperado = document.getElementsByName('funcionario');
+        let senharecuperado = document.getElementsByName('senha-do-funcionario');
+        let inputcpf = document.getElementById('cpf');
+        let cpf = inputcpf.value;
+
+        let recado = document.getElementById('recuperacao');
+
+        if (inputcpf.value == ''){
+            recado.style.display = "block";
+        } else {
+            recado.style.display = 'none';
+
+            const dados = {
+                cpff:cpf
+            }
+
+            const resposta = await fetch('/recuperar-senha', {
+                method: 'POST',
+                headers: {
+                    'Content-Type':'application/json'
+                },
+                body: JSON.stringify(dados)
+            });
+
+            if (resposta.ok) {
+
+                const resultado = await resposta.json();
+                // aqui posso consultar o objeto (resultado)
+                console.log(resultado);
+                if (resultado.recado == "Dados-localizados") {
+                    inputnome.value = resultado.nome;
+                    inputsenha.value = resultado.senha;
+                    dados_recuperados.style.display = 'block';
+
+                } else {
+                    alert("DEU erro");
+                }
+
+            } else {
+                alert('Usuário não existi / dados inválidos');
+            }
+
+        }
+        inputcpf.value = '';
+    }
+
+   </script>
+</body>
+</html>

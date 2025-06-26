@@ -1,0 +1,88 @@
+body {
+    background-color: #3977E3;
+    color: #fff;
+    font-family: Roboto, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 500px;
+    margin: 30px auto;
+    padding: 20px;
+    /* background-color: #3f2b68; */
+    background-color: rgb(0, 0, 188);
+    border-radius: 10px;
+}
+
+h1 {
+    text-align: center;
+}
+
+input {
+    width: 80%;
+    border-radius: 10px;
+    padding: 10px;
+    border: none;
+}
+
+button {
+    border-radius: 3px;
+    padding: 3px;
+    height: 30px;
+    border: none;
+    box-shadow: 5px 5px 1px rgb(23, 23, 147);
+    width: 30px;
+    height: 30px;
+    border: none;
+    border-radius: 20px;
+
+}
+
+/* button:hover { */
+    /* background-color: rgb(0, 135, 253); */
+
+/* } */
+
+.comum:hover {
+    background-color: rgb(0, 135, 253);
+}
+
+#comum:hover {
+    background-color: rgb(0, 135, 253);
+}
+
+ul {
+    /* tira os pontos da lista */
+    list-style-type: none;
+    /* background-color: red; */
+    /* justify-items: center; */
+}
+
+li {
+    background-color: rgb(23, 23, 147);
+    margin-top: 10px;
+    margin-left: -38px;
+    padding: 5px;
+    border-radius: 5px;
+    box-shadow: 5px 5px 1px rgb(0, 135, 253);
+    transition-duration: 0.5s;
+}
+
+li:hover {
+    /* background-color: rgb(49, 159, 255); */
+    margin-top: 20px;
+    margin-bottom: 20px;
+    /* height: 300px; */
+    transition-duration: 0.5s;
+    margin-right: 20px;
+    /* margin-left: 50px; */
+}
+
+.deleteButton {
+    background-color: #fe3b4b;
+}
+
+.colorToggleButton {
+    background-color: rgb(122, 252, 122);
+}

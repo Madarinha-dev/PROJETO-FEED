@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relógio Digital</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #222;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            color: white;
+        }
+
+        #relogio {
+            font-size: 5em;
+            color: #00ff00;
+            text-shadow: 0 0 20px #00ff00, 0 0 30px #00ff00, 0 0 40px #00ff00;
+        }
+    </style>
+</head>
+
+<body>
+    <h1 id="atualizar">{}</h1><br>
+
+    <div div="relogio" onclick="tela()"></div>
+
+
+    <script>
+        function tela() {
+            const relogioElement = document.getElementById('atualizar');
+            const data = new Date();
+
+            let horas = data.getHours();
+            let minutos = data.getMinutes();
+            let segundos = data.getSeconds();
+            let novo = data.getMilliseconds();
+
+            // Adicionar zero à esquerda se for menor que 10
+            horas = horas < 10 ? '0' + horas : horas;
+            minutos = minutos < 10 ? '0' + minutos : minutos;
+            segundos = segundos < 10 ? '0' + segundos : segundos;
+            novo = novo < 10 ? '0' + novo : novo;
+
+            const tempoFormatado = `${horas}:${minutos}:${segundos}:${novo}`;
+            relogioElement.textContent = tempoFormatado;
+        }
+
+        tela();
+        setInterval(tela, 10);
+
+    </script>
+</body>
+
+</html>
