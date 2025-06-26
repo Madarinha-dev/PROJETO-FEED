@@ -2,6 +2,10 @@ from flask import Flask, render_template, request, jsonify, redirect, url_for
 import sqlite3
 
 
+# ideia nova: e se o ADM só quiser ver algumas colunas específicas da tabela
+# sem necessariamente precisar visualizar ela por inteiro
+
+
 app = Flask(__name__)
 lista = []
 
@@ -24,6 +28,26 @@ CREATE TABLE IF NOT EXISTS funcionarios_cadastrados (
                    cpf int varchar(255),
                    funcao varchar(255) 
                    );
+''')
+    conectar.commit()
+    conectar.close()
+
+
+
+def criar_tabela_atividade():
+    conectar = conectar_db()
+    cursor = conectar.cursor()
+    cursor.execute('''
+CREATE TABLE IF NOT EXISTS atividades (
+  id_atividade INTEGER PRIMARY KEY AUTOINCREMENT,
+  tipo_de_servico TEXT VARCHAR(255),
+  descricao TEXT VARCHAR(255),
+  quem TEXT VARCHAR(255),
+  armazenna TEXT VARCHAR(255),
+  empresa TEXT VARCHAR(255),
+  data TEXT VARCHAR(255),
+  STATUS TEXT VARCHAR(255) DEFAULT 'N Realizado'
+);
 ''')
     conectar.commit()
     conectar.close()
@@ -184,6 +208,48 @@ def cadastrar_funcionario():
     conectar.commit()
     conectar.close()
 
+    return jsonify({
+        'msg':'01'
+    }), 200
+
+@app.route('/adicionarAtividade', methods=['POST'])
+def adicionarAtividade():
+    dados = request.get_json()
+    print(")")
+    print(")")
+    print(")")
+    print(")")
+    print(")")
+    print(")")
+    print(")")
+    print(")")
+
+
+
+
+
+
+
+
+    criar_tabela_atividade()
+    print("AQUI ONDE VOU TRABALHAR..")
+    print("")
+    print(f'DADOS COLETADOS: {dados}')
+
+
+
+
+
+
+
+
+
+    print(")")
+    print(")")
+    print(")")
+    print(")")
+    print(")")
+    print(")")
     return jsonify({
         'msg':'01'
     }), 200

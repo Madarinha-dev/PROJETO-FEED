@@ -192,23 +192,7 @@
         </div>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        <!-- área de adicionar -->
         <div id="aba-funcionario" style="display: none;">
 
             <p style="
@@ -263,13 +247,6 @@
         border-radius: 5px;
         padding: 5px;
          ">
-
-            <!-- margin: 0 auto;
-            background-color: blue;
-            width: 70dvw;
-            margin-top: -110px;
-            border-radius: 10px;
-            display: non; -->
 
             <p style="
             font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
@@ -376,11 +353,136 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
         <div id="bloco">
-            <p id="titulo-das-tabelas">Atividades</p>
-            <div>tabela (com opções de filtrar)</div>
+            <p id="titulo-das-tabelas">Atividades
+                <button onclick="adicionaratividades()" style="background-color: rgb(0, 255, 136);" id="adicionar-atividades" class="botoes-das-tabelas">+</button>
+                <button onclick="excluiratividades()" style="background-color: red;" id="excluir-atividades" class="botoes-das-tabelas">x</button>
+                <button onclick="alteraratividades()" id="alterar-atividades" class="botoes-das-tabelas">!!</button>
+                <br>
+            
+                <select name="" id="ordenartabelaatividades">
+                    <option value="id_funcionario">--Selecione--</option>
+                    <option value="id_funcionario"></option>
+                    <option value="nome"></option>
+                    <option value="senha"></option>
+                    <option value="cpf"></option>
+                    <option value="funcao"></option>
+                </select>
+                <br>
+            </p>
+
+            <div>
+                <table>
+                    <tr>
+                        <th>X</th>
+                        <th>X</th>
+                        <th>X</th>
+                        <th>X</th>
+                        <th>X</th>
+                    </tr>
+                    <tbody id="tbodyatividades">
+
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- <div>tabela (com opções de filtrar)</div> -->
+
+            <!-- área de adicionar -->
+        <div id="aba-atividades" style="display: non;">
+
+            <p style="
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+            color: white;
+            font-size: 20px;
+            margin: 0px 0px 10px 0px;
+                ">Adicionar Atividades</p>
+
+            <!-- <input type="text" name="" id="inputTipodeServico" placeholder="  Tipo de Serviço.."> -->
+             <select name="" id="selectTipodeServico" style="
+             width: 160px;">
+                <option value="">TIPO DE SERVIÇO</option>
+                <option value="mecanica">Mecânica</option>
+                <option value="eletrica">Elétrica</option>
+                <option value="pintura">Pintura</option>
+                <option value="telhado">Telhado</option>
+                <option value="relatorio">Relatório</option>
+                <option value="montagem">Montagem</option>
+                <!-- ADICIONAR NO PAPÉL essa categoria (MONTAGEM) -->
+             </select>
+            <br>
+
+            <input type="text" name="" id="inputdescricaoDeAtividade" placeholder="  Descrição..">
+            <br>
+            <input type="text" name="" id="inputQuem" placeholder="  Quem??...">
+            <br>
+
+            <select name="" id="selectArmazenna?" style="width: 160px;">
+                <option value="">Armazenna ??</option>
+                <option value="armazenna01">Armazenna 01</option>
+                <option value="armazenna02">Armazenna 02</option>
+                <option value="armazenna03">Armazenna 03</option>
+                <option value="armazenna04">Armazenna 04</option>
+                <option value="armazenna05">Armazenna 05</option>
+                <option value="armazenna06">Armazenna 06</option>
+            </select>
+            <br>
+            <input type="text" name="" id="inputEmpresa" placeholder="  Empresa...">
+            <br>
+            <!-- STATUS -->
+             <input type="date" name="" id="inputDATA" style="width: 160px;">
+            <br>
+            <button 
+            style="
+            border-radius: 5px;
+            width: 170px;
+            margin-bottom: 10px;
+            " id="atividades" onclick="dados_da_atividade()">ADICIONAR</button>
+            <br>
+
+            <p style="
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+            color: rgb(255, 156, 156);
+            font-size: 17px;
+            display: none;
+            " id="campovazioAtividade">Todos os campos são obrigatórios...</p>
+        </div>
             <br>
         </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -530,10 +632,6 @@
                 inputfuncao.value = '';
 
 
-                // preparar um objeto JSON, mandar para o servidor (python), e depois
-                // guardar no banco de dados, e depois exibir em forma de tabela nessa mesma
-                // tela.
-
                 const dados = {
                     nome: nome,
                     senhaa: senha,
@@ -565,6 +663,103 @@
             }
             await tabelafuncionario();
         }
+
+
+
+        function adicionaratividades(){
+            let aba_adicionar_atividades = document.getElementById("aba-atividades");
+            let aba_excluir_atividades = document.getElementById("");
+            let aba_alterar_atividades = document.getElementById("");
+            let aba_modificarfucionario = document.getElementById("");
+
+            
+            if (aba_adicionar_atividades.style.display == 'none') {
+                aba_adicionar_atividades.style.display = 'block';
+            } else {
+                aba_adicionar_atividades.style.display = 'none';
+            }
+
+        }
+
+        async function dados_da_atividade() {
+            let tipoDeServico = document.getElementById("selectTipodeServico");
+            let descricao = document.getElementById("inputdescricaoDeAtividade");
+            let quem = document.getElementById("inputQuem");
+            let armazenna = document.getElementById("selectArmazenna?");
+            let empresa = document.getElementById("inputEmpresa");
+            let data = document.getElementById("inputDATA");
+            alert(tipoDeServico.value);
+            alert(descricao.value);
+            alert(quem.value);
+            alert(armazenna.value);
+            alert(empresa.value);
+            alert(data.value);
+
+
+            const dados = {
+                tipoDeservico: tipoDeServico.value,
+                descricao: descricao.value,
+                quem: quem.value,
+                armazenna: armazenna.value,
+                empresa: empresa.value,
+                data: data.value
+            }
+
+
+            const resposta = await fetch('/adicionarAtividade', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(dados)
+            });
+
+            if (resposta.ok) {
+                alert("atividade enviada...");
+
+                const resultado = await resposta.json();
+                // manipulaçãõ de dados
+            } else {
+                alert("ERRO AO ADICIONAR A ATIVIDADE (servidor)...")
+            }
+            // ATUALIZAR A TABELA APÓS ADICIONAR / EXCLUIR / ALTERAR
+
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         function excluirFuncionario(){
             let aba_excluirFuncionario = document.getElementById("aba-excluir-funcionario");
