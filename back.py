@@ -1,9 +1,17 @@
 from flask import Flask, render_template, request, jsonify, redirect, url_for
 import sqlite3
 
+# POSSÍCEIS ATUALIZAÇÕES
 
 # ideia nova: e se o ADM só quiser ver algumas colunas específicas da tabela
 # sem necessariamente precisar visualizar ela por inteiro
+
+# Na tabela 'atividades' na coluna 'status' mudar para o sistema binário 0 / 1
+# 0 = não realizado, 1 = realizado, isso ajudaria na coontagem de atividades realizadas,
+# atividades não realizadas, ajudaria a ter um total de atividades
+
+# sistema estatístico: um painél montando o total de cada 'informação' talvez
+# ou um quadro como se fosse um gráfico.
 
 
 app = Flask(__name__)
@@ -349,26 +357,86 @@ def alterarAtividade():
     print("(")
     print("(")
     print("(")
-    dados = request.get_json()
-    print("Aqui onde vou montar a lógica para alterar as atividades, mesma lógica")
-    print("Depois vai faltar o de ordenar os dados para visualização")
+    # dados: {'id': '4', 'servico': '', 'descricao': '', 'pessoas': 'BERG e IVO', 'armazenna': 'armazenna01', 'empresa': '', 'data': '', 'status': ''}
+    dadosnovos = request.get_json()
+    id = dadosnovos['id']
+    servicoatual = dadosnovos['servico']
+    desscricaoatual = dadosnovos['descricao']
+    pessoaatual = dadosnovos['pessoas']
+    armazennaatual = dadosnovos['armazenna']
+    empresaatual = dadosnovos['empresa']
+    dataatual = dadosnovos['data']
+    statusatual = dadosnovos['status']
 
+    conectar = conectar_db()
+    cursor = conectar.cursor()
+    cursor.execute("SELECT * FROM atividades WHERE id_atividade = ?", (id, ))
+    tabela = cursor.fetchone()
+    print(f'atualizar: {dadosnovos}')
+    print('')
+    print(f'dados atuais: {tabela}')
+    print('')
 
-    print("(")
-    print("(")
-    print("(")
-    print("(")
-    print("(")
-    print("(")
-    print("(")
-    print("(")
-    print("(")
-    print("(")
+    if tabela is None:
+        print('vazio')
+    else:
+        id = tabela[0]
+        servico = tabela[1]
+        descricao = tabela[2]
+        pessoa = tabela[3]
+        armazenna = tabela[4]
+        empresa = tabela[5]
+        data = tabela[6]
+        status = tabela[7]
+        
+        if servicoatual == '':
+            print('serviço vazio')
+        else:
+            servico = servicoatual
+        
+        if desscricaoatual == '':
+            print('descrição vazio')
+        else:
+            descricao = desscricaoatual
+        
+        if pessoaatual == '':
+            print('pessoa vazio')
+        else:
+            pessoa = pessoaatual
+        
+        if armazennaatual == '':
+            print('armazenna vazio')
+        else:
+            armazenna = armazennaatual
+
+        if empresaatual == '':
+            print('empresa vazio')
+        else:
+            empresa = empresaatual
+        
+        if dataatual == '':
+            print('data vazio')
+        else:
+            data = dataatual
+
+        if statusatual == '':
+            print('status vazio')
+        else:
+            status = statusatual
+        # cursor.execute("UPDATE funcionarios_cadastrados SET nome = ?, senha = ?, cpf = ?, funcao = ? WHERE id_funcionario = ?", (nomevelho, senhavelho, cpfvelho, funcaovelho, id))
+        cursor.execute("UPDATE atividades SET id_atividade = ?, tipo_de_servico = ?, descricao = ?, quem = ?, armazenna = ?, empresa = ?, data = ?, STATUS = ? WHERE id_atividade = ?", (id, servico, descricao, pessoa, armazenna, empresa, data, status, id))
+        conectar.commit()
+        conectar.close()
+        print(f'dados atualizado PORRAAAAAA')
+    # [(4, 'mecanica', 'Tomada queimada ', 'Bruno, Janderson', 'armazenna02', 'XXXX', '2025-07-08', 'N Realizado')]
+    
+    
+
     return jsonify({
-        'msg':'01'
+        'msg':'0',
+        'texto':'ID não localizado...'
     }), 200
-
-
+        
 
 
 @app.route('/ordenarfuncionarios', methods=['POST'])

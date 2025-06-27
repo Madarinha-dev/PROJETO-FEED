@@ -468,7 +468,7 @@
 
 
         <div id="aba-alterar-atividade" style="
-        display: non;
+        display: none;
         margin: 0 auto;
         margin-top: -110px;
         width: 70dvw;
@@ -483,37 +483,49 @@
             margin: 0px 0px 10px 0px;
                 ">Modificar a Atividade</p>
                 
-            <input type="number" name="" id="inputAtividade" placeholder="  Digite o ID">
+            <input type="number" name="" id="inputAlterarID" placeholder="  Digite o ID">
             <br>
-            <select name="" id="" style="
+            <select name="" id="alterarTipodeservico" style="
             width: 165px;
             ">
-                <option value="">-- TIPO DE SERVIÇO --</option>
+                <option value="">TIPO DE SERVIÇO</option>
+                <option value="mecanica">Mecânica</option>
+                <option value="eletrica">Elétrica</option>
+                <option value="pintura">Pintura</option>
+                <option value="telhado">Telhado</option>
+                <option value="relatorio">Relatório</option>
+                <option value="montagem">Montagem</option>
             </select>
             <br>
-            <input type="text" name="" id="inputDescricaoAtividade" placeholder="  Descrição..">
+            <input type="text" name="" id="inputAlterarDescricao" placeholder="  Descrição..">
             <br>
-            <input type="number" name="" id="inputPessoasAtividade" placeholder="  Pessoas...">
+            <input type="text" name="" id="inputAlterarPessoasAtividade" placeholder="  Pessoas...">
             <br>
-            <select name="" id="" style="
+            <select name="" id="alterarArmazenna" style="
             width: 165px;
             ">
                 <option value="">-- ARMAZENNAS --</option>
+                <option value="armazenna01">Armazenna 01</option>
+                <option value="armazenna02">Armazenna 02</option>
+                <option value="armazenna03">Armazenna 03</option>
+                <option value="armazenna04">Armazenna 04</option>
+                <option value="armazenna05">Armazenna 05</option>
+                <option value="armazenna06">Armazenna 06</option>
             </select>
             <br>
-            <input type="text" name="" id="inputEmpresaAtividade" placeholder="  Empresa...">
+            <input type="text" name="" id="alterarEmpresaAtividade" placeholder="  Empresa...">
             <br>
-            <input type="date" name="" id="inputDataAtividade" style="width: 165px;">
+            <input type="date" name="" id="AlterarDataAtividade" style="width: 165px;">
             <br>
-            <input type="text" name="" id="inputStatusAtividade" placeholder="  R / N.R...">
+            <input type="text" name="" id="AlterarStatusAtividade" placeholder="  R / N.R...">
             <br>
 
             <button 
             style="
             border-radius: 5px;
-            width: 170px;
+            width: 165px;
             margin-bottom: 10px;
-            " id="funcionariomodificar" onclick="alterarAtividadae()">ALTERAR</button>
+            " id="funcionariomodificar" onclick="alterarAtividade()">ALTERAR</button>
             <br>
 
             <p style="
@@ -521,8 +533,9 @@
             color: white;
             font-size: 17px;
             display: none;
-            " id="campovaziomodificar">Sem o ID não conseguimos identificar...</p>
+            " id="recadoAlterarAtividade">Sem o ID não conseguimos identificar...</p>
         </div>
+        
 
 
 
@@ -692,13 +705,15 @@
 
         function adicionaratividades(){
             let aba_adicionar_atividades = document.getElementById("aba-atividades");
-            let aba_excluir_atividades = document.getElementById("");
-            let aba_alterar_atividades = document.getElementById("");
-            let aba_modificarfucionario = document.getElementById("");
+            let aba_excluir_atividades = document.getElementById("aba-excluir-atividade");
+            let aba_alterar_atividades = document.getElementById("aba-alterar-atividade");
+            
 
             
             if (aba_adicionar_atividades.style.display == 'none') {
                 aba_adicionar_atividades.style.display = 'block';
+                aba_excluir_atividades.style.display = 'none';
+                aba_alterar_atividades.style.display = 'none';
             } else {
                 aba_adicionar_atividades.style.display = 'none';
             }
@@ -758,14 +773,16 @@
 
 
         function excluiratividades(){
-            let aba_excluir_atividade = document.getElementById("aba-excluir-atividade");
-            let aba_adicionar_atividades = document.getElementById("");
-            let aba_alterar_atividades = document.getElementById("");
+            let aba_adicionar_atividades = document.getElementById("aba-atividades");
+            let aba_excluir_atividades = document.getElementById("aba-excluir-atividade");
+            let aba_alterar_atividades = document.getElementById("aba-alterar-atividade");
 
-            if (aba_excluir_atividade.style.display == 'none') {
-                aba_excluir_atividade.style.display = 'block';
+            if (aba_excluir_atividades.style.display == 'none') {
+                aba_excluir_atividades.style.display = 'block';
+                aba_adicionar_atividades.style.display = 'none';
+                aba_alterar_atividades.style.display = 'none';
             } else {
-                aba_excluir_atividade.style.display = 'none';
+                aba_excluir_atividades.style.display = 'none';
             }
         }
 
@@ -803,18 +820,88 @@
                     alert("ERRO AO EXCLUIR A ATIVIDADE (servidor)...");
                 }
                 inputId.value = '';
+                // atualizar a tabela que aparece no site
 
             }
         }
 
         function alteraratividades() {
-            alert("alterar atividade");
-            let aba_adicionar_atividades = document.getElementById("");
-            let aba_excluir_atividade = document.getElementById("");
-            let aba_alterar_atividades = document.getElementById("");
+            let aba_adicionar_atividades = document.getElementById("aba-atividades");
+            let aba_excluir_atividades = document.getElementById("aba-excluir-atividade");
+            let aba_alterar_atividades = document.getElementById("aba-alterar-atividade");
+
+            if (aba_alterar_atividades.style.display == 'none') {
+                aba_alterar_atividades.style.display = 'block';
+                aba_adicionar_atividades.style.display = 'none';
+                aba_excluir_atividades.style.display = 'none';
+            } else {
+                aba_alterar_atividades.style.display = 'none';
+            }
 
 
         }
+
+
+        async function alterarAtividade() {
+            let id = document.getElementById('inputAlterarID');
+            let servico = document.getElementById('alterarTipodeservico');
+            let descricao = document.getElementById('inputAlterarDescricao');
+            let pessoas = document.getElementById('inputAlterarPessoasAtividade');
+            let armazenna = document.getElementById('alterarArmazenna');
+            let empresa = document.getElementById('alterarEmpresaAtividade');
+            let data = document.getElementById('AlterarDataAtividade');
+            let status = document.getElementById('AlterarStatusAtividade');
+            let recado = document.getElementById('recadoAlterarAtividade');
+
+            if (id.value == '') {
+                recado.style.display = 'block';
+            } else {
+                recado.style.display = 'none';
+
+                const dados = {
+                    id: id.value,
+                    servico: servico.value,
+                    descricao: descricao.value,
+                    pessoas: pessoas.value,
+                    armazenna: armazenna.value,
+                    empresa:empresa.value,
+                    data:data.value,
+                    status:status.value
+                }
+
+                const resposta = await fetch('/alterarAtividade', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type':'application/json'
+                    },
+                    body: JSON.stringify(dados)
+                });
+
+                if (resposta.ok) {
+                    // deu certo
+
+                    const resultado = await resposta.json()
+                    // aqui faço a manipulação
+                } else {
+                    // deu errado
+                    // posso colocar um recado aqui se eu quiser talvez
+                    alert("ERRO AO ALTERAR A ATIVIDADE (servidor)....");
+                }
+
+
+            }
+
+            id.value = '';
+            servico.value = '';
+            descricao.value = '';
+            pessoas.value = '';
+            armazenna.value = '';
+            empresa.value = '';
+            data.value = '';
+            status.value = '';
+            // atualizar a tabela que aparece para ele
+        }
+        
 
 
 
