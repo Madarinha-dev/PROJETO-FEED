@@ -357,78 +357,78 @@ def alterarAtividade():
     print("(")
     print("(")
     print("(")
-    # dados: {'id': '4', 'servico': '', 'descricao': '', 'pessoas': 'BERG e IVO', 'armazenna': 'armazenna01', 'empresa': '', 'data': '', 'status': ''}
-    dadosnovos = request.get_json()
-    id = dadosnovos['id']
-    servicoatual = dadosnovos['servico']
-    desscricaoatual = dadosnovos['descricao']
-    pessoaatual = dadosnovos['pessoas']
-    armazennaatual = dadosnovos['armazenna']
-    empresaatual = dadosnovos['empresa']
-    dataatual = dadosnovos['data']
-    statusatual = dadosnovos['status']
+    # # dados: {'id': '4', 'servico': '', 'descricao': '', 'pessoas': 'BERG e IVO', 'armazenna': 'armazenna01', 'empresa': '', 'data': '', 'status': ''}
+    # dadosnovos = request.get_json()
+    # id = dadosnovos['id']
+    # servicoatual = dadosnovos['servico']
+    # desscricaoatual = dadosnovos['descricao']
+    # pessoaatual = dadosnovos['pessoas']
+    # armazennaatual = dadosnovos['armazenna']
+    # empresaatual = dadosnovos['empresa']
+    # dataatual = dadosnovos['data']
+    # statusatual = dadosnovos['status']
 
-    conectar = conectar_db()
-    cursor = conectar.cursor()
-    cursor.execute("SELECT * FROM atividades WHERE id_atividade = ?", (id, ))
-    tabela = cursor.fetchone()
-    print(f'atualizar: {dadosnovos}')
-    print('')
-    print(f'dados atuais: {tabela}')
-    print('')
+    # conectar = conectar_db()
+    # cursor = conectar.cursor()
+    # cursor.execute("SELECT * FROM atividades WHERE id_atividade = ?", (id, ))
+    # tabela = cursor.fetchone()
+    # print(f'atualizar: {dadosnovos}')
+    # print('')
+    # print(f'dados atuais: {tabela}')
+    # print('')
 
-    if tabela is None:
-        print('vazio')
-    else:
-        id = tabela[0]
-        servico = tabela[1]
-        descricao = tabela[2]
-        pessoa = tabela[3]
-        armazenna = tabela[4]
-        empresa = tabela[5]
-        data = tabela[6]
-        status = tabela[7]
+    # if tabela is None:
+    #     print('vazio')
+    # else:
+    #     id = tabela[0]
+    #     servico = tabela[1]
+    #     descricao = tabela[2]
+    #     pessoa = tabela[3]
+    #     armazenna = tabela[4]
+    #     empresa = tabela[5]
+    #     data = tabela[6]
+    #     status = tabela[7]
         
-        if servicoatual == '':
-            print('serviço vazio')
-        else:
-            servico = servicoatual
+    #     if servicoatual == '':
+    #         print('serviço vazio')
+    #     else:
+    #         servico = servicoatual
         
-        if desscricaoatual == '':
-            print('descrição vazio')
-        else:
-            descricao = desscricaoatual
+    #     if desscricaoatual == '':
+    #         print('descrição vazio')
+    #     else:
+    #         descricao = desscricaoatual
         
-        if pessoaatual == '':
-            print('pessoa vazio')
-        else:
-            pessoa = pessoaatual
+    #     if pessoaatual == '':
+    #         print('pessoa vazio')
+    #     else:
+    #         pessoa = pessoaatual
         
-        if armazennaatual == '':
-            print('armazenna vazio')
-        else:
-            armazenna = armazennaatual
+    #     if armazennaatual == '':
+    #         print('armazenna vazio')
+    #     else:
+    #         armazenna = armazennaatual
 
-        if empresaatual == '':
-            print('empresa vazio')
-        else:
-            empresa = empresaatual
+    #     if empresaatual == '':
+    #         print('empresa vazio')
+    #     else:
+    #         empresa = empresaatual
         
-        if dataatual == '':
-            print('data vazio')
-        else:
-            data = dataatual
+    #     if dataatual == '':
+    #         print('data vazio')
+    #     else:
+    #         data = dataatual
 
-        if statusatual == '':
-            print('status vazio')
-        else:
-            status = statusatual
-        # cursor.execute("UPDATE funcionarios_cadastrados SET nome = ?, senha = ?, cpf = ?, funcao = ? WHERE id_funcionario = ?", (nomevelho, senhavelho, cpfvelho, funcaovelho, id))
-        cursor.execute("UPDATE atividades SET id_atividade = ?, tipo_de_servico = ?, descricao = ?, quem = ?, armazenna = ?, empresa = ?, data = ?, STATUS = ? WHERE id_atividade = ?", (id, servico, descricao, pessoa, armazenna, empresa, data, status, id))
-        conectar.commit()
-        conectar.close()
-        print(f'dados atualizado PORRAAAAAA')
-    # [(4, 'mecanica', 'Tomada queimada ', 'Bruno, Janderson', 'armazenna02', 'XXXX', '2025-07-08', 'N Realizado')]
+    #     if statusatual == '':
+    #         print('status vazio')
+    #     else:
+    #         status = statusatual
+    #     # cursor.execute("UPDATE funcionarios_cadastrados SET nome = ?, senha = ?, cpf = ?, funcao = ? WHERE id_funcionario = ?", (nomevelho, senhavelho, cpfvelho, funcaovelho, id))
+    #     cursor.execute("UPDATE atividades SET id_atividade = ?, tipo_de_servico = ?, descricao = ?, quem = ?, armazenna = ?, empresa = ?, data = ?, STATUS = ? WHERE id_atividade = ?", (id, servico, descricao, pessoa, armazenna, empresa, data, status, id))
+    #     conectar.commit()
+    #     conectar.close()
+    #     print(f'dados atualizado PORRAAAAAA')
+    # # [(4, 'mecanica', 'Tomada queimada ', 'Bruno, Janderson', 'armazenna02', 'XXXX', '2025-07-08', 'N Realizado')]
     
     
 
