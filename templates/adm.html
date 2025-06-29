@@ -36,7 +36,7 @@
         }
         #bloco {
             background-color: rgb(0, 0, 197);
-            width: 70dvw;
+            width: 80dvw;
             /* height: 500px; */
             border-radius: 20px;
             padding: 10px 0px 0px 10px;
@@ -54,8 +54,9 @@
         chegar em 430px, essas configurações vão acontecer (max-width: 430px;) 
         isso eu digo que quando a tela chegar em 430px; */
         @media (max-width: 430px) {
+            /* 430px */
             #superior {
-                background-color: red;
+                background-color: blue;
             }
 
             button {
@@ -63,12 +64,28 @@
                 height: 10px;
             }
 
-            button:hover {
-                width: 15px;
-                height: 15px;
+
+            th {
+                text-align: center;
+                padding: 3px;
+                border: 2px solid black;
+                font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+                font-size: 10px;
+                color: white;
+                background-color: blue;
             }
 
-            
+            td {
+                text-align: center;
+                padding: 3px;
+                border: 2px solid black;
+                font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+                font-size: 10px;
+                color: white;
+                background-color: rgb(0, 0, 154);
+            }
+
+
         }
 
         .botoes-das-tabelas {
@@ -89,11 +106,11 @@
 
         #aba-funcionario {
             margin: 0 auto;
-            background-color: blue;
-            width: 70dvw;
-            margin-top: -110px;
+            background-color: rgb(0, 0, 201);
+            /* width: 70dvw; */
+            /* margin-top: -110px; */
             border-radius: 10px;
-            display: non;
+            display: none;
             
         }
 
@@ -121,7 +138,7 @@
 
         table {
             background-color: white;
-            width: 68dvw;
+            width: 80dvw;
             border-collapse: collapse;
             margin-top: 20px;
             border-radius: 5px;
@@ -129,25 +146,34 @@
 
         th {
             text-align: center;
-            padding: 5px;
+            padding: 3px;
             border: 2px solid black;
             font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+            font-size: 14px;
             color: white;
             background-color: blue;
         }
 
         td {
             text-align: center;
-            padding: 5px;
+            padding: 3px;
             border: 2px solid black;
             font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+            font-size: 14px;
             color: white;
             background-color: rgb(0, 0, 154);
         }
 
-        tr:nth-child(even) { /* Estiliza linhas pares */
-            background-color: #f9f9f9;
+        #n0 {
+            background-color: red;
         }
+
+        #n1 {
+            background-color: rgb(0, 191, 0);
+        }
+
+
+
     </style>
 </head>
 <body>
@@ -159,9 +185,9 @@
 
         <div id="bloco">
             <p id="titulo-das-tabelas">Funcionários
-                <button onclick="adicionarFuncionario()" style="background-color: rgb(0, 255, 136);" id="adicionar-funcionario" class="botoes-das-tabelas">+</button>
-                <button onclick="excluirFuncionario()" style="background-color: red;" id="excluir-funcionario" class="botoes-das-tabelas">x</button>
-                <button onclick="alterarRegistro()" id="alterar-funcionario" class="botoes-das-tabelas">!!</button>
+                <button onmouseover="adicionarFuncionario()" style="background-color: rgb(0, 255, 136);" id="adicionar-funcionario" class="botoes-das-tabelas">+</button>
+                <button onmouseover="excluirFuncionario()" style="background-color: red;" id="excluir-funcionario" class="botoes-das-tabelas">x</button>
+                <button onmouseover="alterarRegistro()" id="alterar-funcionario" class="botoes-das-tabelas">!!</button>
 
                 <select name="" id="ordenartabelafuncionario">
                     <option value="id_funcionario">--Selecione--</option>
@@ -187,13 +213,58 @@
                     <tbody id="tbodyfuncionarios">
 
                     </tbody>
-                </table>
+                </table><br>
+            </div>
+
+            
+
+
+            <div id="aba-funcionario">
+                
+                <p style="
+                font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+                color: white;
+                font-size: 20px;
+                margin: 0px 0px 10px 0px;
+                    ">Adicionar funcionário</p>
+                <input type="text" name="" id="inputnome" placeholder="  Nome..">
+                <br>
+                <input type="text" name="" id="inputsenha" placeholder="  Senha..">
+                <br>
+                <input type="number" name="" id="inputcpf" placeholder="  CPF...">
+                <br>
+
+                <select name="" id="inputfuncao">
+                    <option value="">Nenhum desses</option>
+                    <option value="eletrica">Elétrica</option>
+                    <option value="mecanica">Mecânica</option>
+                    <option value="pintura">Pintura</option>
+                    <option value="telhado">Telhado</option>
+                    <option value="seguranca">Téc. de Segurança</option>
+                    <option value="administrativo">Área administrativa</option>
+                    <option value="adm">MASTER</option>
+                </select>
+                <br>
+                <button 
+                style="
+                border-radius: 5px;
+                width: 170px;
+                margin-bottom: 10px;
+                " id="funcionario" onclick="ok()">ADICIONAR</button>
+                <br>
+
+                <p style="
+                font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+                color: rgb(255, 156, 156);
+                font-size: 17px;
+                display: none;
+                " id="campovazio">Todos os campos são obrigatórios...</p>
             </div>
         </div>
 
 
         <!-- área de adicionar -->
-        <div id="aba-funcionario" style="display: none;">
+        <!-- <div id="aba-funcionario">
 
             <p style="
             font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
@@ -233,7 +304,7 @@
             font-size: 17px;
             display: none;
             " id="campovazio">Todos os campos são obrigatórios...</p>
-        </div>
+        </div> -->
 
 
 
@@ -332,36 +403,48 @@
 
         <div id="bloco">
             <p id="titulo-das-tabelas">Atividades
-                <button onclick="adicionaratividades()" style="background-color: rgb(0, 255, 136);" id="adicionar-atividades" class="botoes-das-tabelas">+</button>
-                <button onclick="excluiratividades()" style="background-color: red;" id="excluir-atividades" class="botoes-das-tabelas">x</button>
-                <button onclick="alteraratividades()" id="alterar-atividades" class="botoes-das-tabelas">!!</button>
-                <br>
+                <button onmouseover="adicionaratividades()" style="background-color: rgb(0, 255, 136);" id="adicionar-atividades" class="botoes-das-tabelas">+</button>
+                <button onmouseover="excluiratividades()" style="background-color: red;" id="excluir-atividades" class="botoes-das-tabelas">x</button>
+                <button onmouseover="alteraratividades()" id="alterar-atividades" class="botoes-das-tabelas">!!</button>
+                <!-- <br> -->
             
                 <select name="" id="ordenartabelaatividades">
-                    <option value="id_funcionario">--Selecione--</option>
-                    <option value="id_funcionario"></option>
-                    <option value="nome"></option>
-                    <option value="senha"></option>
-                    <option value="cpf"></option>
-                    <option value="funcao"></option>
+                    <option value="id_atividade">--Selecione--</option>
+                    <option value="tipo_de_servico">Serviço</option>
+                    <option value="descricao">Descrição</option>
+                    <option value="quem">Pessoas</option>
+                    <option value="armazenna">Armazenna</option>
+                    <option value="empresa">Cliente</option>
+                    <option value="data">Data</option>
+                    <option value="STATUS">Status</option>
                 </select>
                 <br>
             </p>
+            
+            
 
             <div>
                 <table>
                     <tr>
-                        <th>X</th>
-                        <th>X</th>
-                        <th>X</th>
-                        <th>X</th>
-                        <th>X</th>
-                        <th>X</th>
-                        <th>X</th>
-                        <th>X</th>
+                        <th>ID</th>
+                        <th>Serviço</th>
+                        <th>Descrição</th>
+                        <th>Quem</th>
+                        <th>Armazenna</th>
+                        <th>Cliente</th>
+                        <th>Data</th>
+                        <th>Status</th>
                     </tr>
                     <tbody id="tbodyatividades">
-
+                        <!-- <th>
+                            <td>01</td>
+                            <td>das</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td id="n1">1</td>
+                        </th> -->
                     </tbody>
                 </table>
             </div>
@@ -382,12 +465,12 @@
              <select name="" id="selectTipodeServico" style="
              width: 160px;">
                 <option value="">TIPO DE SERVIÇO</option>
-                <option value="mecanica">Mecânica</option>
-                <option value="eletrica">Elétrica</option>
-                <option value="pintura">Pintura</option>
-                <option value="telhado">Telhado</option>
-                <option value="relatorio">Relatório</option>
-                <option value="montagem">Montagem</option>
+                <option value="MECÂNICA">Mecânica</option>
+                <option value="ELETRICA">Elétrica</option>
+                <option value="PINTURA">Pintura</option>
+                <option value="TELHADO">Telhado</option>
+                <option value="RELATÓRIO">Relatório</option>
+                <option value="MONTAGEM">Montagem</option>
                 <!-- ADICIONAR NO PAPÉL essa categoria (MONTAGEM) -->
              </select>
             <br>
@@ -399,12 +482,12 @@
 
             <select name="" id="selectArmazenna?" style="width: 160px;">
                 <option value="">Armazenna ??</option>
-                <option value="armazenna01">Armazenna 01</option>
-                <option value="armazenna02">Armazenna 02</option>
-                <option value="armazenna03">Armazenna 03</option>
-                <option value="armazenna04">Armazenna 04</option>
-                <option value="armazenna05">Armazenna 05</option>
-                <option value="armazenna06">Armazenna 06</option>
+                <option value="A-01">Armazenna 01</option>
+                <option value="A-02">Armazenna 02</option>
+                <option value="A-03">Armazenna 03</option>
+                <option value="A-04">Armazenna 04</option>
+                <option value="A-05">Armazenna 05</option>
+                <option value="A-06">Armazenna 06</option>
             </select>
             <br>
             <input type="text" name="" id="inputEmpresa" placeholder="  Empresa...">
@@ -489,12 +572,12 @@
             width: 165px;
             ">
                 <option value="">TIPO DE SERVIÇO</option>
-                <option value="mecanica">Mecânica</option>
-                <option value="eletrica">Elétrica</option>
-                <option value="pintura">Pintura</option>
-                <option value="telhado">Telhado</option>
-                <option value="relatorio">Relatório</option>
-                <option value="montagem">Montagem</option>
+                <option value="MECÂNICA">Mecânica</option>
+                <option value="ELÉTRICA">Elétrica</option>
+                <option value="PINTURA">Pintura</option>
+                <option value="TELHADO">Telhado</option>
+                <option value="RELATÓRIO">Relatório</option>
+                <option value="MONTAGEM">Montagem</option>
             </select>
             <br>
             <input type="text" name="" id="inputAlterarDescricao" placeholder="  Descrição..">
@@ -505,19 +588,19 @@
             width: 165px;
             ">
                 <option value="">-- ARMAZENNAS --</option>
-                <option value="armazenna01">Armazenna 01</option>
-                <option value="armazenna02">Armazenna 02</option>
-                <option value="armazenna03">Armazenna 03</option>
-                <option value="armazenna04">Armazenna 04</option>
-                <option value="armazenna05">Armazenna 05</option>
-                <option value="armazenna06">Armazenna 06</option>
+                <option value="A-01">Armazenna 01</option>
+                <option value="A-02">Armazenna 02</option>
+                <option value="A-03">Armazenna 03</option>
+                <option value="A-04">Armazenna 04</option>
+                <option value="A-05">Armazenna 05</option>
+                <option value="A-06">Armazenna 06</option>
             </select>
             <br>
             <input type="text" name="" id="alterarEmpresaAtividade" placeholder="  Empresa...">
             <br>
             <input type="date" name="" id="AlterarDataAtividade" style="width: 165px;">
             <br>
-            <input type="text" name="" id="AlterarStatusAtividade" placeholder="  R / N.R...">
+            <input type="text" name="" id="AlterarStatusAtividade" placeholder="  0 / 1">
             <br>
 
             <button 
@@ -536,27 +619,6 @@
             " id="recadoAlterarAtividade">Sem o ID não conseguimos identificar...</p>
         </div>
         
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -585,10 +647,54 @@
     <script>
         
         const selecao = document.getElementById("ordenartabelafuncionario");
-        let tbody = document.getElementById("tbodyfuncionarios");
+        const selecaoAtividade = document.getElementById('ordenartabelaatividades');
 
-        // selecao.addEventListener('change', async function() {
+        let tbody = document.getElementById("tbodyfuncionarios");
+        let tbodyAtividades = document.getElementById('tbodyatividades');
+
+        selecaoAtividade.addEventListener('change', tabelaAtividades );
         selecao.addEventListener('change', tabelafuncionario );
+
+        async function tabelaAtividades() {
+            
+
+            const orde = {
+                ordenar_por: selecaoAtividade.value
+            }
+
+            const resposta = await fetch('/ordenarAtividades', {
+                method: 'POST',
+                headers: {
+                    'Content-Type':'application/json'
+                },
+                body: JSON.stringify(orde)
+            });
+
+            if (resposta.ok) {
+                const atividades = await resposta.json();
+                console.log('atividade'+atividades);
+
+                tbodyAtividades.innerHTML = '';
+                atividades.forEach(atividade => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                    <td>${atividade.id_atividade}</td>
+                    <td>${atividade.tipo_de_servico}</td>
+                    <td>${atividade.descricao}</td>
+                    <td>${atividade.quem}</td>
+                    <td>${atividade.armazenna}</td>
+                    <td>${atividade.empresa}</td>
+                    <td>${atividade.data}</td>
+                    <td id="n${atividade.status}">${atividade.status}</td>
+                    `;
+                    // <td id="n1">1</td>
+                    tbodyAtividades.appendChild(row)
+                });
+
+            } else {
+                console.log('Erro ao exibir as atividades (servidor.LP- 655)');
+            }
+        }
             
 
         async function tabelafuncionario() {
@@ -694,7 +800,7 @@
 
 
                 } else {
-                    alert("erro ao Cadastrar..(servidor)");
+                    alert("erro ao Cadastrar..(servidor-762)");
                 }
 
             }
@@ -758,7 +864,7 @@
                     const resultado = await resposta.json();
                 // manipulaçãõ de dados
                 } else {
-                    alert("ERRO AO ADICIONAR A ATIVIDADE (servidor)...")
+                    alert("ERRO AO ADICIONAR A ATIVIDADE (servidor-826)...")
                 }
                 // ATUALIZAR A TABELA APÓS ADICIONAR / EXCLUIR / ALTERAR
             }
@@ -768,6 +874,7 @@
             armazenna.value = '';
             empresa.value = '';
             data.value = '';
+            await tabelaAtividades();
 
         }
 
@@ -817,12 +924,13 @@
                     // aqui faço a manipulação de dados;
 
                 } else {
-                    alert("ERRO AO EXCLUIR A ATIVIDADE (servidor)...");
+                    alert("ERRO AO EXCLUIR A ATIVIDADE (servidor-886)...");
                 }
                 inputId.value = '';
                 // atualizar a tabela que aparece no site
 
             }
+            await tabelaAtividades();
         }
 
         function alteraratividades() {
@@ -885,7 +993,7 @@
                 } else {
                     // deu errado
                     // posso colocar um recado aqui se eu quiser talvez
-                    alert("ERRO AO ALTERAR A ATIVIDADE (servidor)....");
+                    alert("ERRO AO ALTERAR A ATIVIDADE (servidor-955)....");
                 }
 
 
@@ -899,38 +1007,10 @@
             empresa.value = '';
             data.value = '';
             status.value = '';
+            await tabelaAtividades();
             // atualizar a tabela que aparece para ele
         }
         
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -991,7 +1071,7 @@
                     }
 
                 } else {
-                    alert("Erro ao tentar excluir...(servidor)");
+                    alert("Erro ao tentar excluir...(servidor-1033)");
                 }
 
                 inputid.value = '';
@@ -1018,10 +1098,11 @@
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            console.log("oiii");
+            console.log("oiii-1060");
             // aqui vai ser onde vou carregar todas as tabelas, na hora que 
             // entrar nessa tela, como no exemplo abaixo onde carrego uma tablea
             tabelafuncionario();
+            tabelaAtividades();
         });
 
         async function alterar() {
@@ -1067,7 +1148,7 @@
 
 
                 } else {
-                    alert("ESSE ID NÃO EXISTI (servidor)");
+                    alert("ESSE ID NÃO EXISTI (servidor-1110)");
                 }
 
             // limpar o formulário; 

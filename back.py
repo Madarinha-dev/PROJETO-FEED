@@ -3,6 +3,9 @@ import sqlite3
 
 # POSSÍCEIS ATUALIZAÇÕES
 
+# mudar a cor das atividades que tiver com o ID = 1, to pensando  numa maneira
+# que acho que vai da certo.
+
 # ideia nova: e se o ADM só quiser ver algumas colunas específicas da tabela
 # sem necessariamente precisar visualizar ela por inteiro
 
@@ -54,7 +57,7 @@ CREATE TABLE IF NOT EXISTS atividades (
   armazenna TEXT VARCHAR(255),
   empresa TEXT VARCHAR(255),
   data TEXT VARCHAR(255),
-  STATUS TEXT VARCHAR(255) DEFAULT 'N Realizado'
+  STATUS TEXT VARCHAR(255) DEFAULT '0'
 );
 ''')
     conectar.commit()
@@ -67,6 +70,13 @@ CREATE TABLE IF NOT EXISTS atividades (
 
 @app.route('/')
 def index():
+    print(')')
+    print(')')
+    print(')')
+    print('FUNÇÃO >>> / <<<')
+    print(')')
+    print(')')
+    print(')')
     return render_template('index.html')
 
 
@@ -75,6 +85,13 @@ def index():
 
 @app.route('/frequencia', methods=['POST'])
 def frequencia():
+    print(')')
+    print(')')
+    print(')')
+    print('FUNÇÃO FREQUÊNCIA')
+    print(')')
+    print(')')
+    print(')')
     registro = request.get_json()
     
     r = {
@@ -170,6 +187,13 @@ def frequencia():
 #  REFAZER ESSA ESTRUTURA DEPOIS QUE O BANCO DE DADOS COMEÇAR A SER INSTALADO;
 @app.route('/recuperar-senha', methods=['POST'])
 def recuperar():
+    print(')')
+    print(')')
+    print(')')
+    print('FUNÇÃO RECUPERAR SENHA')
+    print(')')
+    print(')')
+    print(')')
 
     dados = request.get_json()
     cpf = dados.get('cpff')
@@ -208,6 +232,13 @@ def recuperar():
 # aqui uma função importante, pós ela vai ser o referêncial para login, recuperação e consulta;
 @app.route('/cadastrar_funcionario', methods=['POST'])
 def cadastrar_funcionario():
+    print(')')
+    print(')')
+    print(')')
+    print('FUNÇÃO CADASTRAR FUNCIONARIO')
+    print(')')
+    print(')')
+    print(')')
     dados = request.get_json()
     criar_tabela()
     conectar = conectar_db()
@@ -225,6 +256,13 @@ def cadastrar_funcionario():
 
 @app.route('/adicionarAtividade', methods=['POST'])
 def adicionarAtividade():
+    print(')')
+    print(')')
+    print(')')
+    print('FUNÇÃO ADICIONAR ATIVIDADE')
+    print(')')
+    print(')')
+    print(')')
     dados = request.get_json()
     criar_tabela_atividade()
     conectar = conectar_db()
@@ -243,6 +281,13 @@ def adicionarAtividade():
 
 @app.route('/excluirFuncionario', methods=['POST'])
 def excluirFuncionario():
+    print(')')
+    print(')')
+    print(')')
+    print('FUNÇÃO EXCLUIR FUNCIONÁRIO')
+    print(')')
+    print(')')
+    print(')')
     dados = request.get_json()
     id = dados['id']
 
@@ -270,6 +315,13 @@ def excluirFuncionario():
     
 @app.route('/excluiratividade', methods=['POST'])
 def excluiratividade():
+    print(')')
+    print(')')
+    print(')')
+    print('FUNÇÃO EXCLUIR ATIVIDADE')
+    print(')')
+    print(')')
+    print(')')
     dados = request.get_json()
     id = dados['id_atividade']
     conectar = conectar_db()
@@ -297,6 +349,13 @@ def excluiratividade():
 @app.route('/alterarfuncionario', methods=['POST'])
 def alterarfuncionario():
     novosdados = request.get_json()
+    print(')')
+    print(')')
+    print(')')
+    print('FUNÇÃO ALTERAR FUNCIONÁRIO')
+    print(')')
+    print(')')
+    print(')')
 
     id = novosdados['id']
     nomenovo = novosdados['nome']
@@ -336,8 +395,6 @@ def alterarfuncionario():
 
     
     cursor.execute("UPDATE funcionarios_cadastrados SET nome = ?, senha = ?, cpf = ?, funcao = ? WHERE id_funcionario = ?", (nomevelho, senhavelho, cpfvelho, funcaovelho, id))
-    # select * from funcionarios_cadastrados order by cpf
-    # cursor.execute("SELECT * FROM funcionarios_cadastrados ORDER BY ?", (cpfvelho,))
     conectar.commit()
     conectar.close()
 
@@ -347,95 +404,150 @@ def alterarfuncionario():
 
 @app.route('/alterarAtividade', methods=['POST'])
 def alterarAtividade():
-    print("(")
-    print("(")
-    print("(")
-    print("(")
-    print("(")
-    print("(")
-    print("(")
-    print("(")
-    print("(")
-    print("(")
-    # # dados: {'id': '4', 'servico': '', 'descricao': '', 'pessoas': 'BERG e IVO', 'armazenna': 'armazenna01', 'empresa': '', 'data': '', 'status': ''}
-    # dadosnovos = request.get_json()
-    # id = dadosnovos['id']
-    # servicoatual = dadosnovos['servico']
-    # desscricaoatual = dadosnovos['descricao']
-    # pessoaatual = dadosnovos['pessoas']
-    # armazennaatual = dadosnovos['armazenna']
-    # empresaatual = dadosnovos['empresa']
-    # dataatual = dadosnovos['data']
-    # statusatual = dadosnovos['status']
+    print(')')
+    print(')')
+    print(')')
+    print('FUNÇÃO ALTERAR ATIVIDADE')
+    print(')')
+    print(')')
+    print(')')
 
-    # conectar = conectar_db()
-    # cursor = conectar.cursor()
-    # cursor.execute("SELECT * FROM atividades WHERE id_atividade = ?", (id, ))
-    # tabela = cursor.fetchone()
-    # print(f'atualizar: {dadosnovos}')
-    # print('')
-    # print(f'dados atuais: {tabela}')
-    # print('')
+   
+    dadosnovos = request.get_json()
+    id = dadosnovos['id']
+    servicoatual = dadosnovos['servico']
+    desscricaoatual = dadosnovos['descricao']
+    pessoaatual = dadosnovos['pessoas']
+    armazennaatual = dadosnovos['armazenna']
+    empresaatual = dadosnovos['empresa']
+    dataatual = dadosnovos['data']
+    statusatual = dadosnovos['status']
 
-    # if tabela is None:
-    #     print('vazio')
-    # else:
-    #     id = tabela[0]
-    #     servico = tabela[1]
-    #     descricao = tabela[2]
-    #     pessoa = tabela[3]
-    #     armazenna = tabela[4]
-    #     empresa = tabela[5]
-    #     data = tabela[6]
-    #     status = tabela[7]
-        
-    #     if servicoatual == '':
-    #         print('serviço vazio')
-    #     else:
-    #         servico = servicoatual
-        
-    #     if desscricaoatual == '':
-    #         print('descrição vazio')
-    #     else:
-    #         descricao = desscricaoatual
-        
-    #     if pessoaatual == '':
-    #         print('pessoa vazio')
-    #     else:
-    #         pessoa = pessoaatual
-        
-    #     if armazennaatual == '':
-    #         print('armazenna vazio')
-    #     else:
-    #         armazenna = armazennaatual
+    conectar = conectar_db()
+    cursor = conectar.cursor()
+    cursor.execute("SELECT * FROM atividades WHERE id_atividade = ?", (id, ))
+    tabela = cursor.fetchone()
 
-    #     if empresaatual == '':
-    #         print('empresa vazio')
-    #     else:
-    #         empresa = empresaatual
+
+    if tabela is None:
+        conectar.commit()
+        conectar.close()
         
-    #     if dataatual == '':
-    #         print('data vazio')
-    #     else:
-    #         data = dataatual
+    else:
+        id = tabela[0]
+        servico = tabela[1]
+        descricao = tabela[2]
+        pessoa = tabela[3]
+        armazenna = tabela[4]
+        empresa = tabela[5]
+        data = tabela[6]
+        status = tabela[7]
+        
+        if servicoatual == '':
+            print('serviço vazio')
+        else:
+            servico = servicoatual
 
-    #     if statusatual == '':
-    #         print('status vazio')
-    #     else:
-    #         status = statusatual
-    #     # cursor.execute("UPDATE funcionarios_cadastrados SET nome = ?, senha = ?, cpf = ?, funcao = ? WHERE id_funcionario = ?", (nomevelho, senhavelho, cpfvelho, funcaovelho, id))
-    #     cursor.execute("UPDATE atividades SET id_atividade = ?, tipo_de_servico = ?, descricao = ?, quem = ?, armazenna = ?, empresa = ?, data = ?, STATUS = ? WHERE id_atividade = ?", (id, servico, descricao, pessoa, armazenna, empresa, data, status, id))
-    #     conectar.commit()
-    #     conectar.close()
-    #     print(f'dados atualizado PORRAAAAAA')
-    # # [(4, 'mecanica', 'Tomada queimada ', 'Bruno, Janderson', 'armazenna02', 'XXXX', '2025-07-08', 'N Realizado')]
-    
-    
-
+        if desscricaoatual == '':
+            print('descrição vazio')
+        else:
+            descricao = desscricaoatual
+                
+        if pessoaatual == '':
+            print('pessoa vazio')
+        else:
+            pessoa = pessoaatual
+            
+        if armazennaatual == '':
+            print('Armazenna vazio')
+        else:
+            armazenna = armazennaatual
+            
+        if empresaatual == '':
+            print('empresa vazio')
+        else:
+            empresa = empresaatual
+        
+        if dataatual == '':
+            print('data vazio')
+        else:
+            data = dataatual
+            
+        if statusatual == '':
+            print('status vazio')
+        else:
+            status = statusatual
+            
+        cursor.execute("UPDATE atividades SET id_atividade = ?, tipo_de_servico = ?, descricao = ?, quem = ?, armazenna = ?, empresa = ?, data = ?, STATUS = ? WHERE id_atividade = ?", (id, servico, descricao, pessoa, armazenna, empresa, data, status, id))
+        conectar.commit()
+        conectar.close()
+        
     return jsonify({
-        'msg':'0',
-        'texto':'ID não localizado...'
+        'msg':'ignore',
+        'texto':'ignora esse return, se der errado, vai mostrar de outra forma, obg...'
     }), 200
+
+@app.route('/ordenarAtividades', methods=['POST'])
+def ordenarAtividades():
+    dados = request.get_json()
+    orde = dados['ordenar_por']
+    print(')')
+    print(')')
+    print(')')
+    print('FUNÇÃO ORDENAR ATIVIDADES')
+    print(')')
+    print(')')
+    print(f'dados: {dados}')
+    print('')
+    print(f'Ordenar por: {orde}')
+    print('aqui vou montar a lógica para ordenar os dados e mandar para o FRONT END')
+
+    conectar = conectar_db()
+    cursor = conectar.cursor()
+
+    if orde == 'id_atividade':
+        cursor.execute("SELECT * FROM atividades ORDER BY id_atividade")
+
+    elif orde == 'tipo_de_servico':
+        cursor.execute("SELECT * FROM atividades ORDER BY tipo_de_servico")
+
+    elif orde == 'descricao':
+        cursor.execute("SELECT * FROM atividades ORDER BY descricao")
+
+    elif orde == 'quem':
+        cursor.execute("SELECT * FROM atividades ORDER BY quem")
+
+    elif orde == 'armazenna':
+        cursor.execute("SELECT * FROM atividades ORDER BY armazenna")
+
+    elif orde == 'empresa':
+        cursor.execute("SELECT * FROM atividades ORDER BY empresa")
+
+    elif orde == 'data':
+        cursor.execute("SELECT * FROM atividades ORDER BY data")
+
+    elif orde == 'STATUS':
+        cursor.execute("SELECT * FROM atividades ORDER BY STATUS")
+    else:
+        cursor.execute("SELECT * FROM atividades ORDER BY id_atividade") 
+
+    ordenado = cursor.fetchall()
+    
+    nova_lista = []
+    for a in ordenado:
+        dicionario = {
+            'id_atividade':a[0],
+            'tipo_de_servico':a[1],
+            'descricao':a[2],
+            'quem':a[3],
+            'armazenna':a[4],
+            'empresa':a[5],
+            'data':a[6],
+            'status':a[7]
+        }
+        nova_lista.append(dicionario)
+
+    return jsonify(nova_lista), 200
         
 
 
@@ -444,6 +556,7 @@ def ordenarfuncionarios():
     dados = request.get_json()
     print(")")
     print(")")
+    print('FUNção /ordernarFuncionarios')
     print(")")
     print(")")
     print(")")
@@ -467,13 +580,6 @@ def ordenarfuncionarios():
         cursor.execute("SELECT * FROM funcionarios_cadastrados ORDER BY id_funcionario")
 
     orde = cursor.fetchall()
-    # print("")
-    # print(f'ORDE: {orde}')
-    # print("")
-
-    # for a in orde:
-    #     print(f'id {a[0]} Nome: {a[1]} Senha: {a[2]} CPF: {a[3]} Função: {a[4]}')
-    # print("")
 
     dados_para_json = []
     for a in orde:
@@ -487,16 +593,10 @@ def ordenarfuncionarios():
         }
         dados_para_json.append(dicionario)
 
-    # print("")
-    # print("teste")
-    # print(f'DADOS PARA JSON: {dados_para_json}')
     return jsonify(dados_para_json), 200
     
 
 
-
-
-    
 
 
 
@@ -533,6 +633,14 @@ def receber_dados():
             "texto":"000",
             "funcao":"vazio"
         }), 200
+
+
+
+    return jsonify({
+        "status":"sucesso",
+        "texto":"001",
+        "funcao":funcao
+    }), 200
 
 @app.route('/tela02')
 def tela02():
