@@ -98,6 +98,44 @@ def index():
 
 
 
+@app.route('/exibir_tabela_frequencia', methods=['POST'])
+def exibir_tabela_frequencia():
+    dados = request.get_json()
+
+    conectar = conectar_db()
+    cursor = conectar.cursor()
+    cursor.execute("SELECT * FROM frequencia")
+    tabela = cursor.fetchall()
+
+    nova_lista = []
+    for a in tabela:
+        dicionario = {
+            'id':a[0],
+            'nome':a[1],
+            'data':a[2],
+            'tempo':a[3],
+            'funcao':a[4]
+        }
+        nova_lista.append(dicionario)
+    conectar.commit()
+    conectar.close()
+    return jsonify(nova_lista), 200
+
+
+
+@app.route('/limparFrequencia', methods=['POST'])
+def limparFrequencia():
+    conectar = conectar_db()
+    cursor = conectar.cursor()
+    cursor.execute("DELETE FROM frequencia")
+    conectar.commit()
+    conectar.close()
+
+    return jsonify({
+        'msg':'comando eliminar comfirmado'
+    }), 200
+
+
 
 
 @app.route('/frequencia', methods=['POST'])
@@ -116,6 +154,7 @@ def frequencia():
     tempo = (f"{str(registro.get('hora'))}:{str(registro.get('minuto'))}:{str(registro.get('segundo'))}")
     funcao = registro.get('funcao')
     
+
     criar_tabela_frequencia()
     conectar = conectar_db()
     cursor = conectar.cursor()
@@ -461,7 +500,6 @@ def ordenarAtividades():
         cursor.execute("SELECT * FROM atividades ORDER BY id_atividade") 
 
     ordenado = cursor.fetchall()
-    
     nova_lista = []
     for a in ordenado:
         dicionario = {

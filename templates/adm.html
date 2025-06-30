@@ -624,25 +624,22 @@
 
 
         <div id="bloco">
-            <p id="titulo-das-tabelas">Frequência</p>
+            <p id="titulo-das-tabelas">
+                Frequência
+                <button onclick="limpar_frequencia()" style="background-color: red;" id="" class="">x</button>
+            </p> 
+            
             <div>
                 <table>
                     <tr>
-                        <th></th>
                         <th>ID</th>
                         <th>Nome</th>
                         <th>Data</th>
                         <th>Hora</th>
                         <th>Função</th>
                     </tr>
-                    <tbody>
-                        <th>
-                            <td>01</td>
-                            <td>Fhellype</td>
-                            <td>29/06/2025</td>
-                            <td>14:01</td>
-                            <td>Elétrica</td>
-                        </th>
+                    <tbody id="tbodyfrequencia">
+                        
                     </tbody>
                 </table>
             </div>
@@ -671,13 +668,86 @@
 
         let tbody = document.getElementById("tbodyfuncionarios");
         let tbodyAtividades = document.getElementById('tbodyatividades');
+        let tbodyfrequencia = document.getElementById('tbodyfrequencia');
+        
+        
 
         selecaoAtividade.addEventListener('change', tabelaAtividades );
         selecao.addEventListener('change', tabelafuncionario );
 
-        async function tabelaAtividades() {
-            
+        async function limpar_frequencia() {
+            const dados = {
+                'comando':'eliminar'
+            }
 
+            
+            const resposta = await fetch('/limparFrequencia', {
+                method: 'POST',
+                headers: {
+                    'Content-Type':'application/json'
+                },
+                body: JSON.stringify(dados)
+            });
+
+            if (resposta.ok) {
+                alert('comunicação com a eliminação OK');
+                const resultado = await resposta.json()
+                alert('resultado '+resultado.msg);
+                console.log('resultado '+resultado);
+                //fazer a manipulação RESULTADO
+
+
+            } else {
+                alert('Comunicação falhou..695');
+            }
+
+
+
+        }
+
+        async function tabelafrequencia() {
+            const pedido = {
+                'msg':'mostrar_a_tabela_frequência'
+            }
+
+            const resposta = await fetch('/exibir_tabela_frequencia', {
+                method: 'POST', 
+                headers: {
+                    'Content-Type':'application/json'
+                },
+                body: JSON.stringify(pedido)
+            });
+
+            if (resposta.ok) {
+                // alert('comunicação para exibir frequência ok');
+
+                const informacoes = await resposta.json()
+                console.log('informações: '+informacoes);
+                
+                tbodyfrequencia.innerHTML = '';
+                informacoes.forEach(registro => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                    <td>${registro.id}</td>
+                    <td>${registro.nome}</td>
+                    <td>${registro.data}</td>
+                    <td>${registro.tempo}</td>
+                    <td>${registro.funcao}</td>
+                    `
+                    tbodyfrequencia.appendChild(row)
+                });
+
+
+            } else {
+                alert('erro ao se comunicar com o servidor, exibir frequência');
+            }
+            
+        }
+        setInterval(tabelafrequencia, 1000);
+        // setInterval(limparFrequencia, x);
+
+        async function tabelaAtividades() {
+        
             const orde = {
                 ordenar_por: selecaoAtividade.value
             }
