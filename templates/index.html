@@ -295,7 +295,9 @@
             const resultado = await resposta.json();
             
             // aqui eu olho oq vem dentro de (resultado)
-            console.log(resultado);
+            console.log('linha 298 - Resultado: '+resultado);
+            // alert("resultado: "+resultado);
+
             if (resultado.status === 'sucesso') {
                 recado.style.display = 'none';
 
@@ -363,22 +365,18 @@
                 body: JSON.stringify(registro_frequencia)
                 });
 
-                // if (resposta.ok) {
+                // guardar no banco de dados e depois exibir numa tabela
 
-                //     const resultado = await resposta.json();
-                //     // aqui posso consultar o objeto (resultado)
-                //     console.log(resultado);
-
-
-                // } else {
-                //     console.log("erro ao registrar a frequência desse acesso");
-                // }
-
-
-                console.log(registro_frequencia);
+                
+                console.log('linha 369 - Registro: '+registro_frequencia);
 
             } else {
-                alert("NEGADO 001");
+                // alert("NEGADO 372");
+                let recado = document.getElementById('dadosInvalidos');
+                recado.style.display = 'block';
+
+                console.log('linha 376 - Resultado: '+resultado);
+                
             }
                 
         } else {
@@ -433,11 +431,11 @@
                     dados_recuperados.style.display = 'block';
 
                 } else {
-                    alert("DEU erro");
+                    alert("Dados inválidos (432)");
                 }
 
             } else {
-                alert('Usuário não existi / dados inválidos');
+                console.log('linha 436 - html');
             }
 
         }

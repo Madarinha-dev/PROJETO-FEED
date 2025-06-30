@@ -65,6 +65,23 @@ CREATE TABLE IF NOT EXISTS atividades (
 
 
 
+def criar_tabela_frequencia():
+    conectar = conectar_db()
+    cursor = conectar.cursor()
+    cursor.execute('''
+CREATE TABLE IF NOT EXISTS frequencia (
+    id_frequencia INTEGER PRIMARY KEY AUTOINCREMENT,
+    nome TEXT VARCHAR(40),
+    data TEXT VARCHAR(20),
+    hora TEXT VARCHAR(12),
+    funcao TEXT VARCHAR(20)
+);
+''')
+    conectar.commit()
+    conectar.close()
+
+
+
 
 
 
@@ -93,98 +110,20 @@ def frequencia():
     print(')')
     print(')')
     registro = request.get_json()
+
+    nome = registro.get('nome')
+    data = (f"{str(registro.get('dia'))}/{str(registro.get('mes'))}/{str(registro.get('ano'))}")
+    tempo = (f"{str(registro.get('hora'))}:{str(registro.get('minuto'))}:{str(registro.get('segundo'))}")
+    funcao = registro.get('funcao')
     
-    r = {
-        "nome": registro.get('nome'), 
-        "funcao": registro.get('funcao'),
-        "dia":registro.get('dia'),
-        "mes":registro.get('mes'),
-        "ano":registro.get('ano'),
-        "hora":registro.get('hora'),
-        "minuto":registro.get('minuto'),
-        "segundo":registro.get('segundo')
-        }
-    print("")
-    print("")
-    print("")
-    print("")
-    print("")
-    print("")
-    print("")
-    print("")
-
-    lista.append(r)
+    criar_tabela_frequencia()
+    conectar = conectar_db()
+    cursor = conectar.cursor()
+    cursor.execute("INSERT INTO frequencia (nome, data, hora, funcao) VALUES (?, ?, ?, ?)", (nome, data, tempo, funcao))
+    conectar.commit()
+    conectar.close()
 
 
-    # contador = 0
-    # se fosse banco de dados mesmo:
-    # nome = r["nome"]
-    # for x in lista:
-    #  if nome == x:
-    #   contador = contador + 1
-
-    sid = 0
-    fhellype = 0
-    bruno = 0
-    julio = 0
-    c = 0
-
-    for elemento in lista:
-        print("")
-        print(f'O C: {c}')
-        print("")
-        # print(f'Elemento: {elemento}')
-        print(f'Data: {elemento["dia"]}/{elemento["mes"]}/{elemento["ano"]} | Hora: {elemento["hora"]}:{elemento["minuto"]}:{elemento["segundo"]} | {elemento["nome"]} - {elemento["funcao"]}')
-        if elemento["nome"] == 'sid':
-            sid = sid + 1
-            if sid > 1:
-                print("eliminando..")
-                lista.pop(c)
-                
-
-        elif elemento["nome"] == 'julio':
-            julio = julio + 1
-            if julio > 1:
-                print("eliminando..")
-                lista.pop(c)
-                
-
-        elif elemento["nome"] == 'bruno':
-            bruno = bruno + 1
-            if bruno > 1:
-                print("eliminando..")
-                lista.pop(c)
-                
-
-        elif elemento["nome"] == 'fhellype':
-            fhellype = fhellype + 1
-            if fhellype > 1:
-                print("eliminando..")
-                lista.pop(c)
-        c = c + 1
-                
-    print("")
-    print("")
-    print("LISTA:")
-    for i in lista:
-        print(f'Data: {i["dia"]}/{i["mes"]}/{i["ano"]} | Hora: {i["hora"]}:{i["minuto"]}:{i["segundo"]} | {i["nome"]} - {i["funcao"]}')
-
-    # print(f'Fhellype: {fhellype}, Sid: {sid}, Julio: {julio}, Bruno: {bruno}')
-    print("")
-    print("")
-    print("")
-    print("")
-    print("")
-    print("")
-    print("")
-    print("")
-
-    
-
-
-
-
-#  REFAZER ESSA ESTRUTURA DEPOIS QUE O BANCO DE DADOS COMEÇAR A SER INSTALADO;
 @app.route('/recuperar-senha', methods=['POST'])
 def recuperar():
     print(')')
@@ -198,35 +137,25 @@ def recuperar():
     dados = request.get_json()
     cpf = dados.get('cpff')
     
-    # BANCO DE SIMULAÇÃO, SOFRER ALTERAÇÃO QUANDO O REAL VIER;
-    pessoas = [ 
-        {"nome":"FHELLYPE","senha":"1984","funcao": "pintura", "cpf":"16811949457"},
-        {"nome":"JULIO","senha":"2025","funcao":"telhado", "cpf":"01"},
-        {"nome":"BRUNO","senha":"1984", "funcao":"eletrica", "cpf":"02"},
-        {"nome":"SID", "senha":"2025", "funcao":"adm", "cpf":"03"}
-        ]
-    
-    for r in pessoas:
-        # print(r)
-        if cpf == r['cpf']:
-            nome = r['nome']
-            senha = r['senha']
-            dado = 1
+    conectar = conectar_db()
+    cursor = conectar.cursor()
+    cursor.execute("SELECT * FROM funcionarios_cadastrados WHERE cpf = ?", (cpf, ))
+    registro = cursor.fetchone()
+    print(f'registro {registro}')
 
-    if dado == 1:
+    if registro is None:
         return jsonify({
-            "recado":"Dados-localizados",
-            "nome":nome,
-            "senha":senha
+            'recado':'nao-localizado'
         }), 200
+    
     else:
         return jsonify({
-            "recado":"nao-localizado"
+            'recado':'Dados-localizados',
+            'nome':registro[1],
+            'senha':registro[2]
         }), 200
     
-
-
-
+    
 
 
 # aqui uma função importante, pós ela vai ser o referêncial para login, recuperação e consulta;
@@ -605,42 +534,44 @@ def ordenarfuncionarios():
 def receber_dados():
     dados_recebidos = request.get_json()
 
-    nome = dados_recebidos.get('nome').upper()
+    nome = dados_recebidos.get('nome')
     senha = dados_recebidos.get('senhar')
-
-    pessoas = [ 
-        {"nome":"FHELLYPE","senha":"1984","funcao": "pintura", "cpf":"16811949457"},
-        {"nome":"JULIO","senha":"2025","funcao":"telhado", "cpf":"01"},
-        {"nome":"BRUNO","senha":"1984", "funcao":"eletrica", "cpf":"02"},
-        {"nome":"SID", "senha":"2025", "funcao":"adm", "cpf":"03"}
-        ]
+    conectar = conectar_db()
+    cursor = conectar.cursor()
+    cursor.execute("SELECT * FROM funcionarios_cadastrados WHERE nome = ? AND senha = ?", (nome, senha))
+    funcionarios = cursor.fetchone()
+    print(f'Funcionários: {funcionarios}')
     
-    for r in pessoas:
-        # print(r)
-        if nome == r["nome"] and senha == r["senha"]:
-            funcao = r["funcao"]
-            dado = 1
-
-    if dado == 1:
+    if nome == 'none' and senha == 'none':
+        funcao = 'adm'
         return jsonify({
-        "status":"sucesso",
-        "texto":"001",
-        "funcao":funcao
+            "status":"sucesso",
+            "texto":"001",
+            "funcao":funcao
         }), 200
+    
+    elif funcionarios is None:
+        print(')')
+        print("vazio ou dados inválidos")
+        print(')')
+        return jsonify({
+            "status":"errado 647 - pyton"
+        }), 200
+    
     else:
+        print(')')
+        print(f'Dados: {funcionarios}')
+        print(')')
+        funcao = funcionarios[4]
+        
         return jsonify({
-            "status":"negado",
-            "texto":"000",
-            "funcao":"vazio"
+            "status":"sucesso",
+            "texto":"001",
+            "funcao":funcao
         }), 200
+        
+    
 
-
-
-    return jsonify({
-        "status":"sucesso",
-        "texto":"001",
-        "funcao":funcao
-    }), 200
 
 @app.route('/tela02')
 def tela02():
