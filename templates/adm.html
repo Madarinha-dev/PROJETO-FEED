@@ -88,9 +88,7 @@
 
         }
 
-        .botoes-das-tabelas {
-            
-        }
+
 
         button {
             border: none;
@@ -134,6 +132,21 @@
         #excluir_funcionario:hover {
             background-color: red;
             color: white;
+        }
+
+        .excluir:hover {
+            background-color: red;
+            color:white;
+        }
+
+        .adicionar:hover {
+            background-color: blue;
+            color: white;
+        }
+
+        .alterar:hover {
+            color: black;
+            background-color:blanchedalmond;
         }
 
         table {
@@ -263,51 +276,6 @@
         </div>
 
 
-        <!-- área de adicionar -->
-        <!-- <div id="aba-funcionario">
-
-            <p style="
-            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-            color: white;
-            font-size: 20px;
-            margin: 0px 0px 10px 0px;
-                ">Adicionar funcionário</p>
-            <input type="text" name="" id="inputnome" placeholder="  Nome..">
-            <br>
-            <input type="text" name="" id="inputsenha" placeholder="  Senha..">
-            <br>
-            <input type="number" name="" id="inputcpf" placeholder="  CPF...">
-            <br>
-
-            <select name="" id="inputfuncao">
-                <option value="">Nenhum desses</option>
-                <option value="eletrica">Elétrica</option>
-                <option value="mecanica">Mecânica</option>
-                <option value="pintura">Pintura</option>
-                <option value="telhado">Telhado</option>
-                <option value="seguranca">Téc. de Segurança</option>
-                <option value="administrativo">Área administrativa</option>
-                <option value="adm">MASTER</option>
-            </select>
-            <br>
-            <button 
-            style="
-            border-radius: 5px;
-            width: 170px;
-            margin-bottom: 10px;
-            " id="funcionario" onclick="ok()">ADICIONAR</button>
-            <br>
-
-            <p style="
-            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-            color: rgb(255, 156, 156);
-            font-size: 17px;
-            display: none;
-            " id="campovazio">Todos os campos são obrigatórios...</p>
-        </div> -->
-
-
-
         <div id="aba-excluir-funcionario" 
         style="
         display: none;
@@ -389,7 +357,7 @@
             border-radius: 5px;
             width: 170px;
             margin-bottom: 10px;
-            " id="funcionariomodificar" onclick="alterar()">ALTERAR</button>
+            " id="funcionariomodificar" class="alterar" onclick="alterar()">ALTERAR</button>
             <br>
 
             <p style="
@@ -436,20 +404,10 @@
                         <th>Status</th>
                     </tr>
                     <tbody id="tbodyatividades">
-                        <!-- <th>
-                            <td>01</td>
-                            <td>das</td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td id="n1">1</td>
-                        </th> -->
                     </tbody>
                 </table>
             </div>
             
-            <!-- <div>tabela (com opções de filtrar)</div> -->
 
             <!-- área de adicionar -->
         <div id="aba-atividades" style="display: none;">
@@ -500,7 +458,7 @@
             border-radius: 5px;
             width: 170px;
             margin-bottom: 10px;
-            " id="atividades" onclick="dados_da_atividade()">ADICIONAR</button>
+            " id="atividades" class="adicionar" onclick="dados_da_atividade()">ADICIONAR</button>
             <br>
 
             <p style="
@@ -538,7 +496,7 @@
             border-radius: 5px;
             width: 170px;
             margin-bottom: 10px;
-            " id="excluir_atividade" onclick="excluindoAtividade()">Deletar Atividade</button>
+            " id="excluir_atividade" class="excluir" onclick="excluindoAtividade()">Deletar Atividade</button>
             <br>
 
             <p style="
@@ -608,7 +566,7 @@
             border-radius: 5px;
             width: 165px;
             margin-bottom: 10px;
-            " id="funcionariomodificar" onclick="alterarAtividade()">ALTERAR</button>
+            " id="funcionariomodificar" class="alterar" onclick="alterarAtividade()">ALTERAR</button>
             <br>
 
             <p style="
@@ -739,7 +697,8 @@
 
 
             } else {
-                alert('erro ao se comunicar com o servidor, exibir frequência');
+                // alert('erro ao se comunicar com o servidor, exibir frequência');
+                console.log('erro no servidor, adm.html - 743');
             }
             
         }

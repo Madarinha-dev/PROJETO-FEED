@@ -17,6 +17,15 @@ import sqlite3
 # ou um quadro como se fosse um gráfico.
 
 
+
+# administrativo
+# seguranca
+# eletrica
+# mecanica
+# pintura
+# telhado
+
+
 app = Flask(__name__)
 lista = []
 

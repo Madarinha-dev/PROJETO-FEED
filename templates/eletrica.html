@@ -4,8 +4,213 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: rgb(18, 18, 235);
+        }
+
+
+        input {
+            border: none;
+            background-color: rgb(222, 222, 222);
+            width: 300px;
+            padding: 10px;
+            margin-top: 5px;
+            margin-bottom: 5px;
+            border-radius: 3px;
+            border-width: 3px;
+            border-color: rgba(0, 110, 255, 0.747);
+        }
+
+        table {
+            background-color: white;
+            width: 90dvw;
+            border-collapse: collapse;
+            margin-top: 20px;
+            border-radius: 5px;
+        }
+
+        th {
+            text-align: center;
+            padding: 1px;
+            border: 2px solid black;
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+            font-size: 14px;
+            color: white;
+            background-color: blue;
+        }
+
+        td {
+            text-align: center;
+            padding: 1px;
+            border: 2px solid black;
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+            font-size: 14px;
+            color: white;
+            background-color: rgb(0, 0, 154);
+        }
+
+    
+
+
+        /* aqui é uma adaptação de telas menores, quando a tela
+        chegar em 430px, essas configurações vão acontecer (max-width: 430px;) 
+        isso eu digo que quando a tela chegar em 430px; */
+        @media (max-width: 430px) {
+            
+        }
+
+        #corpo-principal {
+            background-color: blue;
+            border-radius: 5px;
+            width: 90dvw;
+            margin: auto 0;
+            margin-top: 100px;
+            justify-self: center;
+            padding: 15px;
+            /* display: flex; */
+        }
+
+        #programacao {
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+            font-size: 18px;
+            /* background-color: red; */
+            justify-self: center;
+            color: white;
+            
+        }
+
+        #eletrica {
+            font-size: 25px;
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+            justify-self: center;
+            color: white;
+            margin-top: 40px;
+            margin-bottom: -50px;
+        }
+
+        #registrar {
+            padding: 2px;
+            background-color: rgb(64, 199, 64);
+            color: white;
+            width: 70px;
+            height: 30px;
+            border-radius: 10px;
+        }
+
+        #tela {
+            background-color: white;
+            border-radius: 10px;
+            margin-top: 10px;
+            padding: 20px;
+            display: non;
+            /* max-width: 500px; */
+            /* height: 500px; */
+            
+        }
+
+        #camera {
+            background-color: black;
+            /* width: 80dvw; */
+            width: 80dvw;
+            height: 350px;
+            justify-self: center;
+            
+        }
+
+        #div-botao-tirar-foto {
+            /* background-color: red; */
+            padding-top: 10px;
+            justify-self: center;
+        }
+
+        #botao-tirar-foto {
+            /* justify-self: center; */
+            padding: 10px;
+            border-radius: 10px;
+            background-color: rgb(64, 199, 64);
+            color: white;
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+        }
+
+        #div-input-legenda {
+            /* background-color: grey; */
+            width: 80dvw;
+            justify-self: center;
+            /* display: flex; */
+            /* display: flex; */
+        }
+
+        input {
+            border-radius: 5px;
+            width: 76dvw;
+            
+
+        }
+
+    </style>
 </head>
 <body>
-    <h1>elétrica</h1>
+    <p id="eletrica">ELETRÍCA</p>
+    <div id="corpo-principal">
+        <p id="programacao">
+            PROGRAMAÇÃO
+        </p>
+        <button id="registrar">+</button>
+        <table>
+            <tr >
+                <th>ID</th>
+                <th>Descrição</th>
+                <th>Eletricista</th>
+                <th>Armazenna</th>
+                <th>Cliente</th>
+                <th>Data</th>
+                <th>Status</th>
+            </tr>
+            <tbody>
+                <tr>
+                    <td>01</td>
+                    <td>troca de lampada</td>
+                    <td>Berg</td>
+                    <td>A-2</td>
+                    <td>CTbotelho</td>
+                    <td>30/06</td>
+                    <td>0</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div id="tela">
+            <div id="camera">
+                .
+            </div>
+
+            <div id="div-input-legenda">
+                <input type="text" placeholder="ID">
+                <br>
+                <input type="text" placeholder="Legenda da foto..">
+            </div>
+            
+
+            <div id="div-botao-tirar-foto">
+                <button id="botao-tirar-foto">Tirar foto</button>
+                <button id="botao-tirar-foto">Enviar</button>
+            </div>
+            <p>anotações: <br>- quando apertar o botão '+', abrir a câmera <br>
+            - quando apertar o botão 'tirar foto', os campos tem que ta preenchido <br>
+            - quando apertar o botão 'enviar', enviar um conjunto <br>
+            - (<br>
+                (id, legenda, foto),<br>
+                (id, legenda, foto),<br>
+                (id, legenda, foto) <br>
+                )</p>
+        </div>
+
+    </div>
 </body>
 </html>
