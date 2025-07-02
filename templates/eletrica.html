@@ -109,9 +109,6 @@
             margin-top: 10px;
             padding: 20px;
             display: non;
-            /* max-width: 500px; */
-            /* height: 500px; */
-            
         }
 
         #camera {
@@ -149,14 +146,56 @@
         input {
             border-radius: 5px;
             width: 76dvw;
-            
+            /* border: 2px solid rgb(0, 255, 30) */
+        }
 
+        #tela02 {
+            background-color: white;
+            border-radius: 10px;
+            margin-top: 10px;
+            padding: 20px;
+            display: non;
+        }
+
+        #div-texto-fotos {
+            /* background-color: red; */
+            justify-self: center;
+        }
+
+        #texto-fotos {
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+            
+        }
+
+        video {
+            width: 100%;
+            height: 370px;
+            max-width: 640px;
+            /* height: auto; */
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            background-color: #000;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            justify-self: center;
+            display: flex;
+        }
+
+        canvas {
+            border: 1px solid #ddd;
+            background-color: #e0e0e0;
+            margin-top: 20px;
+            /* max-width: 640px; */
+            /* height: auto; */
+            height:300px;
+            width: 100%;
+            border-radius: 4px;
         }
 
     </style>
 </head>
 <body>
-    <p id="eletrica">ELETRÍCA</p>
+    <p id="eletrica">ELÉTRICA</p>
     <div id="corpo-principal">
         <p id="programacao">
             PROGRAMAÇÃO
@@ -186,31 +225,137 @@
         </table>
 
         <div id="tela">
-            <div id="camera">
-                .
+            <div id="camer">
+                <video id="videoStream" autoplay></video>
             </div>
 
             <div id="div-input-legenda">
-                <input type="text" placeholder="ID">
+                <input type="text" placeholder="ID" id="inputID">
                 <br>
-                <input type="text" placeholder="Legenda da foto..">
+                <input type="text" placeholder="Legenda da foto.." id="inputLegenda">
             </div>
             
 
             <div id="div-botao-tirar-foto">
-                <button id="botao-tirar-foto">Tirar foto</button>
+                <button id="botao-tirar-foto" onclick="" class="tirarfoto">Tirar foto</button>
                 <button id="botao-tirar-foto">Enviar</button>
             </div>
-            <p>anotações: <br>- quando apertar o botão '+', abrir a câmera <br>
+            <!-- <p>anotações: <br>- quando apertar o botão '+', abrir a câmera <br>
             - quando apertar o botão 'tirar foto', os campos tem que ta preenchido <br>
             - quando apertar o botão 'enviar', enviar um conjunto <br>
             - (<br>
                 (id, legenda, foto),<br>
                 (id, legenda, foto),<br>
                 (id, legenda, foto) <br>
-                )</p>
+                )</p> -->
         </div>
 
+        <div id="tela02">
+            <div id="div-texto-fotos">
+                <p id="texto-fotos">Fotos</p>
+                <canvas id="photoCanvas"></canvas>
+            </div>
+        </div>
+
+        
+
+        
+
     </div>
+    <script>
+        let registrar = document.getElementById('registrar');
+        const video = document.getElementById('videoStream');
+        const canvas = document.getElementById('photoCanvas');
+        const context = canvas.getContext('2d');
+
+
+        // function tirarfoto() {
+        //     let id = document.getElementById('inputID');
+        //     let legenda = document.getElementById('inputLegenda');
+
+    
+        //     if (id.value == '' && legenda.value == '') {
+        //         id.style.border = '2px solid red';
+        //         legenda.style.border = '2px solid red';
+
+        //     } else if (id.value == '') {
+        //         legenda.style.border = '';
+        //         id.style.border = '2px solid red';
+
+        //     } else if (legenda.value == '') {
+        //         legenda.style.border = '2px solid red';
+        //         id.style.border = '';
+
+        //     } else {
+        //         legenda.style.border = '2px solid green';
+        //         id.style.border = '2px solid green';
+
+        //         legenda.value = '';
+        //         id.value = '';
+        //         legenda.style.border = '';
+        //         id.style.border = '';
+        //     }
+            
+        // }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        registrar.addEventListener('click', function() {
+            let tela = document.getElementById('tela');
+            let tela02 = document.getElementById('tela02');
+            let tirarfoto = document.getElementsByClassName('tirarfoto');
+            
+            
+            if (tela.style.display == 'none') {
+                tela.style.display = 'block';
+                tela02.style.display = 'block';
+
+                async function startCamera() {
+                    try {
+                        const stream = await navigator.mediaDevices.getUserMedia({
+                            video: {
+                                facingMode: 'user' // 'user' para câmera frontal e 'environment' para câmera traseira
+                            }
+                        });
+                        video.srcObject = stream;
+                    } catch (err) {
+                        console.erro('erro ao acessar a câmera: ', err);
+                        tirarfoto.disabled = true;
+                    }
+                }
+
+                
+
+                // tirarfoto.addEventListener('click', function() {
+                //     if (video.readyState === video.HAVE_ENOUGH_DATA) {
+                //         canvas.width = video.videoWidth;
+                //         canvas.height = video.videoHeight;
+                //         context.drawImage(video, 0, 0, canvas.width, canvas.height);
+                //     } else {
+                //         alert('aguardando a câmera, 347');
+                //     }
+                // });
+                
+                startCamera();
+
+            } else {
+                tela.style.display = 'none';
+                tela02.style.display = 'none';
+            }
+        })
+
+    </script>
 </body>
 </html>
