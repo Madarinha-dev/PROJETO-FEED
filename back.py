@@ -572,6 +572,29 @@ def ordenarfuncionarios():
     return jsonify(dados_para_json), 200
     
 
+@app.route('/eletrica', methods=['POST'])
+def mostrar_tabela_eletrica():
+
+    print(')(')
+    print(')(')
+    print(')(')
+    print('função mostrar as atividades de elétrica')
+    print(')(')
+    print(')(')
+    print(')(')
+    print(')(')
+    print(')(')
+    print(')(')
+
+
+
+
+
+
+
+    return jsonify({
+        'msg':'função ativada...'
+    }), 200
 
 
 
@@ -624,23 +647,25 @@ def receber_dados():
 def tela02():
     return render_template('tela02.html')
 
+
 @app.route('/pintura')
 def pintura():
     return render_template('pintura.html')
+
 
 @app.route('/eletrica')
 def eletrica():
     return render_template('eletrica.html')
 
+
 @app.route('/mecanica')
 def mecanica():
     return render_template('mecanica.html')
 
+
 @app.route('/telhado')
 def telhado():
     return render_template('telhado.html')
-
-
 
 
 @app.route('/adm')
