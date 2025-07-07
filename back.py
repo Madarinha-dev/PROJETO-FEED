@@ -572,29 +572,61 @@ def ordenarfuncionarios():
     return jsonify(dados_para_json), 200
     
 
-@app.route('/eletrica', methods=['POST'])
+@app.route('/mostrar_atividades', methods=['POST'])
 def mostrar_tabela_eletrica():
+    dados = request.get_json()
+    print(')(')
+    print(')(')
+    print(')(')
+    # print(f'DADOS: {dados}')
+    # DADOS: {'msg': 'atividades de elétrica'}
 
-    print(')(')
-    print(')(')
-    print(')(')
-    print('função mostrar as atividades de elétrica')
-    print(')(')
-    print(')(')
-    print(')(')
-    print(')(')
-    print(')(')
-    print(')(')
+    conectar = conectar_db()
+    cursor = conectar.cursor()
 
 
+    dados_para_json = []
+
+    if dados['msg'] == 'atividades de elétrica':
+        cursor.execute("SELECT id_atividade, descricao, quem, armazenna, empresa, data, STATUS FROM atividades WHERE tipo_de_servico = 'ELÉTRICA'")
+        resultado = cursor.fetchall()
+        
+        
+    elif dados['msg'] == 'atividades de mecanica':
+        cursor.execute("SELECT id_atividade, descricao, quem, armazenna, empresa, data, STATUS FROM atividades WHERE tipo_de_servico = 'MECÂNICA'" )
+        resultado = cursor.fetchall()
 
 
+    elif dados['msg'] == 'atividades de pintura':
+        cursor.execute("SELECT id_atividade, descricao, quem, armazenna, empresa, data, STATUS FROM atividades WHERE tipo_de_servico = 'PINTURA'")
+        resultado = cursor.fetchall()
 
 
+    elif dados['msg'] == 'atividades de telhado':
+        cursor.execute("SELECT id_atividade, descricao, quem, armazenna, empresa, data, STATUS FROM atividades WHERE tipo_de_servico = 'TELHADO'")
+        resultado = cursor.fetchall()
 
-    return jsonify({
-        'msg':'função ativada...'
-    }), 200
+
+    # caso especial pós eu preciso de todas as áreas
+    # elif dados['msg'] == 'atividades de relatório':
+    #     cursor.execute("")
+
+    elif dados['msg'] == 'atividades de montagem':
+        cursor.execute("SELECT id_atividade, descricao, quem, armazenna, empresa, data, STATUS FROM atividades WHERE tipo_de_servico = 'MONTAGEM'")
+        resultado = cursor.fetchall()
+
+    for a in resultado:
+        dicionario = {
+            'id':a[0],
+            'descricao':a[1],
+            'quem':a[2],
+            'armazenna':a[3],
+            'empresa':a[4],
+            'data':a[5],
+            'status':a[6]
+        }
+        dados_para_json.append(dicionario)
+    return jsonify(dados_para_json), 200
 
 
 

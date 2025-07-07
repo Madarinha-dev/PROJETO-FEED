@@ -244,6 +244,14 @@
             font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
         }
 
+        #n0 {
+            background-color: red;
+        }
+
+        #n1 {
+            background-color: rgb(0, 191, 0);
+        }
+
        /* #fotoscapturadas {
         justify-items: center;
        } */
@@ -268,15 +276,7 @@
                 <th>Status</th>
             </tr>
             <tbody id="tbodyEletrica">
-                <tr>
-                    <td>01</td>
-                    <td>troca de lampada</td>
-                    <td>Berg</td>
-                    <td>A-2</td>
-                    <td>CTbotelho</td>
-                    <td>30/06</td>
-                    <td>0</td>
-                </tr>
+                
             </tbody>
         </table>
 
@@ -347,7 +347,7 @@
             }
 
             // ENVIO
-            const resposta = await fetch('/eletrica', {
+            const resposta = await fetch('/mostrar_atividades', {
                 method: 'POST',
                 headers: {
                     'Content-Type':'application/json'
@@ -357,13 +357,25 @@
 
             // RESPOSTA - CASO DE CERTO
             if (resposta.ok) {
-                alerta('resposta ok - tabela elétrica');
+            
                 const resultado = await resposta.json();
-                // MANIPULAR OS DADOS
-                alert('Resultado: '+resultado);
-                console.log('Resultado: '+resultado);
 
-                
+                // MANIPULAR OS DADOS
+                tbody.innerHTML = '';
+                resultado.forEach(registro => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                    <td>${registro.id}</td>
+                    <td>${registro.descricao}</td>
+                    <td>${registro.quem}</td>
+                    <td>${registro.armazenna}</td>
+                    <td>${registro.empresa}</td>
+                    <td>${registro.data}</td>
+                    <td id="n${registro.status}">${registro.status}</td>
+                    `
+                    tbody.appendChild(row);
+                });
+
             // RESPOSTA - CASO DE ERRADO
             } else {
                 alert('ERRO AO EXIBIR A TABELA ELÉTRICA - SERVIDOR');
@@ -371,36 +383,8 @@
 
         }
 
-        setInterval(tabelaEletrica, 10000);
+        setInterval(tabelaEletrica, 1000);
 
-        
-        
-        //     if (resposta.ok) {
-        //         // alert('comunicação para exibir frequência ok');
-
-        //         const informacoes = await resposta.json()
-        //         console.log('informações: '+informacoes);
-                
-        //         tbodyfrequencia.innerHTML = '';
-        //         informacoes.forEach(registro => {
-        //             const row = document.createElement('tr');
-        //             row.innerHTML = `
-        //             <td>${registro.id}</td>
-        //             <td>${registro.nome}</td>
-        //             <td>${registro.data}</td>
-        //             <td>${registro.tempo}</td>
-        //             <td>${registro.funcao}</td>
-        //             `
-        //             tbodyfrequencia.appendChild(row)
-        //         });
-
-
-        //     } else {
-        //         // alert('erro ao se comunicar com o servidor, exibir frequência');
-        //         console.log('erro no servidor, adm.html - 743');
-        //     }
-            
-        // }
 
         function TirarFoto() {
             let id = document.getElementById('inputID');
