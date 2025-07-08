@@ -286,7 +286,7 @@
             </div>
 
             <div id="div-input-legenda">
-                <input type="text" placeholder="ID" id="inputID">
+                <input type="number" placeholder="ID" id="inputID">
                 <br>
                 <input type="text" placeholder="Legenda da foto.." id="inputLegenda">
             </div>
@@ -294,7 +294,7 @@
 
             <div id="div-botao-tirar-foto">
                 <button id="botao-tirar-foto" onclick="TirarFoto()"  class="tirarfoto">Tirar foto</button>
-                <button id="botao-tirar-foto">Enviar</button>
+                <button id="botao-tirar-foto" onclick="enviarFotos()">Enviar</button>
             </div>
         
         </div>
@@ -340,6 +340,9 @@
         let currentStream;
         let tbody = document.getElementById('tbodyEletrica');
 
+
+        
+
         async function tabelaEletrica() {
             // OBJETO
             const dados = {
@@ -378,31 +381,22 @@
 
             // RESPOSTA - CASO DE ERRADO
             } else {
-                alert('ERRO AO EXIBIR A TABELA ELÉTRICA - SERVIDOR');
+                console.log('erro ao exibir as atividades de elétrica (servidor)');
             }
 
         }
 
-        setInterval(tabelaEletrica, 1000);
+        setInterval(tabelaEletrica, 3000);
 
-
+        
         function TirarFoto() {
             let id = document.getElementById('inputID');
             let legenda = document.getElementById('inputLegenda');
-            // let divPai = document.getElementById('div-texto-fotos');
             let divPai = document.getElementById('fotoscapturadas');
-            // DIV pai, é onde eu vou colocar as div filho com suas imagens, e suas propríedades
-            // própria.
-            //
-            // let div = document.getElementById('fotoscapturadas');
-            //
-            
-            
-
             const fotosarmazenadas = [];
+            // capturePhoto = []; // limpar antes de usar
 
 
-    
             if (id.value == '' && legenda.value == '') {
                 id.style.border = '2px solid red';
                 legenda.style.border = '2px solid red';
@@ -433,7 +427,7 @@
 
                     let pID = document.createElement('p');
                     let pLEGENDA = document.createElement('p');
-                    // alert(id.value);
+
                     pID.id = 'id-fotos';
                     pID.textContent = `ID: ${id.value}`;
 
@@ -448,10 +442,7 @@
                     divFilho.appendChild(pID);
                     divFilho.appendChild(pLEGENDA);
                     divPai.appendChild(divFilho);
-                    // divPai.innerHTML = '';
-                    // alert('limpando a div pai');
-
-
+                    
                     //essa é outra parte que tenho que trabalhar.
                     const imageDataURL = canvas.toDataURL('image/jpeg');
 
@@ -461,7 +452,6 @@
                         legenda: legenda.value,
                         imagemData: imageDataURL
                     };
-
                     capturePhoto.push(photoData);
 
                 } else {
@@ -474,6 +464,32 @@
                 id.style.border = '';
             }
             
+        }
+
+        async function enviarFotos() {
+            let id = document.getElementById('inputID');
+            let legenda = document.getElementById('inputLegenda');
+            let divPai = document.getElementById('fotoscapturadas');
+            // capturePhoto // aqui ta várias fotos
+
+
+            // alert('DivPai: '+divPai);
+            console.log('DivPai: '+divPai);
+            console.log('CAPTUREPHOTO: '+capturePhoto);
+
+            const resposta = await fetch('/album_de_fotos_das_atividades', {
+                method: 'POST',
+                headers: {
+                    'Content-Type':'application/json'
+                },
+                body: JSON.stringify(capturePhoto)
+            });
+
+            id.value = '';
+            legenda.value = '';
+            divPai.innerHTML = '';
+            capturePhoto = [];
+
         }
 
         function stopCamera() {

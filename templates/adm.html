@@ -185,7 +185,34 @@
             background-color: rgb(0, 191, 0);
         }
 
+        #div-da-foto {
+            background-color: grey;
+            padding-left: 15px;
+            padding-top: 15px;
+            padding-bottom: 10px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            margin-top: 20px;
+        }
 
+        #div-da-foto-foto {
+            background-color: red;
+            width: 300px;
+            height: 300px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+        }
+
+
+        #div-da-foto-id {
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+            color: white;
+        }
+
+        #div-da-foto-legenda {
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+            color: white;
+        }
 
     </style>
 </head>
@@ -611,6 +638,24 @@
             <div>tabela de materiais, feitas pelo técnico</div>
             <br>
         </div>
+
+
+        <div id="bloco">
+            <p id="titulo-das-tabelas">Registro</p>
+            <div id="album">
+
+                <div id="div-da-foto">
+                    <p id="div-da-foto-foto">img</p>
+                    <p id="div-da-foto-id">ID: 01</p>
+                    <p id="div-da-foto-legenda">Legenda: Foi feita a substituição das lampadas no armazenna 5 do bloco b do módulo 16 onde se encontra danificado uma lampada queimada por dentro onde deveriamos fazer a troca a mil anos atrás, já que não fez vai ficar assim</p>
+                </div>
+
+                <!-- div(album)-div(div-da-foto) - img(div-da-foto-foto) - p_id(div-da-foto-id) - p_legenda(div-da-foto-legenda) -->
+                
+            </div>
+            <br>
+        </div>
+
     </div>
 
 
@@ -627,11 +672,68 @@
         let tbody = document.getElementById("tbodyfuncionarios");
         let tbodyAtividades = document.getElementById('tbodyatividades');
         let tbodyfrequencia = document.getElementById('tbodyfrequencia');
+        let divAlbum = document.getElementById('album'); // onde vou colocar os itens (divFilhos)
         
-        
-
         selecaoAtividade.addEventListener('change', tabelaAtividades );
         selecao.addEventListener('change', tabelafuncionario );
+
+
+
+        async function registro() {
+            // pedir essas fotos
+            // receber ordenado por atividade
+            // e depois exibir
+
+            const dados = {
+                'msg':'atividades'
+            }
+
+            const resposta = await fetch('/registro_das_atividades_adm', {
+                method: 'POST',
+                headers: {
+                    'Content-Type':'application/json'
+                },
+                body: JSON.stringify(dados)
+            });
+
+            if (resposta.ok) {
+                const resultado = await resposta.json()
+                // aqui faço as manipulações
+                // alert('comunicação com a função REGISTRO ok');
+                // alert('resultado: '+resultado);
+                console.log('resultado: '+resultado);
+
+                divAlbum.innerHTML = '';
+                resultado.forEach(foto => {
+                    let divFilho = document.createElement('div');
+                    divFilho.id = 'div-da-foto';
+
+                    let img = document.createElement('img');
+                    img.id = 'div-da-foto-foto';
+                    img.src = foto['foto'];
+
+                    let id_foto = document.createElement('p');
+                    id_foto.id = 'div-da-foto-id';
+                    id_foto.textContent = `ID: ${foto["id_atividade"]}`;
+
+                    let id_legenda = document.createElement('p');
+                    id_legenda.id = 'div-da-foto-legenda';
+                    id_legenda.textContent = `Legenda: ${foto["legenda"]}`
+
+                    divFilho.appendChild(img);
+                    divFilho.appendChild(id_foto);
+                    divFilho.appendChild(id_legenda);
+                    divAlbum.appendChild(divFilho);
+                });
+
+            } else {
+                alert('erro com função REGISTRAR SERVIDOR');
+                console.log('erro ao exibir as atividades - servidor');
+            }
+
+            // depois dar opção para excluir, se não vai acumular muitas fotos
+        }
+
 
         async function limpar_frequencia() {
             const dados = {
@@ -678,6 +780,7 @@
 
             if (resposta.ok) {
                 // alert('comunicação para exibir frequência ok');
+                // alert('comunicação ok');
 
                 const informacoes = await resposta.json()
                 console.log('informações: '+informacoes);
@@ -702,8 +805,9 @@
             }
             
         }
-        setInterval(tabelafrequencia, 1000);
-        // setInterval(limparFrequencia, x);
+        setInterval(tabelafrequencia, 3000);
+        setInterval(registro, 3000);
+
 
         async function tabelaAtividades() {
         
@@ -1044,8 +1148,6 @@
                     // posso colocar um recado aqui se eu quiser talvez
                     alert("ERRO AO ALTERAR A ATIVIDADE (servidor-955)....");
                 }
-
-
             }
 
             id.value = '';

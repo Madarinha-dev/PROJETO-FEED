@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, jsonify, redirect, url_for
 import sqlite3
+import base64
 
 # POSSÍCEIS ATUALIZAÇÕES
 
@@ -54,6 +55,26 @@ CREATE TABLE IF NOT EXISTS funcionarios_cadastrados (
 
 
 
+
+
+
+def tabelaRegistro():
+    conectar = conectar_db()
+    cursor = conectar.cursor()
+    cursor.execute('''
+CREATE TABLE IF NOT EXISTS registro (
+  id_registro INTEGER PRIMARY KEY AUTOINCREMENT,
+  id_atividade TEXT,
+  legenda TEXT,
+  img BLOB
+);
+''')
+    conectar.commit()
+    conectar.close()
+
+
+
+
 def criar_tabela_atividade():
     conectar = conectar_db()
     cursor = conectar.cursor()
@@ -104,6 +125,99 @@ def index():
     print(')')
     print(')')
     return render_template('index.html')
+
+@app.route('/registro_das_atividades_adm', methods=['POST'])
+def exibir_registros():
+    print(')(')
+    print(')(')
+    print(')(')
+    print(')(')
+    print('  FUNÇÃO EXIBIR REGISTRO NO ADM')
+
+    conectar = conectar_db()
+    cursor = conectar.cursor()
+    cursor.execute("SELECT * FROM registro ORDER BY id_atividade;")
+    tabela = cursor.fetchall()
+    lista_json = []
+    # futuramente colocar a hora exatada de cada foto, da pra fazer isso, para nos informar a hora exatada que foi tirada a foto
+
+    for registro in tabela:
+        dicionario = {
+            'id_registro':registro[0],
+            'id_atividade':registro[1],
+            'legenda':registro[2],
+            'foto': f"data:image/jpeg;base64,{base64.b64encode(registro[3]).decode('utf-8')}"
+        }
+        lista_json.append(dicionario)
+
+    conectar.commit()
+    conectar.close()
+    return jsonify(lista_json), 200
+
+
+    # return jsonify({
+    #     'msg':'por enquanto só mensagem'
+    # }), 200
+    
+    print(')(')
+    print(')(')
+    print(')(')
+
+
+
+@app.route('/album_de_fotos_das_atividades', methods=['POST'])
+def album():
+    dados = request.get_json()
+    print('()')
+    print('()')
+    print('()')
+    print('()')
+    print('()')
+    print('()')
+    print(' FUNÇÃO /ALBUM DE FOTOS DAS ATIVIDADES')
+    print('()')
+    print('()')
+    print('()')
+    print('()')
+    print('()')
+
+    tabelaRegistro()
+    conectar = conectar_db()
+    cursor = conectar.cursor()
+
+    for a in dados:
+        print('')
+        print(f' - ID: {a["id"]}')
+        print(f' - LEGENDA: {a["legenda"]}')
+        # id = int(a['id'])
+        id = a['id']
+    
+        # legenda = str(a["legenda"])
+        legenda = a['legenda']
+
+        imagem_base64_com_prefixo = a['imagemData']
+        _, encoded_image = imagem_base64_com_prefixo.split(',', 1)
+        imagem_bytes = base64.b64decode(encoded_image) #imagem em formato binário
+
+        cursor.execute("INSERT INTO registro (id_atividade, legenda, img) VALUES (?, ?, ?);", (id, legenda, imagem_bytes))
+        print('')
+
+    conectar.commit()
+    conectar.close()
+
+
+    print('()')
+    print('()')
+    print('()')
+    print('()')
+    print('()')
+    print('()')
+    print('()')
+    print('()')
+    print('()')
+    print('()')
+    print('()')
+
 
 
 
