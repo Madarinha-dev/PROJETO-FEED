@@ -225,6 +225,25 @@
             background-color: rgb(0, 191, 0);
         }
 
+
+        .n3 {
+            background-color: red; /* Cor inicial (vermelho) */
+            animation: piscarVermelhoBranco 0.5s infinite alternate; /* Aplica a animação */
+            border: 2px solid darkred; /* Borda para destaque, se desejar */
+        }
+
+        /* Definição da animação keyframes */
+        @keyframes piscarVermelhoBranco {
+            0% {
+                background-color: red; /* Início: vermelho */
+            }
+            100% {
+                background-color: white; /* Fim: branco */
+            }
+        }
+
+
+
     </style>
 </head>
 <body>
@@ -245,7 +264,15 @@
                 <th>Status</th>
             </tr>
             <tbody id="tbodyEletrica">
-                
+                <!-- <tr>
+                    <td id="n3">01</td>
+                    <td id="n3">Limpeza</td>
+                    <td id="n3">berg</td>
+                    <td id="n3">A5</td>
+                    <td id="n3">Amazon</td>
+                    <td id="n3">14-07-25</td>
+                    <td id="n3" class="n">3</td>
+                </tr> -->
             </tbody>
         </table>
 
@@ -380,13 +407,13 @@
                 resultado.forEach(registro => {
                     const row = document.createElement('tr');
                     row.innerHTML = `
-                    <td>${registro.id}</td>
-                    <td>${registro.descricao}</td>
-                    <td>${registro.quem}</td>
-                    <td>${registro.armazenna}</td>
-                    <td>${registro.empresa}</td>
-                    <td>${registro.data}</td>
-                    <td id="n${registro.status}">${registro.status}</td>
+                    <td class="n${registro.status}">${registro.id}</td>
+                    <td class="n${registro.status}">${registro.descricao}</td>
+                    <td class="n${registro.status}">${registro.quem}</td>
+                    <td class="n${registro.status}">${registro.armazenna}</td>
+                    <td class="n${registro.status}">${registro.empresa}</td>
+                    <td class="n${registro.status}">${registro.data}</td>
+                    <td id="n${registro.status}" class="n${registro.status}">${registro.status}</td>
                     `
                     tbody.appendChild(row);
                 });
@@ -526,14 +553,6 @@
             // console.log(' ');
             // console.log(' ');
             // console.log('grupo: ',grupo);
-            // console.log(' ');
-            // console.log(' ');
-            // console.log(' ');
-            // console.log(' ');
-            // console.log(' ');
-            // console.log(' ');
-            // console.log(' ');
-            // console.log(' ');
             // console.log(' ');
             // console.log(' ');
             // console.log(' ');

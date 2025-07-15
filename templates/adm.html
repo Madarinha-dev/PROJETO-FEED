@@ -644,11 +644,11 @@
             <p id="titulo-das-tabelas">Registro</p>
             <div id="album">
 
-                <div id="div-da-foto">
+                <!-- <div id="div-da-foto">
                     <p id="div-da-foto-foto">img</p>
                     <p id="div-da-foto-id">ID: 01</p>
                     <p id="div-da-foto-legenda">Legenda: Foi feita a substituição das lampadas no armazenna 5 do bloco b do módulo 16 onde se encontra danificado uma lampada queimada por dentro onde deveriamos fazer a troca a mil anos atrás, já que não fez vai ficar assim</p>
-                </div>
+                </div> -->
 
                 <!-- div(album)-div(div-da-foto) - img(div-da-foto-foto) - p_id(div-da-foto-id) - p_legenda(div-da-foto-legenda) -->
                 
@@ -750,9 +750,9 @@
             });
 
             if (resposta.ok) {
-                alert('comunicação com a eliminação OK');
+                // alert('comunicação com a eliminação OK');
                 const resultado = await resposta.json()
-                alert('resultado '+resultado.msg);
+                // alert('resultado '+resultado.msg);
                 console.log('resultado '+resultado);
                 //fazer a manipulação RESULTADO
 
@@ -1012,7 +1012,7 @@
                 });
 
                 if (resposta.ok) {
-                    alert("atividade enviada...");
+                    // alert("atividade enviada...");
 
                     const resultado = await resposta.json();
                 // manipulaçãõ de dados
