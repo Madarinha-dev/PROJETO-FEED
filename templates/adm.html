@@ -700,8 +700,10 @@
                 const resultado = await resposta.json()
                 // aqui faço as manipulações
                 // alert('comunicação com a função REGISTRO ok');
-                // alert('resultado: '+resultado);
-                console.log('resultado: '+resultado);
+
+                // console.log('resultado: '+resultado);
+                console.log('Dados recebidos do backend:', resultado); // Esta forma exibe o array como um objeto expandível
+                console.log('Número de itens recebidos:', resultado.length); // Esta linha vai te mostrar o número exato
 
                 divAlbum.innerHTML = '';
                 resultado.forEach(foto => {

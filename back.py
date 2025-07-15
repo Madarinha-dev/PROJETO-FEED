@@ -64,13 +64,16 @@ def tabelaRegistro():
     cursor.execute('''
 CREATE TABLE IF NOT EXISTS registro (
   id_registro INTEGER PRIMARY KEY AUTOINCREMENT,
-  id_atividade TEXT,
+  id_atividade INTEGER,
   legenda TEXT,
   img BLOB
 );
 ''')
     conectar.commit()
     conectar.close()
+
+
+
 
 
 
@@ -126,6 +129,11 @@ def index():
     print(')')
     return render_template('index.html')
 
+
+
+
+
+
 @app.route('/registro_das_atividades_adm', methods=['POST'])
 def exibir_registros():
     print(')(')
@@ -149,6 +157,12 @@ def exibir_registros():
             'foto': f"data:image/jpeg;base64,{base64.b64encode(registro[3]).decode('utf-8')}"
         }
         lista_json.append(dicionario)
+
+    # print(f"DEBUG: Registros BUSCADOS do banco de dados (fetchall): {len(tabela)}")
+    # print(' ')
+    # print(f"DEBUG: Registros ADICIONADOS à lista_json para envio: {len(lista_json)}")
+    # print(' ')
+    
 
     conectar.commit()
     conectar.close()
@@ -190,10 +204,13 @@ def album():
         print(f' - ID: {a["id"]}')
         print(f' - LEGENDA: {a["legenda"]}')
         # id = int(a['id'])
-        id = a['id']
+        id = int(a['id'])
     
         # legenda = str(a["legenda"])
+        print(' ')
         legenda = a['legenda']
+        print(f'legenda: {legenda}')
+        print(' ')
 
         imagem_base64_com_prefixo = a['imagemData']
         _, encoded_image = imagem_base64_com_prefixo.split(',', 1)
@@ -205,19 +222,9 @@ def album():
     conectar.commit()
     conectar.close()
 
-
-    print('()')
-    print('()')
-    print('()')
-    print('()')
-    print('()')
-    print('()')
-    print('()')
-    print('()')
-    print('()')
-    print('()')
-    print('()')
-
+    return jsonify({
+        'msg':'dados (/album de fotos) enviados'
+    }), 200
 
 
 
