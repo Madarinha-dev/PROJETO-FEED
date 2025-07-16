@@ -481,12 +481,12 @@
 
                     
                     pID.id = 'id-fotos';
-                    pID.textContent = `ID: ${id.value} - hora: ${hora}:${minuto}`;
+                    pID.textContent = `ID: ${id.value}`;
                     // pID.innerHTML = `ID: ${id.value}`;
 
 
                     pLEGENDA.id = 'id-fotos';
-                    pLEGENDA.textContent = `Legenda: ${legenda.value}`;
+                    pLEGENDA.textContent = `[${hora}:${minuto}] - Legenda: ${legenda.value}`;
 
 
                     imagem.id = 'imagemCapturada';
@@ -502,7 +502,7 @@
 
                     const photoData = {
                         id: id.value,
-                        legenda: legenda.value,
+                        legenda: `[${hora}:${minuto}] - ${legenda.value}`,
                         imagemData: imageDataURL
                     };
                     capturePhoto.push(photoData);

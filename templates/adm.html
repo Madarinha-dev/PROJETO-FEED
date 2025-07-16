@@ -214,6 +214,40 @@
             color: white;
         }
 
+        #baixar {
+            width: 50px;
+            height: 50px;
+            border-radius: 5px;
+            margin: 0px 2px 5px 0px;
+            background-color: rgb(234, 234, 234);
+        }
+
+        #baixar:hover {
+            width: 50px;
+            height: 50px;
+            border-radius: 5px;
+            margin: 0px 2px 5px 0px;
+            background-color: rgb(59, 59, 59);
+        }
+
+        #excluir {
+            width: 50px;
+            height: 50px;
+            border-radius: 5px;
+            margin: 0px 2px 5px 0px;
+            background-color: rgb(234, 234, 234);
+        }
+
+        #excluir:hover {
+            width: 50px;
+            height: 50px;
+            border-radius: 5px;
+            margin: 0px 2px 5px 0px;
+            background-color: rgb(59, 59, 59);
+        }
+
+        
+
     </style>
 </head>
 <body>
@@ -642,23 +676,66 @@
 
         <div id="bloco">
             <p id="titulo-das-tabelas">Registro</p>
+
             <div id="album">
 
-                <!-- <div id="div-da-foto">
-                    <p id="div-da-foto-foto">img</p>
+
+                <div id="div-da-foto">
+                    <a href="" download=""></a>
+                    <div>
+                        <p>
+                            <button id="baixar" onclick="baixar(event)" onmouseover="baixarCima(event)"  onmouseout="baixarSaiu(event)">
+                                <img  class="preto" src="/PROJETO FEED/static/img/baixar fundo branco.png" style="height: 20px; display: inline;" alt="baixar">
+                                <img  class="branco" src="/PROJETO FEED/static/img/baixar fundo preto.png" style="height: 20px; display: none;"  alt="baixar">
+                            </button>
+
+                            <button id="excluir" >
+                                <img id="imgExcluirPreto" src="/PROJETO FEED/static/img/excluir preto.png" style="height: 20px; display: inline;" alt="excluir">
+                                <img id="imgExcluirBranco" src="/PROJETO FEED/static/img/excluir branco.png" style="height: 20px; display: none;"  alt="excluir">
+                            </button>
+
+                        </p>
+                    </div>
+
+                    <img id="div-da-foto-foto" src="/PROJETO FEED/static/img/download.jpg" alt="id_registro">
                     <p id="div-da-foto-id">ID: 01</p>
                     <p id="div-da-foto-legenda">Legenda: Foi feita a substituição das lampadas no armazenna 5 do bloco b do módulo 16 onde se encontra danificado uma lampada queimada por dentro onde deveriamos fazer a troca a mil anos atrás, já que não fez vai ficar assim</p>
-                </div> -->
+                </div>
 
-                <!-- div(album)-div(div-da-foto) - img(div-da-foto-foto) - p_id(div-da-foto-id) - p_legenda(div-da-foto-legenda) -->
+
+                <div id="div-da-foto">
+                    <a href="" download=""></a>
+                    <div>
+                        <p>
+                            <button id="baixar" onclick="baixar(event)" onmouseover="baixarCima(event)"  onmouseout="baixarSaiu(event)">
+                                <img  class="preto" src="/PROJETO FEED/static/img/baixar fundo branco.png" style="height: 20px; display: inline;" alt="baixar">
+                                <img  class="branco" src="/PROJETO FEED/static/img/baixar fundo preto.png" style="height: 20px; display: none;"  alt="baixar">
+                            </button>
+
+                            <button id="excluir" >
+                                <img id="imgExcluirPreto" src="/PROJETO FEED/static/img/excluir preto.png" style="height: 20px; display: inline;" alt="excluir">
+                                <img id="imgExcluirBranco" src="/PROJETO FEED/static/img/excluir branco.png" style="height: 20px; display: none;"  alt="excluir">
+                            </button>
+
+                        </p>
+                    </div>
+
+                    <img id="div-da-foto-foto" src="/PROJETO FEED/static/img/excluir preto.png" alt="id_registro">
+                    <p id="div-da-foto-id">ID: 01</p>
+                    <p id="div-da-foto-legenda">Legenda: Foi feita a substituição das lampadas no armazenna 5 do bloco b do módulo 16 onde se encontra danificado uma lampada queimada por dentro onde deveriamos fazer a troca a mil anos atrás, já que não fez vai ficar assim</p>
+                </div>
                 
+
+                
+
+
             </div>
             <br>
         </div>
 
     </div>
 
-
+    
 
     <div>
         talvez a parte inferior
@@ -673,9 +750,159 @@
         let tbodyAtividades = document.getElementById('tbodyatividades');
         let tbodyfrequencia = document.getElementById('tbodyfrequencia');
         let divAlbum = document.getElementById('album'); // onde vou colocar os itens (divFilhos)
+
+        // let Baixar = document.getElementsByClassName('Baixar');
+        
+        // function baixar() {
+        //     alert('oi');
+        // }
+
+        // function baixarCima(event) {
+        //     // alert('por cima');
+        //     console.log(' ');
+        //     console.log(event.target);
+        //     console.log(' ');
+        //     // document.querySelectorAll
+        //     if (event.target.tagName == 'BUTTON') {
+        //         let button = event.target.tagName;
+        //         console.log('todos os elementos: ', button.querySelectorAll());
+                
+                
+        //     }
+    
+        // }
+
+        function baixarCima(event) {
+            // console.log(event.target);
+            if (event.target.tagName == 'BUTTON') {
+                let button = event.target;
+                let imgs = button.querySelectorAll('img');
+                console.log(imgs);
+
+                let img01 = imgs[0]; // preto
+                let img02 = imgs[1]; // branco
+
+                img01.style.display = 'none';
+                img02.style.display = 'inline';
+            }
+        }
+
+        function baixarSaiu(event) {
+            if (event.target.tagName == 'BUTTON') {
+                let button = event.target;
+                let imgs = button.querySelectorAll('img');
+                console.log(imgs);
+
+                let img01 = imgs[0]; // preto
+                let img02 = imgs[1]; // branco
+
+                img01.style.display = 'inline';
+                img02.style.display = 'none';
+            }
+        }
+
+        function baixar(event) {
+            
+            if (event.target.tagName == 'BUTTON') {
+                // alert('b');
+                let div = event.target.parentElement.parentElement.parentElement.parentElement;
+                let data = new Date();
+
+                let dia = data.getDay();
+                if (dia < 10) {
+                    dia = `0${dia}`;
+                }
+
+                let mes = data.getMonth();
+                if (mes < 10) {
+                    mes = `0${mes}`;
+                }
+
+                let ano = data.getFullYear();
+
+                let resultado = div.querySelectorAll('img');
+                let imgDaDiv = resultado[4];
+
+                let a = div.querySelector('a');
+                a.href = imgDaDiv.src;
+                a.download = `${dia}/${mes}/${ano}.jpeg`;
+                console.log(a);
+                // a.click();
+
+
+            } else if (event.target.tagName == 'IMG') {
+                alert('img');
+            } 
+
+        }
+
+
+        // let baixar = document.getElementById('baixar');
+        // let imgBaixarBranco = document.getElementById('branco');
+        // let imgbaixarPreto = document.getElementById('preto');
+        // let imgBaixarBranco = document.getElementsByClassName('branco');
+        // let imgBaixarPreto = document.getElementsByClassName('preto');
+
+        // let excluir = document.getElementById('excluir');
+        // let imgExcluirBranco = document.getElementById('imgExcluirBranco');
+        // let imgExcluirPreto = document.getElementById('imgExcluirPreto');
+        
+
+        // baixar.addEventListener('click', function(event) {
+        //     let a = div.querySelector('a');
+        //     a.href = src.src;
+        //     a.download = `${dia}/${mes}/${ano}.jpeg`;
+        //     a.click();
+        // })
+
+
+
+        // excluir.addEventListener('mouseover', function() {
+        //     imgExcluirPreto.style.display = 'none';
+        //     imgExcluirBranco.style.display = 'inline';
+        // })
+
+        // excluir.addEventListener('mouseout', function() {
+        //     imgExcluirPreto.style.display = 'inline';
+        //     imgExcluirBranco.style.display = 'none';
+        // })
+
+        // excluir.addEventListener('click', function(event) {
+        //     let div = event.target.parentElement.parentElement.parentElement.parentElement;
+        //     let resultado = div.querySelectorAll('img');
+        //     let img = resultado[4];
+        
+        //     console.log('alt: ',img.alt); // eu mando isso aqui pro banco de dados eliminar
+        //     console.log('div: ',div);
+        //     console.log('resultado: ',resultado);
+        //     console.log('img: ', img);
+        //     alert('excluir');
+        // })
+
+
         
         selecaoAtividade.addEventListener('change', tabelaAtividades );
         selecao.addEventListener('change', tabelafuncionario );
+
+
+
+        // divAlbum.addEventListener('mouseover', function(event) {
+        //     console.log(' ');
+
+        //     if (event.target.tagName === 'DIV' ) {
+        //         console.log(' ');
+        //         console.log('Toquei na imagem', event.target);
+        //         console.log(' ');
+
+        //         let div = event.target;
+                
+        //     }
+        // })
+
+
+
+
+
 
 
 
@@ -720,7 +947,7 @@
 
                     let id_legenda = document.createElement('p');
                     id_legenda.id = 'div-da-foto-legenda';
-                    id_legenda.textContent = `Legenda: ${foto["legenda"]}`
+                    id_legenda.textContent = `${foto["legenda"]}`
 
                     divFilho.appendChild(img);
                     divFilho.appendChild(id_foto);
@@ -729,7 +956,7 @@
                 });
 
             } else {
-                alert('erro com função REGISTRAR SERVIDOR');
+                // alert('erro com função REGISTRAR SERVIDOR');
                 console.log('erro ao exibir as atividades - servidor');
             }
 
