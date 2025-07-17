@@ -703,32 +703,6 @@
                 </div>
 
 
-                <div id="div-da-foto">
-                    <a href="" download=""></a>
-                    <div>
-                        <p>
-                            <button id="baixar" onclick="baixar(event)" onmouseover="baixarCima(event)"  onmouseout="baixarSaiu(event)">
-                                <img  class="preto" src="/PROJETO FEED/static/img/baixar fundo branco.png" style="height: 20px; display: inline;" alt="baixar">
-                                <img  class="branco" src="/PROJETO FEED/static/img/baixar fundo preto.png" style="height: 20px; display: none;"  alt="baixar">
-                            </button>
-
-                            <button id="excluir" >
-                                <img id="imgExcluirPreto" src="/PROJETO FEED/static/img/excluir preto.png" style="height: 20px; display: inline;" alt="excluir">
-                                <img id="imgExcluirBranco" src="/PROJETO FEED/static/img/excluir branco.png" style="height: 20px; display: none;"  alt="excluir">
-                            </button>
-
-                        </p>
-                    </div>
-
-                    <img id="div-da-foto-foto" src="/PROJETO FEED/static/img/excluir preto.png" alt="id_registro">
-                    <p id="div-da-foto-id">ID: 01</p>
-                    <p id="div-da-foto-legenda">Legenda: Foi feita a substituição das lampadas no armazenna 5 do bloco b do módulo 16 onde se encontra danificado uma lampada queimada por dentro onde deveriamos fazer a troca a mil anos atrás, já que não fez vai ficar assim</p>
-                </div>
-                
-
-                
-
-
             </div>
             <br>
         </div>
@@ -820,18 +794,40 @@
 
                 let ano = data.getFullYear();
 
-                let resultado = div.querySelectorAll('img');
-                let imgDaDiv = resultado[4];
+                let elementos = event.target.parentElement.parentElement.parentElement;
+                let imgs = elementos.querySelectorAll('img');
+                let img = imgs[4];
+                let src = img.src; // eliminar visualmente
+                let id_atividade = img.alt; // eliminar de verdade, do banco de dados;
 
-                let a = div.querySelector('a');
-                a.href = imgDaDiv.src;
+                // visualmente
+                let a = elementos.querySelector('a');
+                a.href = src;
                 a.download = `${dia}/${mes}/${ano}.jpeg`;
-                console.log(a);
-                // a.click();
-
+                a.click();
+                
 
             } else if (event.target.tagName == 'IMG') {
-                alert('img');
+                // alert('img');
+                let data = new Date();
+                let dia = data.getDay();
+                if (dia < 10) {
+                    dia = `0${dia}`;
+                }
+
+                let mes = data.getMonth();
+                if (mes < 10) {
+                    mes = `0${mes}`;
+                }
+
+                let ano = data.getFullYear();
+                let div = event.target.parentElement.parentElement.parentElement.parentElement;
+                let imgs = div.querySelectorAll('img');
+                let img = imgs[4];
+                let a = div.querySelector('a');
+                a.href = img.src;
+                a.download = `${dia}/${mes}/${ano}.jpeg`;
+                a.click();
             } 
 
         }
