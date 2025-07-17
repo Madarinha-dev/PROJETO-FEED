@@ -680,7 +680,9 @@
             <div id="album">
 
 
-                <div id="div-da-foto">
+
+
+                <!-- <div id="div-da-foto">
                     <a href="" download=""></a>
                     <div>
                         <p>
@@ -689,7 +691,7 @@
                                 <img  class="branco" src="/PROJETO FEED/static/img/baixar fundo preto.png" style="height: 20px; display: none;"  alt="baixar">
                             </button>
 
-                            <button id="excluir" >
+                            <button id="excluir" onmouseover="excluirCima(event)" onmouseout="excluirSaiu(event)" onclick="excluir(event)">
                                 <img id="imgExcluirPreto" src="/PROJETO FEED/static/img/excluir preto.png" style="height: 20px; display: inline;" alt="excluir">
                                 <img id="imgExcluirBranco" src="/PROJETO FEED/static/img/excluir branco.png" style="height: 20px; display: none;"  alt="excluir">
                             </button>
@@ -697,10 +699,12 @@
                         </p>
                     </div>
 
-                    <img id="div-da-foto-foto" src="/PROJETO FEED/static/img/download.jpg" alt="id_registro">
+                    <img id="div-da-foto-foto" src="/PROJETO FEED/static/img/download.jpg" alt="01_id_registro">
                     <p id="div-da-foto-id">ID: 01</p>
                     <p id="div-da-foto-legenda">Legenda: Foi feita a substituição das lampadas no armazenna 5 do bloco b do módulo 16 onde se encontra danificado uma lampada queimada por dentro onde deveriamos fazer a troca a mil anos atrás, já que não fez vai ficar assim</p>
-                </div>
+                </div> -->
+
+
 
 
             </div>
@@ -725,33 +729,82 @@
         let tbodyfrequencia = document.getElementById('tbodyfrequencia');
         let divAlbum = document.getElementById('album'); // onde vou colocar os itens (divFilhos)
 
-        // let Baixar = document.getElementsByClassName('Baixar');
-        
-        // function baixar() {
-        //     alert('oi');
-        // }
+        function excluirCima(event) {
+            // alert('em cima');
+            if (event.target.tagName == 'BUTTON') {
+                let button = event.target;
+                let imgs = button.querySelectorAll('img');
+                let img01 = imgs[0];
+                let img02 = imgs[1];
 
-        // function baixarCima(event) {
-        //     // alert('por cima');
-        //     console.log(' ');
-        //     console.log(event.target);
-        //     console.log(' ');
-        //     // document.querySelectorAll
-        //     if (event.target.tagName == 'BUTTON') {
-        //         let button = event.target.tagName;
-        //         console.log('todos os elementos: ', button.querySelectorAll());
+                img01.style.display = 'none';
+                img02.style.display = 'inline';
+            }
+        }
+
+        function excluirSaiu(event) {
+            if (event.target.tagName == 'BUTTON') {
+                let button = event.target;
+                let imgs = button.querySelectorAll('img');
+                let img01 = imgs[0];
+                let img02 = imgs[1];
+
+                img01.style.display = 'inline';
+                img02.style.display = 'none';
+            }
+        }
+
+        async function excluir(event) {
+            
+            if (event.target.tagName == 'BUTTON') {
+                let button = event.target;
+                let divFilho = button.parentElement.parentElement.parentElement;
+                let divPai = divFilho.parentElement;
+                let alt = (((divFilho.querySelectorAll('img'))[4]).alt);
+                // divFilho.remove();
+
+                const dados = {
+                    'alt':alt
+                }
+
+                const resultado = await fetch('/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type':'application/json'
+                    },
+                    body: JSON.stringify(dados)
+                });
+
+                if (resultado.ok) {
+                    alert('dados enviados');
+
+
+                } else {
+                    alert('ERRO AO ENVIAR');
+                }
+
+
+            } else if (event.target.tagName == 'IMG') {
+                let img = event.target;
+                let divFilho = img.parentElement.parentElement.parentElement.parentElement;
+                let divPai = img.parentElement.parentElement.parentElement.parentElement.parentElement;
+                // divFilho.remove();
+                let alt = (((divFilho.querySelectorAll('img'))[4]).alt);
+                alert('função excluir(evente)');
                 
-                
-        //     }
-    
-        // }
+            }
+            
+
+
+        }
+
 
         function baixarCima(event) {
             // console.log(event.target);
             if (event.target.tagName == 'BUTTON') {
                 let button = event.target;
                 let imgs = button.querySelectorAll('img');
-                console.log(imgs);
+                // console.log(imgs);
 
                 let img01 = imgs[0]; // preto
                 let img02 = imgs[1]; // branco
@@ -928,28 +981,115 @@
                 console.log('Dados recebidos do backend:', resultado); // Esta forma exibe o array como um objeto expandível
                 console.log('Número de itens recebidos:', resultado.length); // Esta linha vai te mostrar o número exato
 
+                // divAlbum.innerHTML = '';
+                // resultado.forEach(foto => {
+                //     let divFilho = document.createElement('div');
+                //     divFilho.id = 'div-da-foto';
+
+                    // let img = document.createElement('img');
+                    // img.id = 'div-da-foto-foto';
+                    // img.src = foto['foto'];
+
+                    // let id_foto = document.createElement('p');
+                    // id_foto.id = 'div-da-foto-id';
+                    // id_foto.textContent = `ID: ${foto["id_atividade"]}`;
+
+                    // let id_legenda = document.createElement('p');
+                    // id_legenda.id = 'div-da-foto-legenda';
+                    // id_legenda.textContent = `${foto["legenda"]}`
+
+                //     divFilho.appendChild(img);
+                //     divFilho.appendChild(id_foto);
+                //     divFilho.appendChild(id_legenda);
+                //     divAlbum.appendChild(divFilho);
+
                 divAlbum.innerHTML = '';
                 resultado.forEach(foto => {
                     let divFilho = document.createElement('div');
                     divFilho.id = 'div-da-foto';
 
-                    let img = document.createElement('img');
-                    img.id = 'div-da-foto-foto';
-                    img.src = foto['foto'];
+                    let a = document.createElement('a');
+                    a.href = '';
+                    a.download = '';
+                    divFilho.appendChild(a);
+
+                    let divDosBotoes = document.createElement('div');
+                    let pDosBotoes = document.createElement('p');
+
+
+
+                    let botaoBaixar = document.createElement('button');
+                    botaoBaixar.id = 'baixar';
+                    botaoBaixar.setAttribute('onclick', 'baixar(event)');
+                    botaoBaixar.setAttribute('onmouseover', 'baixarCima(event)');
+                    botaoBaixar.setAttribute('onmouseout', 'baixarSaiu(event)');
+                    
+                    let imgPreto = document.createElement('img');
+                    imgPreto.classList.add('preto');
+                    imgPreto.src = '/PROJETO FEED/static/img/baixar fundo branco.png'; // foto na pasta aqui mesmo
+                    imgPreto.style.height = '20px';
+                    imgPreto.style.display = 'inline';
+                    // imgPreto.alt = ''; // o identificador desse registro no banco de dados;
+
+                    let imgBranco = document.createElement('img');
+                    imgBranco.classList.add('branco');
+                    imgBranco.src = '/PROJETO FEED/static/img/baixar fundo preto.png';
+                    imgBranco.style.height = '20px';
+                    imgBranco.style.display = 'none';
+                    // imgBranco.alt = '';
+                    botaoBaixar.appendChild(imgPreto);
+                    botaoBaixar.appendChild(imgBranco);
+
+
+                    let botaoExcluir = document.createElement('button');
+                    botaoExcluir.id = 'excluir';
+                    botaoExcluir.setAttribute('onclick', 'excluir(event)');
+                    botaoExcluir.setAttribute('onmouseover', 'excluirCima(event)');
+                    botaoExcluir.setAttribute('onmouseout', 'excluirSaiu(event)');
+
+                    let imgExcluirPreto = document.createElement('img');
+                    imgExcluirPreto.id = 'imgExcluirPreto';
+                    imgExcluirPreto.src = '/PROJETO FEED/static/img/excluir preto.png';
+                    imgExcluirPreto.style.height = '20px';
+                    imgExcluirPreto.style.display = 'inline';
+                    // imgExcluirPreto.alt = '';
+
+                    let imgExcluirBranco = document.createElement('img');
+                    imgExcluirBranco.id = 'imgExcluirBranco';
+                    imgExcluirBranco.src = '/PROJETO FEED/static/img/excluir branco.png';
+                    imgExcluirBranco.style.height = '20px';
+                    imgExcluirBranco.style.display = 'none';
+                    // imgExcluirBranco.alt = '';
+                    botaoExcluir.appendChild(imgExcluirPreto);
+                    botaoExcluir.appendChild(imgExcluirBranco);
+                    pDosBotoes.appendChild(botaoBaixar);
+                    pDosBotoes.appendChild(botaoExcluir);
+                    divDosBotoes.appendChild(pDosBotoes);
+                    divFilho.appendChild(divDosBotoes);
+
+
+                    let imgPrincipal = document.createElement('img');
+                    imgPrincipal.id = 'div-da-foto-foto';
+                    imgPrincipal.src = foto['foto'];
+                    imgPrincipal.alt = foto['id_registro']; // a definir
+                    divFilho.appendChild(imgPrincipal);
 
                     let id_foto = document.createElement('p');
                     id_foto.id = 'div-da-foto-id';
                     id_foto.textContent = `ID: ${foto["id_atividade"]}`;
+                    divFilho.appendChild(id_foto);
 
                     let id_legenda = document.createElement('p');
                     id_legenda.id = 'div-da-foto-legenda';
-                    id_legenda.textContent = `${foto["legenda"]}`
-
-                    divFilho.appendChild(img);
-                    divFilho.appendChild(id_foto);
+                    id_legenda.textContent = `${foto["legenda"]}`;
                     divFilho.appendChild(id_legenda);
                     divAlbum.appendChild(divFilho);
+
+                    // botaoBaixar.setAttribute('onclick', 'baixar(event)');
                 });
+                // });
+
+
 
             } else {
                 // alert('erro com função REGISTRAR SERVIDOR');

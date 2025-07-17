@@ -177,6 +177,34 @@ def exibir_registros():
     print(')(')
     print(')(')
 
+@app.route('/apagar_imagens_do_banco', methods=['POST'])
+def eliminar():
+    dados = request.get_json()
+    print(' ')
+    print(' ')
+    print(' ')
+    print(' ')
+    print(' ')
+    print(' ')
+    print(' ')
+    print(' ')
+    print(' ')
+    print(f'DADOS: {dados}')
+    print(' ')
+    print(' ')
+    print(' ')
+    print(' ')
+    print(' ')
+    print(' ')
+    print(' ')
+    print(' ')
+    print(' ')
+
+
+    return jsonify({
+        'msg':'retorno ok, função(/apagar imagens do banco)'
+    }), 200
+
 
 
 @app.route('/album_de_fotos_das_atividades', methods=['POST'])
