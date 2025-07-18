@@ -480,7 +480,7 @@
             margin: 0px 0px 10px 0px;
                 ">Adicionar Atividades</p>
 
-            <!-- <input type="text" name="" id="inputTipodeServico" placeholder="  Tipo de Serviço.."> -->
+            
              <select name="" id="selectTipodeServico" style="
              width: 160px;">
                 <option value="">TIPO DE SERVIÇO</option>
@@ -679,9 +679,6 @@
 
             <div id="album">
 
-
-
-
                 <!-- <div id="div-da-foto">
                     <a href="" download=""></a>
                     <div>
@@ -703,9 +700,6 @@
                     <p id="div-da-foto-id">ID: 01</p>
                     <p id="div-da-foto-legenda">Legenda: Foi feita a substituição das lampadas no armazenna 5 do bloco b do módulo 16 onde se encontra danificado uma lampada queimada por dentro onde deveriamos fazer a troca a mil anos atrás, já que não fez vai ficar assim</p>
                 </div> -->
-
-
-
 
             </div>
             <br>
@@ -761,13 +755,13 @@
                 let divFilho = button.parentElement.parentElement.parentElement;
                 let divPai = divFilho.parentElement;
                 let alt = (((divFilho.querySelectorAll('img'))[4]).alt);
-                // divFilho.remove();
+                divFilho.remove();
 
                 const dados = {
                     'alt':alt
                 }
 
-                const resultado = await fetch('/', {
+                const resultado = await fetch('/excluirRegistro', {
                     method: 'POST',
                     headers: {
                         'Content-Type':'application/json'
@@ -776,11 +770,10 @@
                 });
 
                 if (resultado.ok) {
-                    alert('dados enviados');
-
-
+                    console.log('Dados enviados');
+                
                 } else {
-                    alert('ERRO AO ENVIAR');
+                    console.log('ERRO ao ENVIAR DADOS (/EXCLUIR REGISTRO)');
                 }
 
 
@@ -788,23 +781,52 @@
                 let img = event.target;
                 let divFilho = img.parentElement.parentElement.parentElement.parentElement;
                 let divPai = img.parentElement.parentElement.parentElement.parentElement.parentElement;
-                // divFilho.remove();
                 let alt = (((divFilho.querySelectorAll('img'))[4]).alt);
-                alert('função excluir(evente)');
-                
+                divFilho.remove();
+
+                const dados = {
+                    'alt':alt
+                }
+                const resultado = await fetch('/excluirRegistro', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type':'application/json'
+                    },
+                    body: JSON.stringify(dados)
+                });
+
+                if (resultado.ok) {
+                    console.log('DADOS ENVIADOS (EXCLUIR REGISTRO LADO IMG)');
+
+                } else {
+                    console.log('ERRO AO ENVIAR (EXCLUIR REGISTRO LADO IMG)');
+                }
             }
             
+            try {
+                let n1 = '01';
+                let n2 = '02';
+                let resultado = (Number(n1) + Number(n2));
+                console.log(`Resultado: ${resultado}`);
+                
+            } catch (erro) {
+                console.log(`Tipo de erro: ${typeof(erro)}`);
+                console.log(`Descrição do erro: ${String(erro)}`);
+            }
+
+            console.log('Programa finalizado');
+
 
 
         }
 
 
         function baixarCima(event) {
-            // console.log(event.target);
+            
             if (event.target.tagName == 'BUTTON') {
                 let button = event.target;
                 let imgs = button.querySelectorAll('img');
-                // console.log(imgs);
+                
 
                 let img01 = imgs[0]; // preto
                 let img02 = imgs[1]; // branco
@@ -831,7 +853,6 @@
         function baixar(event) {
             
             if (event.target.tagName == 'BUTTON') {
-                // alert('b');
                 let div = event.target.parentElement.parentElement.parentElement.parentElement;
                 let data = new Date();
 
@@ -886,72 +907,8 @@
         }
 
 
-        // let baixar = document.getElementById('baixar');
-        // let imgBaixarBranco = document.getElementById('branco');
-        // let imgbaixarPreto = document.getElementById('preto');
-        // let imgBaixarBranco = document.getElementsByClassName('branco');
-        // let imgBaixarPreto = document.getElementsByClassName('preto');
-
-        // let excluir = document.getElementById('excluir');
-        // let imgExcluirBranco = document.getElementById('imgExcluirBranco');
-        // let imgExcluirPreto = document.getElementById('imgExcluirPreto');
-        
-
-        // baixar.addEventListener('click', function(event) {
-        //     let a = div.querySelector('a');
-        //     a.href = src.src;
-        //     a.download = `${dia}/${mes}/${ano}.jpeg`;
-        //     a.click();
-        // })
-
-
-
-        // excluir.addEventListener('mouseover', function() {
-        //     imgExcluirPreto.style.display = 'none';
-        //     imgExcluirBranco.style.display = 'inline';
-        // })
-
-        // excluir.addEventListener('mouseout', function() {
-        //     imgExcluirPreto.style.display = 'inline';
-        //     imgExcluirBranco.style.display = 'none';
-        // })
-
-        // excluir.addEventListener('click', function(event) {
-        //     let div = event.target.parentElement.parentElement.parentElement.parentElement;
-        //     let resultado = div.querySelectorAll('img');
-        //     let img = resultado[4];
-        
-        //     console.log('alt: ',img.alt); // eu mando isso aqui pro banco de dados eliminar
-        //     console.log('div: ',div);
-        //     console.log('resultado: ',resultado);
-        //     console.log('img: ', img);
-        //     alert('excluir');
-        // })
-
-
-        
         selecaoAtividade.addEventListener('change', tabelaAtividades );
         selecao.addEventListener('change', tabelafuncionario );
-
-
-
-        // divAlbum.addEventListener('mouseover', function(event) {
-        //     console.log(' ');
-
-        //     if (event.target.tagName === 'DIV' ) {
-        //         console.log(' ');
-        //         console.log('Toquei na imagem', event.target);
-        //         console.log(' ');
-
-        //         let div = event.target;
-                
-        //     }
-        // })
-
-
-
-
-
 
 
 
@@ -981,27 +938,6 @@
                 console.log('Dados recebidos do backend:', resultado); // Esta forma exibe o array como um objeto expandível
                 console.log('Número de itens recebidos:', resultado.length); // Esta linha vai te mostrar o número exato
 
-                // divAlbum.innerHTML = '';
-                // resultado.forEach(foto => {
-                //     let divFilho = document.createElement('div');
-                //     divFilho.id = 'div-da-foto';
-
-                    // let img = document.createElement('img');
-                    // img.id = 'div-da-foto-foto';
-                    // img.src = foto['foto'];
-
-                    // let id_foto = document.createElement('p');
-                    // id_foto.id = 'div-da-foto-id';
-                    // id_foto.textContent = `ID: ${foto["id_atividade"]}`;
-
-                    // let id_legenda = document.createElement('p');
-                    // id_legenda.id = 'div-da-foto-legenda';
-                    // id_legenda.textContent = `${foto["legenda"]}`
-
-                //     divFilho.appendChild(img);
-                //     divFilho.appendChild(id_foto);
-                //     divFilho.appendChild(id_legenda);
-                //     divAlbum.appendChild(divFilho);
 
                 divAlbum.innerHTML = '';
                 resultado.forEach(foto => {

@@ -131,6 +131,39 @@ def index():
 
 
 
+@app.route('/excluirRegistro', methods=['POST'])
+def excluirRegistro():
+    print('')
+    print('')
+    print('')
+    print('/FUNÇÃO EXCLUIR REGISTRO/ - 139')
+    print('')
+    print('')
+    print('')
+
+    try:
+        dados = request.get_json()
+        print(f'Dados: {dados}')
+        alt = int(dados['alt'])
+        conectar = conectar_db()
+        cursor = conectar.cursor()
+        cursor.execute('DELETE FROM registro WHERE id_registro = ?', (alt, ))
+        conectar.commit()
+        conectar.close()
+        print('REGISTRO DELETADO')
+        return jsonify({
+            'msg':'DEU CERTO'
+        }), 200
+
+    except Exception as erro:
+        print(f'o Tipo de erro: {type(erro)}')
+        print(f'Descrição do erro: {str(erro)}')
+    
+
+    return jsonify({
+        'msg':'Erro ao tentar excluir registro (FUNÇÃO EXCLUIR REGISTRO)'
+    }), 200
+
 
 
 
