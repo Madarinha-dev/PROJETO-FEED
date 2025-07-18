@@ -133,14 +133,9 @@ def index():
 
 @app.route('/excluirRegistro', methods=['POST'])
 def excluirRegistro():
-    print('')
-    print('')
-    print('')
-    print('/FUNÇÃO EXCLUIR REGISTRO/ - 139')
-    print('')
-    print('')
-    print('')
 
+    conectar = None
+    
     try:
         dados = request.get_json()
         print(f'Dados: {dados}')
@@ -149,168 +144,164 @@ def excluirRegistro():
         cursor = conectar.cursor()
         cursor.execute('DELETE FROM registro WHERE id_registro = ?', (alt, ))
         conectar.commit()
-        conectar.close()
+        # conectar.close()
         print('REGISTRO DELETADO')
         return jsonify({
-            'msg':'DEU CERTO'
+            'msg':'REGISTRO DELETADO COM SUCESSO'
         }), 200
 
     except Exception as erro:
+        if conectar:
+            conectar.rollback()
+
+        print('ERRO DETECTADO FUNÇÃO: FUNÇÃO EXCLUIR REGISTRO')
         print(f'o Tipo de erro: {type(erro)}')
         print(f'Descrição do erro: {str(erro)}')
+
+        return jsonify({
+            'msg':'ERRO ao tentar excluir o registro'
+        }), 500
     
+    finally:
+        if conectar:
+            conectar.close()
 
-    return jsonify({
-        'msg':'Erro ao tentar excluir registro (FUNÇÃO EXCLUIR REGISTRO)'
-    }), 200
 
-
+    
 
 
 @app.route('/registro_das_atividades_adm', methods=['POST'])
 def exibir_registros():
-    print(')(')
-    print(')(')
-    print(')(')
-    print(')(')
-    print('  FUNÇÃO EXIBIR REGISTRO NO ADM')
-
-    conectar = conectar_db()
-    cursor = conectar.cursor()
-    cursor.execute("SELECT * FROM registro ORDER BY id_atividade;")
-    tabela = cursor.fetchall()
-    lista_json = []
-    # futuramente colocar a hora exatada de cada foto, da pra fazer isso, para nos informar a hora exatada que foi tirada a foto
-
-    for registro in tabela:
-        dicionario = {
-            'id_registro':registro[0],
-            'id_atividade':registro[1],
-            'legenda':registro[2],
-            'foto': f"data:image/jpeg;base64,{base64.b64encode(registro[3]).decode('utf-8')}"
-        }
-        lista_json.append(dicionario)
-
-    # print(f"DEBUG: Registros BUSCADOS do banco de dados (fetchall): {len(tabela)}")
-    # print(' ')
-    # print(f"DEBUG: Registros ADICIONADOS à lista_json para envio: {len(lista_json)}")
-    # print(' ')
+    conectar = None
     
+    try: 
+        conectar = conectar_db()
+        cursor = conectar.cursor()
+        cursor.execute("SELECT * FROM registro ORDER BY id_atividade;")
+        tabela = cursor.fetchall()
+        lista_json = []
 
-    conectar.commit()
-    conectar.close()
-    return jsonify(lista_json), 200
-
-
-    # return jsonify({
-    #     'msg':'por enquanto só mensagem'
-    # }), 200
+        for registro in tabela:
+            dicionario = {
+                'id_registro':registro[0],
+                'id_atividade':registro[1],
+                'legenda':registro[2],
+                'foto':f"data:image/jpeg;base64,{base64.b64encode(registro[3]).decode('utf-8')}"
+            }
+            lista_json.append(dicionario)
+        return jsonify(lista_json), 200
     
-    print(')(')
-    print(')(')
-    print(')(')
+    except Exception as erro:
+        if conectar:
+            conectar.rollback()
 
-@app.route('/apagar_imagens_do_banco', methods=['POST'])
-def eliminar():
-    dados = request.get_json()
-    print(' ')
-    print(' ')
-    print(' ')
-    print(' ')
-    print(' ')
-    print(' ')
-    print(' ')
-    print(' ')
-    print(' ')
-    print(f'DADOS: {dados}')
-    print(' ')
-    print(' ')
-    print(' ')
-    print(' ')
-    print(' ')
-    print(' ')
-    print(' ')
-    print(' ')
-    print(' ')
+        print(f'ERRO DETECTADO, FUNÇÃO: REGISTRO DAS ATIVIDADES ADM')
+        print(f'TIPO DO ERRO: {type(erro)}')
+        print(f'DESCRIÇÃO: {str(erro)}')
 
+        return jsonify({
+            'msg':'ERRO ao exibir os registros'
+        }), 500
+    
+    finally:
+        if conectar:
+            conectar.close()
 
-    return jsonify({
-        'msg':'retorno ok, função(/apagar imagens do banco)'
-    }), 200
 
 
 
 @app.route('/album_de_fotos_das_atividades', methods=['POST'])
 def album():
-    dados = request.get_json()
-    print('()')
-    print('()')
-    print('()')
-    print('()')
-    print('()')
-    print('()')
-    print(' FUNÇÃO /ALBUM DE FOTOS DAS ATIVIDADES')
-    print('()')
-    print('()')
-    print('()')
-    print('()')
-    print('()')
-
-    tabelaRegistro()
-    conectar = conectar_db()
-    cursor = conectar.cursor()
-
-    for a in dados:
-        print('')
-        print(f' - ID: {a["id"]}')
-        print(f' - LEGENDA: {a["legenda"]}')
-        # id = int(a['id'])
-        id = int(a['id'])
+    conectar = None
     
-        # legenda = str(a["legenda"])
-        print(' ')
-        legenda = a['legenda']
-        print(f'legenda: {legenda}')
-        print(' ')
+    try:
+        dados = request.get_json()
+        tabelaRegistro() #caso ela n exista vai ser criada essa tabela
+        conectar = conectar_db()
+        cursor = conectar.cursor()
+        
+        for a in dados:
+            print(f'ID: {a["id"]}')
+            print(f'LEGENDA: {a["legenda"]}')
+            print('=')
+            id = int(a['id'])
+            legenda = str(a['legenda'])
 
-        imagem_base64_com_prefixo = a['imagemData']
-        _, encoded_image = imagem_base64_com_prefixo.split(',', 1)
-        imagem_bytes = base64.b64decode(encoded_image) #imagem em formato binário
+            imagem_base64_com_prefixo = a['imagemData']
+            _, encoded_image = imagem_base64_com_prefixo.split(',', 1)
+            imagem_bytes = base64.b64decode(encoded_image) #imagem em formato binário
 
-        cursor.execute("INSERT INTO registro (id_atividade, legenda, img) VALUES (?, ?, ?);", (id, legenda, imagem_bytes))
-        print('')
+            cursor.execute("INSERT INTO registro (id_atividade, legenda, img) VALUES (?, ?, ?);", (id, legenda, imagem_bytes))
+        conectar.commit()
 
-    conectar.commit()
-    conectar.close()
+        return jsonify({
+            'success':True,
+            'msg':'FUNÇÃO DE ADICIONAR A IMAGEM NO BANCO DE DADOS = OK'
+        }), 200
+    
+    except Exception as erro:
+        if conectar:
+            conectar.rollback()
 
-    return jsonify({
-        'msg':'dados (/album de fotos) enviados'
-    }), 200
+        print(f'ERRO DETECTADO, FUNÇÃO: ALBUM')
+        print(f'TIPO DO ERRO: {type(erro)}')
+        print(f'DESCRIÇÃO: {str(erro)}')
 
+        return jsonify({
+            'success':False,
+            'msg':'ERRO AO GUARDAR AS IMAGEM NO BANCO DE DADOS = ERRO'
+        }), 500
+    
+    finally:
+        if conectar:
+            conectar.close()
 
+        
 
-@app.route('/exibir_tabela_frequencia', methods=['POST'])
+@app.route('/exibir_tabela_frequencia', methods=['GET'])
 def exibir_tabela_frequencia():
-    dados = request.get_json()
+    conectar = None
 
-    conectar = conectar_db()
-    cursor = conectar.cursor()
-    cursor.execute("SELECT * FROM frequencia")
-    tabela = cursor.fetchall()
+    try:
+        conectar = conectar_db()
+        cursor = conectar.cursor()
+        cursor.execute("SELECT * FROM frequencia")
+        tabela = cursor.fetchall()
 
-    nova_lista = []
-    for a in tabela:
-        dicionario = {
-            'id':a[0],
-            'nome':a[1],
-            'data':a[2],
-            'tempo':a[3],
-            'funcao':a[4]
-        }
-        nova_lista.append(dicionario)
-    conectar.commit()
-    conectar.close()
-    return jsonify(nova_lista), 200
+        nova_lista = []
+        for a in tabela:
+            dicionario = {
+                'id':a[0],
+                'nome':a[1],
+                'data':a[2],
+                'tempo':a[3],
+                'funcao':a[4]
+            }
+            nova_lista.append(dicionario)
+        return jsonify({
+            'success':True,
+            'msg':'Frequência coletada',
+            'dados':nova_lista
+        }), 200
+    
+    except Exception as erro:
+        if conectar:
+            conectar.rollback()
+        
+        print(f'ERRO DETECTADO, FUNÇÃO: EXIBIR A TABELA FREQUÊNCIA')
+        print(f'TIPO DO ERRO: {type(erro)}')
+        print(f'DESCRIÇÃO: {str(erro)}')
+        print('=')
+
+        return jsonify({
+            'success': False,
+            'msg':'Erro ao coletar a frequência da tabela'
+        }), 500
+
+    finally:
+        if conectar:
+            conectar.close()
+
 
 
 

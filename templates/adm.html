@@ -749,76 +749,103 @@
         }
 
         async function excluir(event) {
-            
-            if (event.target.tagName == 'BUTTON') {
-                let button = event.target;
-                let divFilho = button.parentElement.parentElement.parentElement;
-                let divPai = divFilho.parentElement;
-                let alt = (((divFilho.querySelectorAll('img'))[4]).alt);
-                divFilho.remove();
-
-                const dados = {
-                    'alt':alt
-                }
-
-                const resultado = await fetch('/excluirRegistro', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type':'application/json'
-                    },
-                    body: JSON.stringify(dados)
-                });
-
-                if (resultado.ok) {
-                    console.log('Dados enviados');
-                
-                } else {
-                    console.log('ERRO ao ENVIAR DADOS (/EXCLUIR REGISTRO)');
-                }
-
-
-            } else if (event.target.tagName == 'IMG') {
-                let img = event.target;
-                let divFilho = img.parentElement.parentElement.parentElement.parentElement;
-                let divPai = img.parentElement.parentElement.parentElement.parentElement.parentElement;
-                let alt = (((divFilho.querySelectorAll('img'))[4]).alt);
-                divFilho.remove();
-
-                const dados = {
-                    'alt':alt
-                }
-                const resultado = await fetch('/excluirRegistro', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type':'application/json'
-                    },
-                    body: JSON.stringify(dados)
-                });
-
-                if (resultado.ok) {
-                    console.log('DADOS ENVIADOS (EXCLUIR REGISTRO LADO IMG)');
-
-                } else {
-                    console.log('ERRO AO ENVIAR (EXCLUIR REGISTRO LADO IMG)');
-                }
-            }
-            
             try {
-                let n1 = '01';
-                let n2 = '02';
-                let resultado = (Number(n1) + Number(n2));
-                console.log(`Resultado: ${resultado}`);
-                
+                if (event.target.tagName == 'BUTTON') {
+                    let button = event.target;
+                    let divFilho = button.parentElement.parentElement.parentElement;
+                    let alt = (((divFilho.querySelectorAll('img'))[4]).alt);
+
+                    // Ponto de Atenção 3: REMOÇÃO DO ELEMENTO ANTES DA CONFIRMAÇÃO DO SERVIDOR.
+                    const dados = {
+                        'alt':alt
+                    }
+
+                    const resultado = await fetch('/excluirRegistro', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type':'application/json'
+                        },
+                        body: JSON.stringify(dados)
+                    });
+
+                    if (!resultado.ok) {
+                        const erro = await resultado.json().catch(() => ({}));
+                        console.error(`ERRO HTTP: ${resultado.status}: MSG: ${erro.msg}`);
+                        alert('ERRO ao capturar dados da API, verifique a coneção');
+                        return;
+                    } 
+
+                    const retorno = await resultado.json();
+                    if (retorno.success) {
+                        console.log(`MENSAGEM DO SERVIDOR: ${retorno.msg}`);
+
+                        divFilho.remove();
+
+                    } else {
+                        console.log(`ERRO do backend (SUCCESSO): ${retorno.msg}`);
+                    }
+                }
+
             } catch (erro) {
-                console.log(`Tipo de erro: ${typeof(erro)}`);
-                console.log(`Descrição do erro: ${String(erro)}`);
+                console.log('ERRO AO PROCESSAR OU SE CONECTAR COM O SERVIDOR');
             }
-
-            console.log('Programa finalizado');
-
-
-
         }
+
+        // async function excluir(event) {
+            
+        //     if (event.target.tagName == 'BUTTON') {
+        //         let button = event.target;
+        //         let divFilho = button.parentElement.parentElement.parentElement;
+        //         let divPai = divFilho.parentElement;
+        //         let alt = (((divFilho.querySelectorAll('img'))[4]).alt);
+        //         divFilho.remove();
+
+        //         const dados = {
+        //             'alt':alt
+        //         }
+
+        //         const resultado = await fetch('/excluirRegistro', {
+        //             method: 'POST',
+        //             headers: {
+        //                 'Content-Type':'application/json'
+        //             },
+        //             body: JSON.stringify(dados)
+        //         });
+
+        //         if (resultado.ok) {
+        //             console.log('Dados enviados');
+                
+        //         } else {
+        //             console.log('ERRO ao ENVIAR DADOS (/EXCLUIR REGISTRO)');
+        //         }
+
+
+        //     } else if (event.target.tagName == 'IMG') {
+        //         let img = event.target;
+        //         let divFilho = img.parentElement.parentElement.parentElement.parentElement;
+        //         let divPai = img.parentElement.parentElement.parentElement.parentElement.parentElement;
+        //         let alt = (((divFilho.querySelectorAll('img'))[4]).alt);
+        //         divFilho.remove();
+
+        //         const dados = {
+        //             'alt':alt
+        //         }
+        //         const resultado = await fetch('/excluirRegistro', {
+        //             method: 'POST',
+        //             headers: {
+        //                 'Content-Type':'application/json'
+        //             },
+        //             body: JSON.stringify(dados)
+        //         });
+
+        //         if (resultado.ok) {
+        //             console.log('DADOS ENVIADOS (EXCLUIR REGISTRO LADO IMG)');
+
+        //         } else {
+        //             console.log('ERRO AO ENVIAR (EXCLUIR REGISTRO LADO IMG)');
+        //         }
+        //     }
+        // }
 
 
         function baixarCima(event) {
@@ -1066,46 +1093,100 @@
 
         }
 
-        async function tabelafrequencia() {
-            const pedido = {
-                'msg':'mostrar_a_tabela_frequência'
-            }
+        // async function tabelafrequencia() {
+        //     const pedido = {
+        //         'msg':'mostrar_a_tabela_frequência'
+        //     }
 
-            const resposta = await fetch('/exibir_tabela_frequencia', {
-                method: 'POST', 
-                headers: {
-                    'Content-Type':'application/json'
-                },
-                body: JSON.stringify(pedido)
-            });
+        //     const resposta = await fetch('/exibir_tabela_frequencia', {
+        //         method: 'POST', 
+        //         headers: {
+        //             'Content-Type':'application/json'
+        //         },
+        //         body: JSON.stringify(pedido)
+        //     });
 
-            if (resposta.ok) {
-                // alert('comunicação para exibir frequência ok');
-                // alert('comunicação ok');
+        //     if (resposta.ok) {
+        //         // alert('comunicação para exibir frequência ok');
+        //         // alert('comunicação ok');
 
-                const informacoes = await resposta.json()
-                console.log('informações: '+informacoes);
+        //         const informacoes = await resposta.json()
+        //         console.log('informações: '+informacoes);
                 
-                tbodyfrequencia.innerHTML = '';
-                informacoes.forEach(registro => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                    <td>${registro.id}</td>
-                    <td>${registro.nome}</td>
-                    <td>${registro.data}</td>
-                    <td>${registro.tempo}</td>
-                    <td>${registro.funcao}</td>
-                    `
-                    tbodyfrequencia.appendChild(row)
+        //         tbodyfrequencia.innerHTML = '';
+        //         informacoes.forEach(registro => {
+        //             const row = document.createElement('tr');
+        //             row.innerHTML = `
+        //             <td>${registro.id}</td>
+        //             <td>${registro.nome}</td>
+        //             <td>${registro.data}</td>
+        //             <td>${registro.tempo}</td>
+        //             <td>${registro.funcao}</td>
+        //             `
+        //             tbodyfrequencia.appendChild(row)
+        //         });
+
+
+        //     } else {
+        //         // alert('erro ao se comunicar com o servidor, exibir frequência');
+        //         console.log('erro no servidor, adm.html - 743');
+        //     }
+        // }
+
+        async function tabelafrequencia() {
+            try {
+                const resposta = await fetch('/exibir_tabela_frequencia', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type':'application/json'
+                    },
                 });
 
 
-            } else {
-                // alert('erro ao se comunicar com o servidor, exibir frequência');
-                console.log('erro no servidor, adm.html - 743');
+                if (!resposta.ok) {
+                    const erro = await resposta.json().catch(() => ({}));
+                    console.error(`Erro HTTP: ${resposta.status}: MSG: ${erro.msg}`);
+                    alert('Erro ao carregar os dados, Verifique sua conexão');
+                    return;
+                }
+
+                const DadosDaResposta = await resposta.json();
+
+                if (DadosDaResposta.success) {
+                    console.log(`Menssagem do Servidor: ${DadosDaResposta.msg}`);
+
+                    const dadosTabela = DadosDaResposta.dados;
+                    console.log('DADOS DA TABELA: ', dadosTabela);
+
+                    tbodyfrequencia.innerHTML = '';
+                    if (dadosTabela && dadosTabela.length > 0) {
+                        dadosTabela.forEach(registro => {
+                            const row = document.createElement('tr');
+                            row.innerHTML = `
+                            <td>${registro.id}</td>
+                            <td>${registro.nome}</td>
+                            <td>${registro.data}</td>
+                            <td>${registro.tempo}</td>
+                            <td>${registro.funcao}</td>
+                            `
+                            tbodyfrequencia.appendChild(row);
+                        });
+
+                    } else {
+                        console.log('NENHUM REGISTRO ENCONTRADO PARA EXIBIR');
+                    }
+
+                } else {
+                    console.error(`Erro do Back end (SUCCESSO: FALSE): ${DadosDaResposta.msg}`);
+    
+                }
+            } catch (erro) {
+                    console.log('ERRO ao processar ou se conectar ao servidor');
             }
-            
         }
+
+
+
         setInterval(tabelafrequencia, 3000);
         setInterval(registro, 3000);
 
