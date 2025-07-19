@@ -147,6 +147,7 @@ def excluirRegistro():
         # conectar.close()
         print('REGISTRO DELETADO')
         return jsonify({
+            'success':True,
             'msg':'REGISTRO DELETADO COM SUCESSO'
         }), 200
 
@@ -159,6 +160,7 @@ def excluirRegistro():
         print(f'Descrição do erro: {str(erro)}')
 
         return jsonify({
+            'success':False,
             'msg':'ERRO ao tentar excluir o registro'
         }), 500
     
@@ -170,7 +172,7 @@ def excluirRegistro():
     
 
 
-@app.route('/registro_das_atividades_adm', methods=['POST'])
+@app.route('/registro_das_atividades_adm', methods=['GET'])
 def exibir_registros():
     conectar = None
     
@@ -189,7 +191,12 @@ def exibir_registros():
                 'foto':f"data:image/jpeg;base64,{base64.b64encode(registro[3]).decode('utf-8')}"
             }
             lista_json.append(dicionario)
-        return jsonify(lista_json), 200
+        # return jsonify(lista_json), 200
+        return jsonify({
+            'success':True,
+            'dados':lista_json,
+            'msg':'Comunicação realizada com a API'
+        }), 200
     
     except Exception as erro:
         if conectar:
@@ -200,7 +207,8 @@ def exibir_registros():
         print(f'DESCRIÇÃO: {str(erro)}')
 
         return jsonify({
-            'msg':'ERRO ao exibir os registros'
+            'msg':'ERRO ao exibir os registros',
+            'success':False
         }), 500
     
     finally:

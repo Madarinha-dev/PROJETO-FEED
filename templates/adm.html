@@ -750,102 +750,71 @@
 
         async function excluir(event) {
             try {
-                if (event.target.tagName == 'BUTTON') {
-                    let button = event.target;
-                    let divFilho = button.parentElement.parentElement.parentElement;
-                    let alt = (((divFilho.querySelectorAll('img'))[4]).alt);
+                const elementoDeAcao = event.target.closest('[data-action]');
 
-                    // Ponto de Atenção 3: REMOÇÃO DO ELEMENTO ANTES DA CONFIRMAÇÃO DO SERVIDOR.
-                    const dados = {
-                        'alt':alt
-                    }
+                if (!elementoDeAcao) {
+                    console.log('CLIQUE IRRELEVANTE PARA A AÇÃO DE EXCLUIR/BAIXAR');
+                    return;
+                }
 
-                    const resultado = await fetch('/excluirRegistro', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type':'application/json'
-                        },
-                        body: JSON.stringify(dados)
-                    });
+                const acao = elementoDeAcao.dataset.action;
 
-                    if (!resultado.ok) {
-                        const erro = await resultado.json().catch(() => ({}));
-                        console.error(`ERRO HTTP: ${resultado.status}: MSG: ${erro.msg}`);
-                        alert('ERRO ao capturar dados da API, verifique a coneção');
-                        return;
-                    } 
+                if (acao !== 'excluir') {
+                    console.log(`Ação: ${acao} detectada, mas essa função é para exclusão`);
+                    return;
+                }
 
-                    const retorno = await resultado.json();
-                    if (retorno.success) {
-                        console.log(`MENSAGEM DO SERVIDOR: ${retorno.msg}`);
+                const divDoRegistro = elementoDeAcao.closest('[data-id-registro]');
 
-                        divFilho.remove();
+                if (!divDoRegistro) {
+                    console.log('ERRO: Não foi possível encontrar o conteiner do registro');
+                    alert('Não foi possível excluir esse registro, informações incompletas');
+                    return;
+                }
 
-                    } else {
-                        console.log(`ERRO do backend (SUCCESSO): ${retorno.msg}`);
-                    }
+
+                const idDoRegistro = divDoRegistro.dataset.idRegistro;
+
+                if (!idDoRegistro) {
+                    console.log('ERRO: ID inválido ou vázio');
+                    alert('Não foi possível exluir esse registro. ID inválido');
+                }
+
+                const dadosParaEnviar = {'alt':idDoRegistro};
+
+                const resultado = await fetch('/excluirRegistro', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type':'application/json'
+                    },
+                    body: JSON.stringify(dadosParaEnviar)
+                });
+                
+                if (!resultado.ok) {
+                    const erro = await resultado.json().catch(() => ({}));
+                    console.error(`ERRO HTTP: ${resultado.status}: MSG: ${erro.msg}`);
+                    alert('ERRO ao se comunicar com a API, verifique sua conexão');
+                    return;
+                }
+
+                const retorno = await resultado.json();
+                if (retorno.success) {
+                    console.log(`MENSAGEM DO SERVIDOR: ${retorno.msg}`);
+                    alert(`MENSAGEM: ${retorno.msg}`);
+                    divDoRegistro.remove();
+
+                } else {
+                    console.log(`ERRO do backend: ${retorno.msg}`);
+                    alert(`ERRO AO EXCLUIR O REGISTRO, MENSAGEM: ${retorno.msg}`);
                 }
 
             } catch (erro) {
                 console.log('ERRO AO PROCESSAR OU SE CONECTAR COM O SERVIDOR');
+                console.error(`ERRO inesperado: ${erro}`);
             }
         }
 
-        // async function excluir(event) {
-            
-        //     if (event.target.tagName == 'BUTTON') {
-        //         let button = event.target;
-        //         let divFilho = button.parentElement.parentElement.parentElement;
-        //         let divPai = divFilho.parentElement;
-        //         let alt = (((divFilho.querySelectorAll('img'))[4]).alt);
-        //         divFilho.remove();
-
-        //         const dados = {
-        //             'alt':alt
-        //         }
-
-        //         const resultado = await fetch('/excluirRegistro', {
-        //             method: 'POST',
-        //             headers: {
-        //                 'Content-Type':'application/json'
-        //             },
-        //             body: JSON.stringify(dados)
-        //         });
-
-        //         if (resultado.ok) {
-        //             console.log('Dados enviados');
-                
-        //         } else {
-        //             console.log('ERRO ao ENVIAR DADOS (/EXCLUIR REGISTRO)');
-        //         }
-
-
-        //     } else if (event.target.tagName == 'IMG') {
-        //         let img = event.target;
-        //         let divFilho = img.parentElement.parentElement.parentElement.parentElement;
-        //         let divPai = img.parentElement.parentElement.parentElement.parentElement.parentElement;
-        //         let alt = (((divFilho.querySelectorAll('img'))[4]).alt);
-        //         divFilho.remove();
-
-        //         const dados = {
-        //             'alt':alt
-        //         }
-        //         const resultado = await fetch('/excluirRegistro', {
-        //             method: 'POST',
-        //             headers: {
-        //                 'Content-Type':'application/json'
-        //             },
-        //             body: JSON.stringify(dados)
-        //         });
-
-        //         if (resultado.ok) {
-        //             console.log('DADOS ENVIADOS (EXCLUIR REGISTRO LADO IMG)');
-
-        //         } else {
-        //             console.log('ERRO AO ENVIAR (EXCLUIR REGISTRO LADO IMG)');
-        //         }
-        //     }
-        // }
+        
 
 
         function baixarCima(event) {
@@ -938,129 +907,130 @@
         selecao.addEventListener('change', tabelafuncionario );
 
 
-
         async function registro() {
-            // pedir essas fotos
-            // receber ordenado por atividade
-            // e depois exibir
-
-            const dados = {
-                'msg':'atividades'
-            }
-
-            const resposta = await fetch('/registro_das_atividades_adm', {
-                method: 'POST',
-                headers: {
-                    'Content-Type':'application/json'
-                },
-                body: JSON.stringify(dados)
-            });
-
-            if (resposta.ok) {
-                const resultado = await resposta.json()
-                // aqui faço as manipulações
-                // alert('comunicação com a função REGISTRO ok');
-
-                // console.log('resultado: '+resultado);
-                console.log('Dados recebidos do backend:', resultado); // Esta forma exibe o array como um objeto expandível
-                console.log('Número de itens recebidos:', resultado.length); // Esta linha vai te mostrar o número exato
-
-
-                divAlbum.innerHTML = '';
-                resultado.forEach(foto => {
-                    let divFilho = document.createElement('div');
-                    divFilho.id = 'div-da-foto';
-
-                    let a = document.createElement('a');
-                    a.href = '';
-                    a.download = '';
-                    divFilho.appendChild(a);
-
-                    let divDosBotoes = document.createElement('div');
-                    let pDosBotoes = document.createElement('p');
-
-
-
-                    let botaoBaixar = document.createElement('button');
-                    botaoBaixar.id = 'baixar';
-                    botaoBaixar.setAttribute('onclick', 'baixar(event)');
-                    botaoBaixar.setAttribute('onmouseover', 'baixarCima(event)');
-                    botaoBaixar.setAttribute('onmouseout', 'baixarSaiu(event)');
-                    
-                    let imgPreto = document.createElement('img');
-                    imgPreto.classList.add('preto');
-                    imgPreto.src = '/PROJETO FEED/static/img/baixar fundo branco.png'; // foto na pasta aqui mesmo
-                    imgPreto.style.height = '20px';
-                    imgPreto.style.display = 'inline';
-                    // imgPreto.alt = ''; // o identificador desse registro no banco de dados;
-
-                    let imgBranco = document.createElement('img');
-                    imgBranco.classList.add('branco');
-                    imgBranco.src = '/PROJETO FEED/static/img/baixar fundo preto.png';
-                    imgBranco.style.height = '20px';
-                    imgBranco.style.display = 'none';
-                    // imgBranco.alt = '';
-                    botaoBaixar.appendChild(imgPreto);
-                    botaoBaixar.appendChild(imgBranco);
-
-
-                    let botaoExcluir = document.createElement('button');
-                    botaoExcluir.id = 'excluir';
-                    botaoExcluir.setAttribute('onclick', 'excluir(event)');
-                    botaoExcluir.setAttribute('onmouseover', 'excluirCima(event)');
-                    botaoExcluir.setAttribute('onmouseout', 'excluirSaiu(event)');
-
-                    let imgExcluirPreto = document.createElement('img');
-                    imgExcluirPreto.id = 'imgExcluirPreto';
-                    imgExcluirPreto.src = '/PROJETO FEED/static/img/excluir preto.png';
-                    imgExcluirPreto.style.height = '20px';
-                    imgExcluirPreto.style.display = 'inline';
-                    // imgExcluirPreto.alt = '';
-
-                    let imgExcluirBranco = document.createElement('img');
-                    imgExcluirBranco.id = 'imgExcluirBranco';
-                    imgExcluirBranco.src = '/PROJETO FEED/static/img/excluir branco.png';
-                    imgExcluirBranco.style.height = '20px';
-                    imgExcluirBranco.style.display = 'none';
-                    // imgExcluirBranco.alt = '';
-                    botaoExcluir.appendChild(imgExcluirPreto);
-                    botaoExcluir.appendChild(imgExcluirBranco);
-                    pDosBotoes.appendChild(botaoBaixar);
-                    pDosBotoes.appendChild(botaoExcluir);
-                    divDosBotoes.appendChild(pDosBotoes);
-                    divFilho.appendChild(divDosBotoes);
-
-
-                    let imgPrincipal = document.createElement('img');
-                    imgPrincipal.id = 'div-da-foto-foto';
-                    imgPrincipal.src = foto['foto'];
-                    imgPrincipal.alt = foto['id_registro']; // a definir
-                    divFilho.appendChild(imgPrincipal);
-
-                    let id_foto = document.createElement('p');
-                    id_foto.id = 'div-da-foto-id';
-                    id_foto.textContent = `ID: ${foto["id_atividade"]}`;
-                    divFilho.appendChild(id_foto);
-
-                    let id_legenda = document.createElement('p');
-                    id_legenda.id = 'div-da-foto-legenda';
-                    id_legenda.textContent = `${foto["legenda"]}`;
-                    divFilho.appendChild(id_legenda);
-                    divAlbum.appendChild(divFilho);
-
-                    // botaoBaixar.setAttribute('onclick', 'baixar(event)');
+            try{
+                const resultado = await fetch('/registro_das_atividades_adm', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type':'application/json'
+                    },
                 });
-                // });
+
+                if (!resultado.ok) {
+                    const erro = await resultado.json().catch(() => ({}));
+                    console.error(`ERRO HTTP: ${resultado.status}: MSG: ${erro.msg}`);
+                    alert(`ERRO ao se comunicar com a API, verifique sua conexão`);
+                    return;
+                }
+
+                const retorno = await resultado.json();
+                if (retorno.success) {
+                    console.log(`Mensagem do servidor: ${retorno.msg}`);
+                    
+                    divAlbum.innerHTML = '';
+                    if (Array.isArray(retorno.dados)) {
+
+                        retorno.dados.forEach(foto => {
+                            let divFilho = document.createElement('div');
+                            divFilho.id = 'div-da-foto';
+                            divFilho.dataset.idRegistro = foto['id_registro'];
+
+                            let a = document.createElement('a');
+                            a.href = '';
+                            a.download = '';
+                            divFilho.appendChild(a);
+
+                            let divDosBotoes = document.createElement('div');
+                            let pDosBotoes = document.createElement('p');
 
 
 
-            } else {
-                // alert('erro com função REGISTRAR SERVIDOR');
-                console.log('erro ao exibir as atividades - servidor');
+                            let botaoBaixar = document.createElement('button');
+                            botaoBaixar.id = 'baixar';
+                            botaoBaixar.setAttribute('onclick', 'baixar(event)');
+                            botaoBaixar.setAttribute('onmouseover', 'baixarCima(event)');
+                            botaoBaixar.setAttribute('onmouseout', 'baixarSaiu(event)');
+                            botaoBaixar.dataset.action = 'baixar';
+                        
+                            let imgPreto = document.createElement('img');
+                            imgPreto.classList.add('preto');
+                            imgPreto.src = '/PROJETO FEED/static/img/baixar fundo branco.png'; // foto na pasta aqui mesmo
+                            imgPreto.style.height = '20px';
+                            imgPreto.style.display = 'inline';
+                            // imgPreto.alt = ''; // o identificador desse registro no banco de dados;
+
+                            let imgBranco = document.createElement('img');
+                            imgBranco.classList.add('branco');
+                            imgBranco.src = '/PROJETO FEED/static/img/baixar fundo preto.png';
+                            imgBranco.style.height = '20px';
+                            imgBranco.style.display = 'none';
+                            // imgBranco.alt = '';
+                            botaoBaixar.appendChild(imgPreto);
+                            botaoBaixar.appendChild(imgBranco);
+
+
+                            let botaoExcluir = document.createElement('button');
+                            botaoExcluir.id = 'excluir';
+                            botaoExcluir.setAttribute('onclick', 'excluir(event)');
+                            botaoExcluir.setAttribute('onmouseover', 'excluirCima(event)');
+                            botaoExcluir.setAttribute('onmouseout', 'excluirSaiu(event)');
+                            botaoExcluir.dataset.action = 'excluir';
+
+                            let imgExcluirPreto = document.createElement('img');
+                            imgExcluirPreto.id = 'imgExcluirPreto';
+                            imgExcluirPreto.src = '/PROJETO FEED/static/img/excluir preto.png';
+                            imgExcluirPreto.style.height = '20px';
+                            imgExcluirPreto.style.display = 'inline';
+                            // imgExcluirPreto.alt = '';
+
+                            let imgExcluirBranco = document.createElement('img');
+                            imgExcluirBranco.id = 'imgExcluirBranco';
+                            imgExcluirBranco.src = '/PROJETO FEED/static/img/excluir branco.png';
+                            imgExcluirBranco.style.height = '20px';
+                            imgExcluirBranco.style.display = 'none';
+                            // imgExcluirBranco.alt = '';
+                            botaoExcluir.appendChild(imgExcluirPreto);
+                            botaoExcluir.appendChild(imgExcluirBranco);
+                            pDosBotoes.appendChild(botaoBaixar);
+                            pDosBotoes.appendChild(botaoExcluir);
+                            divDosBotoes.appendChild(pDosBotoes);
+                            divFilho.appendChild(divDosBotoes);
+
+
+                            let imgPrincipal = document.createElement('img');
+                            imgPrincipal.id = 'div-da-foto-foto';
+                            imgPrincipal.src = foto['foto'];
+                            imgPrincipal.alt = foto['id_registro']; // a definir
+                            divFilho.appendChild(imgPrincipal);
+
+                            let id_foto = document.createElement('p');
+                            id_foto.id = 'div-da-foto-id';
+                            id_foto.textContent = `ID: ${foto["id_atividade"]}`;
+                            divFilho.appendChild(id_foto);
+
+                            let id_legenda = document.createElement('p');
+                            id_legenda.id = 'div-da-foto-legenda';
+                            id_legenda.textContent = `${foto["legenda"]}`;
+                            divFilho.appendChild(id_legenda);
+                            divAlbum.appendChild(divFilho);
+                        });
+
+                    } else {
+                        console.log('ERRO, o retorno deu Sucesso mas não é uma lista:',retorno);
+                        alert('ERRO, O retorno deu success, mas não retornou uma lista: ', retorno);
+                    }
+
+                } else {
+                    console.log(`ERRO do servidor: ${retorno.msg}`);
+                    alert(`ERRO do servidor: ${retorno.msg}`);
+                }
+               
+            } catch (erro) {
+                console.log(`ERRO ao processar os dados. Verifique a conexão. MSG: ${erro}`);
+                alert(`ERRO ao processar os dados. Verifique sua conexão: ${erro}`);
             }
-
-            // depois dar opção para excluir, se não vai acumular muitas fotos
         }
+        
 
 
         async function limpar_frequencia() {
@@ -1088,50 +1058,12 @@
             } else {
                 alert('Comunicação falhou..695');
             }
-
-
-
         }
 
-        // async function tabelafrequencia() {
-        //     const pedido = {
-        //         'msg':'mostrar_a_tabela_frequência'
-        //     }
-
-        //     const resposta = await fetch('/exibir_tabela_frequencia', {
-        //         method: 'POST', 
-        //         headers: {
-        //             'Content-Type':'application/json'
-        //         },
-        //         body: JSON.stringify(pedido)
-        //     });
-
-        //     if (resposta.ok) {
-        //         // alert('comunicação para exibir frequência ok');
-        //         // alert('comunicação ok');
-
-        //         const informacoes = await resposta.json()
-        //         console.log('informações: '+informacoes);
-                
-        //         tbodyfrequencia.innerHTML = '';
-        //         informacoes.forEach(registro => {
-        //             const row = document.createElement('tr');
-        //             row.innerHTML = `
-        //             <td>${registro.id}</td>
-        //             <td>${registro.nome}</td>
-        //             <td>${registro.data}</td>
-        //             <td>${registro.tempo}</td>
-        //             <td>${registro.funcao}</td>
-        //             `
-        //             tbodyfrequencia.appendChild(row)
-        //         });
+        
 
 
-        //     } else {
-        //         // alert('erro ao se comunicar com o servidor, exibir frequência');
-        //         console.log('erro no servidor, adm.html - 743');
-        //     }
-        // }
+
 
         async function tabelafrequencia() {
             try {
@@ -1178,10 +1110,9 @@
 
                 } else {
                     console.error(`Erro do Back end (SUCCESSO: FALSE): ${DadosDaResposta.msg}`);
-    
                 }
             } catch (erro) {
-                    console.log('ERRO ao processar ou se conectar ao servidor');
+                console.log('ERRO ao processar ou se conectar ao servidor');
             }
         }
 
