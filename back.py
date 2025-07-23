@@ -400,69 +400,61 @@ def frequencia():
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-@app.route('/recuperar-senha', methods=['POST'])
+@app.route('/recuperar-senha', methods=['GET'])
 def recuperar():
-    print(')')
-    print(')')
-    print(')')
-    print('FUNÇÃO RECUPERAR SENHA')
-    print(')')
-    print(')')
-    print(')')
+    conectar = None
 
-    dados = request.get_json()
-    cpf = dados.get('cpff')
-    
-    conectar = conectar_db()
-    cursor = conectar.cursor()
-    cursor.execute("SELECT * FROM funcionarios_cadastrados WHERE cpf = ?", (cpf, ))
-    registro = cursor.fetchone()
-    print(f'registro {registro}')
+    try:
+        # dados = request.get_json()
+        # cpf = dados.get('cpff')
+        cpf = request.args.get('cpf')
 
-    if registro is None:
+        if not cpf:
+            return jsonify({
+                "success":False,
+                "msg":"CPF é obrigatório para recuperação. Por favor forneça um CPF"
+            }), 400 # FOI ENVIADA UMA REQUISIÇÃO INVÁLIDA
+
+        conectar = conectar_db()
+        cursor = conectar.cursor()
+        cursor.execute("SELECT * FROM funcionarios_cadastrados WHERE cpf = ?", (cpf, ))
+        registro = cursor.fetchone()
+        print(f'Registro: {registro}')
+
+        if registro is None:
+            return jsonify({
+                "success":False,
+                "msg":"CPF não encontrado em nossos registros. Verifique o CPF novamente"
+            }), 404 # O RECURSO NÃO EXISTE
+        
+        else:
+            return jsonify({
+                "success":True,
+                "msg":"Registro localizado. Seu nome de usuário foi preenchido",
+                "nome":registro[1]
+            }), 200
+
+    except Exception as erro:
+        if conectar:
+            conectar.rollback()
+
+        print('=============================================')
+        print(f'ERRO DETECTADO, FUNÇÃO: RECUPERAR SENHA')
+        print(f'TIPO DO ERRO: {type(erro)}')
+        print(f'DESCRIÇÃO: {str(erro)}')
+        print('=============================================')
+
         return jsonify({
-            'recado':'nao-localizado'
-        }), 200
-    
-    else:
-        return jsonify({
-            'recado':'Dados-localizados',
-            'nome':registro[1],
-            'senha':registro[2]
-        }), 200
+            "success":False,
+            "msg":"Erro ao executar a função"
+        }), 500
+
+    finally:
+        if conectar:
+            conectar.close()
+
+
+
     
     
 
@@ -505,25 +497,126 @@ def recuperar():
 # aqui uma função importante, pós ela vai ser o referêncial para login, recuperação e consulta;
 @app.route('/cadastrar_funcionario', methods=['POST'])
 def cadastrar_funcionario():
-    print(')')
-    print(')')
-    print(')')
-    print('FUNÇÃO CADASTRAR FUNCIONARIO')
-    print(')')
-    print(')')
-    print(')')
-    dados = request.get_json()
-    criar_tabela()
-    conectar = conectar_db()
-    cursor = conectar.cursor()
+    conectar = None
 
-    cursor.execute('INSERT INTO funcionarios_cadastrados (nome, senha, cpf, funcao) VALUES (?, ?, ?, ?)', (dados['nome'], dados['senhaa'], dados['cpf'], dados['funcao']))
-    conectar.commit()
-    conectar.close()
+    try:
+        dados = request.get_json()
+        # outra forma que aprendi com o bard (dados = request.orgs.json('elemento'))
+        criar_tabela()
+        conectar = conectar_db()
+        cursor = conectar.cursor()
 
-    return jsonify({
-        'msg':'01'
-    }), 200
+        if type(dados.get('nome')) is not str or not dados.get('nome').strip():
+            return jsonify({
+                "success":False,
+                "msg":"Campo nome vázio ou tipo de dado inválido"
+            }), 400
+        
+        
+        
+        if type(dados.get('senhaa')) is not str or dados.get('senhaa') == None:
+            return jsonify({
+                "success":False,
+                "msg":"Campo senha vázio ou tipo de dado inválido"
+            }), 400
+        
+        
+        cpf = dados.get('cpf')
+        if type(cpf) is not str:
+            return jsonify({
+                "success":False,
+                "msg":"tipo de dado inválido"
+            }), 400
+        cpf_limpo = cpf.replace('.','').replace('-','').replace(' ','')
+        
+
+        if not cpf_limpo.strip():
+            return jsonify({
+                "success":False,
+                "msg":"CPF não pode ser vazio"
+            }), 400
+        
+
+        if len(cpf_limpo) != 11:
+            return jsonify({
+                "success":False,
+                "msg":"Quantidade inválida de dígitos"
+            }), 400
+        
+        # LEMBRAR DE COLOCAF A ÚLTIMA VALIDAÇÃO 
+        # MODIFICAR O BANCO DE DADOS
+        # O FRONTEND MANDA NO FORMATO DE NÚMERO, ENTÃO PRECISO CONVERTER TALVEZ // MUDAR O TIPO DO INPUT DO FRONTEND
+        
+        
+
+        if type(dados.get('funcao')) is not str or not dados.get('funcao').strip():
+            return jsonify({
+                "success":False,
+                "msg":"Campo FUNÇÃO vázio ou tipo de dado inválido"
+            }), 400
+
+        cursor.execute('INSERT INTO funcionarios_cadastrados (nome, senha, cpf, funcao) VALUES (?, ?, ?, ?)', (dados['nome'], dados['senhaa'], cpf_limpo, dados['funcao']))
+        conectar.commit()
+
+        return jsonify({
+            "success":True,
+            "msg":"Dados processados e guardados com Success"
+        }), 200
+
+    except Exception as erro:
+        if conectar:
+            conectar.rollback()
+
+        print('=============================================')
+        print(f'ERRO DETECTADO, FUNÇÃO: CADASTRAR FUNCIONÁRIO')
+        print(f'TIPO DO ERRO: {type(erro)}')
+        print(f'DESCRIÇÃO: {str(erro)}')
+        print('=============================================')
+
+        return jsonify({
+            "success":False,
+            "msg":"Erro ao executar a função"
+        }), 500
+
+    finally:
+        if conectar:
+            conectar.close()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

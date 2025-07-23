@@ -390,87 +390,66 @@
     
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
     async function recuperar() {
         let dados_recuperados = document.getElementById("dados_recuperados");
         let inputnome = document.getElementById('funcionario');
         let inputsenha = document.getElementById('senha-do-funcionario');
-        let nomerecuperado = document.getElementsByName('funcionario');
-        let senharecuperado = document.getElementsByName('senha-do-funcionario');
         let inputcpf = document.getElementById('cpf');
         let cpf = inputcpf.value;
-
         let recado = document.getElementById('recuperacao');
 
-        if (inputcpf.value == ''){
-            recado.style.display = "block";
-        } else {
+        try {
+            if (!cpf) {
+                recado.textContent = "Por favor, digite o seu CPF para recuperar o nome do usuário.";
+                recado.style.display = "block";
+                inputcpf.value = '';
+                return;
+            }
             recado.style.display = 'none';
 
-            const dados = {
-                cpff:cpf
-            }
 
-            const resposta = await fetch('/recuperar-senha', {
-                method: 'POST',
+            const resposta = await fetch(`/recuperar-senha?cpf=${encodeURIComponent(cpf)}`, {
+                method: "GET", 
                 headers: {
-                    'Content-Type':'application/json'
-                },
-                body: JSON.stringify(dados)
+                    "Content-Type":"application/json"
+                }
             });
 
-            if (resposta.ok) {
-
-                const resultado = await resposta.json();
-                // aqui posso consultar o objeto (resultado)
-                console.log(resultado);
-                if (resultado.recado == "Dados-localizados") {
-                    inputnome.value = resultado.nome;
-                    inputsenha.value = resultado.senha;
-                    dados_recuperados.style.display = 'block';
-
-                } else {
-                    alert("Dados inválidos (432)");
-                }
-
-            } else {
-                console.log('linha 436 - html');
+            if (!resposta.ok) {
+                const erro = await resposta.json().catch(() => ({}));
+                console.error(`ERRO HTTP: ${resposta.status}; MSG: ${erro.msg || "Menssagem Indisponível"}`);
+                recado.style.display = 'block';
+                return;
             }
 
+            const retorno = await resposta.json();
+
+            if (retorno.success) {
+                console.log(`SUCCESS: TRUE; MSG: ${retorno.msg}`);
+
+
+                // ou Núcleo de operações se todas as camadas derem certos
+                // MIOLO, Caso passe por todos os filtros
+                inputnome.value = retorno.nome;
+                inputsenha.value = '';
+                dados_recuperados.style.display = 'block';
+
+                recado.textContent = retorno.msg + " Agora, tente fazer login com a senha que você se lembra";
+                recado.style.display = "block";
+                
+
+
+            } else {
+                console.log(`SUCCESS: FALSE; MSG: ${retorno.msg}`);
+                recado.style.display = 'block';
+            }
+
+        } catch (erro) {
+            console.log('ERRO ao processar ou se conectar ao servidor');
+            recado.style.display = "block";
+        } finally {
+            inputcpf.value = '';
         }
-        inputcpf.value = '';
     }
 
    </script>
