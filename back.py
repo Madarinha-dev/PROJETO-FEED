@@ -315,42 +315,122 @@ def exibir_tabela_frequencia():
 
 @app.route('/limparFrequencia', methods=['POST'])
 def limparFrequencia():
-    conectar = conectar_db()
-    cursor = conectar.cursor()
-    cursor.execute("DELETE FROM frequencia")
-    conectar.commit()
-    conectar.close()
+    
+    conectar = None
+    try:
+        conectar = conectar_db()
+        cursor = conectar.cursor()
+        cursor.execute("DELETE FROM frequencia")
+        conectar.commit()
 
-    return jsonify({
-        'msg':'comando eliminar comfirmado'
-    }), 200
+        return jsonify({
+            "success":True,
+            "msg":"Frequência Limpa com successo"
+        }), 200
+
+    except Exception as erro:
+        if conectar:
+            conectar.rollback()
+
+        print('=============================================')
+        print(f'ERRO DETECTADO, FUNÇÃO: LIMPAR FREQUÊNCIA')
+        print(f'TIPO DO ERRO: {type(erro)}')
+        print(f'DESCRIÇÃO: {str(erro)}')
+        print('=============================================')
+
+        return jsonify({
+            "success":False,
+            "msg":"Erro ao Limpar a frequência"
+        }), 500
+
+
+    finally:
+        if conectar:
+            conectar.close()
 
 
 
+       
 
 @app.route('/frequencia', methods=['POST'])
 def frequencia():
-    print(')')
-    print(')')
-    print(')')
-    print('FUNÇÃO FREQUÊNCIA')
-    print(')')
-    print(')')
-    print(')')
-    registro = request.get_json()
-
-    nome = registro.get('nome')
-    data = (f"{str(registro.get('dia'))}/{str(registro.get('mes'))}/{str(registro.get('ano'))}")
-    tempo = (f"{str(registro.get('hora'))}:{str(registro.get('minuto'))}:{str(registro.get('segundo'))}")
-    funcao = registro.get('funcao')
     
+    conectar = None
 
-    criar_tabela_frequencia()
-    conectar = conectar_db()
-    cursor = conectar.cursor()
-    cursor.execute("INSERT INTO frequencia (nome, data, hora, funcao) VALUES (?, ?, ?, ?)", (nome, data, tempo, funcao))
-    conectar.commit()
-    conectar.close()
+    try:
+        print('caso de certo')
+        registro = request.get_json()
+        nome = registro.get('nome')
+        data = (f"{str(registro.get('dia'))}/{str(registro.get('mes'))}/{str(registro.get('ano'))}")
+        tempo = (f"{str(registro.get('hora'))}:{str(registro.get('minuto'))}:{str(registro.get('segundo'))}")
+        funcao = registro.get('funcao')
+
+        criar_tabela_frequencia()        
+        conectar = conectar_db()
+        cursor = conectar.cursor()
+        cursor.execute("INSERT INTO frequencia (nome, data, hora, funcao) VALUES (?, ?, ?, ?)", (nome, data, tempo, funcao))
+        conectar.commit()
+
+        return jsonify({
+            "success":True,
+            "msg":"Frequência registrada com successo"
+        }), 200
+
+    except Exception as erro:
+        if conectar:
+            conectar.rollback()
+
+        print('=============================================')
+        print(f'ERRO DETECTADO, FUNÇÃO: FREQUÊNCIA')
+        print(f'TIPO DO ERRO: {type(erro)}')
+        print(f'DESCRIÇÃO: {str(erro)}')
+        print('=============================================')
+
+        return jsonify({
+            "success": False,
+            "msg":"Falha ao registrar a frequência"
+        }), 500
+
+    finally:
+        if conectar:
+            conectar.close()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 @app.route('/recuperar-senha', methods=['POST'])
@@ -385,6 +465,41 @@ def recuperar():
         }), 200
     
     
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 # aqui uma função importante, pós ela vai ser o referêncial para login, recuperação e consulta;
@@ -470,6 +585,11 @@ def excluirFuncionario():
         return jsonify({
             "msg":'1'
         }), 200
+    
+
+
+
+
     
 @app.route('/excluiratividade', methods=['POST'])
 def excluiratividade():
@@ -560,6 +680,9 @@ def alterarfuncionario():
         'msg':'1'
     }), 200
 
+
+
+
 @app.route('/alterarAtividade', methods=['POST'])
 def alterarAtividade():
     print(')')
@@ -645,6 +768,9 @@ def alterarAtividade():
         'texto':'ignora esse return, se der errado, vai mostrar de outra forma, obg...'
     }), 200
 
+
+
+
 @app.route('/ordenarAtividades', methods=['POST'])
 def ordenarAtividades():
     dados = request.get_json()
@@ -705,6 +831,9 @@ def ordenarAtividades():
         nova_lista.append(dicionario)
 
     return jsonify(nova_lista), 200
+
+
+
         
 
 
@@ -751,6 +880,12 @@ def ordenarfuncionarios():
         dados_para_json.append(dicionario)
 
     return jsonify(dados_para_json), 200
+
+
+
+
+
+
     
 
 @app.route('/mostrar_atividades', methods=['POST'])
@@ -812,47 +947,72 @@ def mostrar_tabela_eletrica():
 
 
 
+
+
+
 # rota que vai receber os dados la da tela de login
 @app.route('/receber_dados', methods=['POST'])
 def receber_dados():
-    dados_recebidos = request.get_json()
 
-    nome = dados_recebidos.get('nome')
-    senha = dados_recebidos.get('senhar')
-    conectar = conectar_db()
-    cursor = conectar.cursor()
-    cursor.execute("SELECT * FROM funcionarios_cadastrados WHERE nome = ? AND senha = ?", (nome, senha))
-    funcionarios = cursor.fetchone()
-    print(f'Funcionários: {funcionarios}')
-    
-    if nome == 'none' and senha == 'none':
-        funcao = 'adm'
-        return jsonify({
-            "status":"sucesso",
-            "texto":"001",
-            "funcao":funcao
-        }), 200
-    
-    elif funcionarios is None:
-        print(')')
-        print("vazio ou dados inválidos")
-        print(')')
-        return jsonify({
-            "status":"errado 647 - pyton"
-        }), 200
-    
-    else:
-        print(')')
-        print(f'Dados: {funcionarios}')
-        print(')')
-        funcao = funcionarios[4]
+    conectar = None
+    try:
+        dados_recebidos = request.get_json()
+        nome = dados_recebidos.get('nome')
+        senha = dados_recebidos.get('senhar')
+        conectar = conectar_db()
+        cursor = conectar.cursor()
+        cursor.execute("SELECT * FROM funcionarios_cadastrados WHERE nome = ? AND senha = ?", (nome, senha))
+        funcionarios = cursor.fetchone()
+        print(f'Funcionários: {funcionarios}')
+
+        if nome == 'none' and senha == 'none':
+            funcao = 'adm'
+            return jsonify({
+                "success":True,
+                "msg":"ACESSO EMERGÊNCIAL",
+                "texto":"001",
+                "funcao":funcao
+            }), 200
         
-        return jsonify({
-            "status":"sucesso",
-            "texto":"001",
-            "funcao":funcao
-        }), 200
+        elif funcionarios is None:
+            return jsonify({
+                "success":False,
+                "msg":"Dados Inválidos ou campo vazio, tente novamente"
+            }), 401
         
+        else:
+            funcao = funcionarios[4]
+            return jsonify({
+                "success":True,
+                "msg":"LOGIN CONCEDIDO",
+                "texto":"001",
+                "funcao":funcao
+            }), 200
+        
+        
+
+
+    except Exception as erro:
+        if conectar:
+            conectar.rollback()
+
+        print('=============================================')
+        print(f'ERRO DETECTADO, FUNÇÃO: RECEBER DADOS')
+        print(f'TIPO DO ERRO: {type(erro)}')
+        print(f'DESCRIÇÃO: {str(erro)}')
+        print('=============================================')
+
+        return jsonify({
+            "success":False,
+            "msg":"Erro ao processar os dados"
+        }), 500
+
+
+    finally:
+        if conectar:
+            conectar.close()
+
+
     
 
 

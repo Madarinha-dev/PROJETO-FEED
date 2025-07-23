@@ -1033,37 +1033,44 @@
         
 
 
+        
+
+
         async function limpar_frequencia() {
-            const dados = {
-                'comando':'eliminar'
-            }
+            try {
 
-            
-            const resposta = await fetch('/limparFrequencia', {
-                method: 'POST',
-                headers: {
-                    'Content-Type':'application/json'
-                },
-                body: JSON.stringify(dados)
-            });
+                const resposta = await fetch('/limparFrequencia', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type':'application/json'
+                    }
+                });
 
-            if (resposta.ok) {
-                // alert('comunicação com a eliminação OK');
-                const resultado = await resposta.json()
-                // alert('resultado '+resultado.msg);
-                console.log('resultado '+resultado);
-                //fazer a manipulação RESULTADO
+                if (!resposta.ok) {
+                    const erro = await resposta.json().catch(() => ({}));
+                    console.log(`ERRO HTTP: ${resposta.status}; MSG: ${erro.msg || 'Mensagem indisponível'}`);
+                    alert("ERRO ao Limpar os dados (frequência), Verifique sua conexão;");
+                    return;
+                }
 
+                const retorno = await resposta.json();
 
-            } else {
-                alert('Comunicação falhou..695');
+                if (retorno.success) {
+                    console.log(`SUCCESS: (TRUE); MSG: ${retorno.msg};`);
+                    
+
+                } else {
+                    console.log(`SUCCESS: (FALSE); MSG: ${retorno.msg}`);
+                    alert(`SUCCESS: (FALSE); MSG: ${retorno.msg};`);
+                }
+
+            } catch (erro) {
+                console.log(`ERRO ao processar ou se conectar ao servidor, ERRO: ${erro}`);
+                alert(`ERRO ao processar ou se conectar ao servidor, ERRO: ${erro}`);
             }
         }
 
         
-
-
-
 
         async function tabelafrequencia() {
             try {
@@ -1106,13 +1113,16 @@
 
                     } else {
                         console.log('NENHUM REGISTRO ENCONTRADO PARA EXIBIR');
+                        alert('NENHUM REGISTRO ENCONTRADO PARA EXIBIR');
                     }
 
                 } else {
-                    console.error(`Erro do Back end (SUCCESSO: FALSE): ${DadosDaResposta.msg}`);
+                    console.error(`Erro do Backend (SUCCESSO: FALSE): ${DadosDaResposta.msg}`);
+                    alert(`ERRO do backend (SUCCESS: FALSE): ${DadosDaResposta.msg}`);
                 }
             } catch (erro) {
                 console.log('ERRO ao processar ou se conectar ao servidor');
+                alert(`ERRO ao processar ou se conectar ao servidor`);
             }
         }
 

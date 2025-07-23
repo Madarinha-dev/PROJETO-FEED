@@ -520,30 +520,51 @@
         }
 
 
+
+
         async function enviarFotos() {
-            let id = document.getElementById('inputID');
-            let legenda = document.getElementById('inputLegenda');
-            let divPai = document.getElementById('fotoscapturadas');
-            // capturePhoto // aqui ta várias fotos
+            try {
+                let id = document.getElementById('inputID');
+                let legenda = document.getElementById('inputLegenda');
+                let divPai = document.getElementById('fotoscapturadas');
 
+                console.log('DivPai: '+divPai);
+                console.log('CAPTUREPHOTO: '+capturePhoto);
 
-            // alert('DivPai: '+divPai);
-            console.log('DivPai: '+divPai);
-            console.log('CAPTUREPHOTO: '+capturePhoto);
+                const resposta = await fetch('/album_de_fotos_das_atividades', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type':'application/json'
+                    },
+                    body: JSON.stringify(capturePhoto)
+                });
 
-            const resposta = await fetch('/album_de_fotos_das_atividades', {
-                method: 'POST',
-                headers: {
-                    'Content-Type':'application/json'
-                },
-                body: JSON.stringify(capturePhoto)
-            });
+                
+                if (!resposta.ok) {
+                    const erro = await resposta.json().catch(() => ({}));
+                    console.error(`ERRO HTTP: ${resposta.status}: MSG: ${erro.msg}`);
+                    alert(`ERRO ao se comunicar com a API, verifique sua conexão`);
+                    return;
+                }
 
-            id.value = '';
-            legenda.value = '';
-            divPai.innerHTML = '';
-            capturePhoto = [];
+                const retorno = await resposta.json();
+                if (retorno.success) {
+                    console.log(`Mensagem do servidor: ${retorno.msg}`);
 
+                    id.value = '';
+                    legenda.value = '';
+                    divPai.innerHTML = '';
+                    capturePhoto = [];
+
+                } else {
+                    console.log(`ERRO do servidor: ${retorno.msg}`);
+                    alert(`ERO do servidor: ${retorno.msg}`);
+                }
+
+            } catch (erro) {
+                console.log(`ERRO ao processar os dados. Verifique a conexão. MSG: ${erro}`);
+                alert(`ERRO ao processar os dados. Verifique sua conexão: ${erro}`);
+            }
         }
 
 

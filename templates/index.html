@@ -256,144 +256,173 @@
             };
 
             enviarDadosParaServidor();
-            // const data = new Date();
-            // let dia = data.getDate();
-            // // let mes = data.getMonth();
-            // let hora = data.getHours();
-            // let minuto = data.getMinutes();
-            // let segundo = data.getSeconds();
-            // let ano = data.getFullYear();
-
-            
         }
 
     }
 
+
+
+
     async function enviarDadosParaServidor() {
-        let dados_recuperados = document.getElementById("dados_recuperados");
-        let inputnome = document.getElementById('funcionario');
-        let inputsenha = document.getElementById('senha-do-funcionario');
-        let recado = document.getElementById('dadosInvalidos');
 
-        let funcionario = inputnome.value;
-        let senha = inputsenha.value;
+        try {
+            let dados_recuperados = document.getElementById("dados_recuperados");
+            let inputnome = document.getElementById('funcionario');
+            let inputsenha = document.getElementById('senha-do-funcionario');
+            let recado = document.getElementById('dadosInvalidos');
+            let funcionario = inputnome.value;
+            let senha = inputsenha.value;
 
-        const dados = {
-            nome: funcionario,
-            senhar: senha
-        }
-        
-        const resposta = await fetch('/receber_dados', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(dados)
-        });
+            const dados = {
+                nome: funcionario,
+                senhar: senha
+            }
 
-        if (resposta.ok) {
-            const resultado = await resposta.json();
-            
-            // aqui eu olho oq vem dentro de (resultado)
-            console.log('linha 298 - Resultado: '+resultado);
-            // alert("resultado: "+resultado);
+            const resposta = await fetch('/receber_dados', {
+                method: 'POST',
+                headers: {
+                    'Content-Type':'application/json'
+                },
+                body: JSON.stringify(dados)
+            });
 
-            if (resultado.status === 'sucesso') {
+            if (!resposta.ok) {
+                const erro = await resposta.json().catch(() => ({}));
+                console.error(`ERRO HTTP: ${resposta.status}; MSG: ${erro.msg || "Erro desconhecido"}`);
+                alert("ERRO ao processar dados, Verifique sua conexão");
+                return;
+            }
+
+            const retorno = await resposta.json();
+
+            if (retorno.success) {
+                console.log(`SUCCESS: (TRUE); MSG: ${retorno.msg}`);
                 recado.style.display = 'none';
-
-                if (resultado.funcao === 'pintura'){
-                    window.location = '/pintura';
-
-                } else if (resultado.funcao === 'eletrica'){
-                    window.location = '/eletrica';
-
-                } else if (resultado.funcao === 'adm'){
-                    window.location = '/adm';
-
-                } else if (resultado.funcao === 'telhado'){
-                    window.location = '/telhado'
-
-                } else if (resultado.funcao === 'mecanica') {
-                    window.location = '/mecanica';
-                }
-
+                
                 const data = new Date();
                 let dia = data.getDate();
                 let mes = data.getMonth();
-                mes = mes +1;
-
+                mes = mes + 1;
                 let hora = data.getHours();
                 let minuto = data.getMinutes();
-                let segundo = data.getSeconds();
+                let segundos = data.getSeconds();
                 let ano = data.getFullYear();
 
-                if (dia < 10) {
-                    dia = ('0'+dia);
-                }
+                if (dia < 10) {dia = ('0'+dia); }
+                if (mes < 10) {mes = ('0'+mes); }
+                if (hora < 10) {hora = ('0'+hora); }
+                if (minuto < 10) {minuto = ('0'+minuto); }
+                if (segundos < 10) {segundos = ('0'+segundos); }
 
-                if (mes < 10) {
-                    mes = ('0'+mes);
-                }
-
-                if (hora < 10) {
-                    hora = ('0'+hora);
-                }
-
-                if (minuto < 10) {
-                    minuto = ('0'+minuto);
-                }
-
-                if (segundo < 10){
-                    segundo = ('0'+segundo);
-                }
-
-                
                 const registro_frequencia = {
-                    nome: inputnome.value,
+                    nome:inputnome.value,
                     dia:dia,
                     mes:mes,
                     ano:ano,
                     hora:hora,
                     minuto:minuto,
-                    segundo:segundo,
-                    funcao:resultado.funcao
+                    segundo:segundos,
+                    funcao:retorno.funcao
                 }
 
-                const resposta = await fetch('/frequencia', {
-                method: 'POST',
-                headers: {
-                    'Content-Type':'application/json'
-                },
-                body: JSON.stringify(registro_frequencia)
+                const segunda_resposta = await fetch('/frequencia', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type':'application/json'
+                    },
+                    body: JSON.stringify(registro_frequencia)
                 });
 
-                // guardar no banco de dados e depois exibir numa tabela
+                if (!segunda_resposta.ok) {
+                    const erro = await segunda_resposta.json().catch(() => ({}));
+                    console.error(`ERRO HTTP: ${segunda_resposta.status}; MSG: ${erro.msg || 'Menssagem Indisponível'}`);
+                    alert(`ERRO ao processar dados; Verifique sua conexão`);
+                    return;
+                }
 
-                
-                console.log('linha 369 - Registro: '+registro_frequencia);
+                const segundo_retorno = await segunda_resposta.json();
+
+                if (segundo_retorno.success) {
+                    console.log(`SUCCESS: TRUE; MSG: ${segundo_retorno.msg}`);
+                    recado.style.display = 'none';
+
+                    if (retorno.funcao === 'pintura') {
+                        window.location = '/pintura';
+
+                    } else if (retorno.funcao === 'eletrica') {
+                        window.location = '/eletrica';
+
+                    } else if (retorno.funcao === 'adm') {
+                        window.location = '/adm';
+
+                    } else if (retorno.funcao === 'telhado') {
+                        window.location = '/telhado';
+
+                    } else if (retorno.funcao === 'mecanica') {
+                        window.location = '/mecanica';
+                    }
+
+                    inputnome.value = '';
+                    inputsenha.value = '';
+                    dados_recuperados.style.display = 'none';
+
+
+                } else {
+                    console.log(`SUCCESS: FALSE; MSG: ${segundo_retorno.msg}`);
+                    alert(`SUCCESS: FALSE; MSG: ${segundo_retorno.msg}`);
+                    recado.style.display = 'block';
+                }
 
             } else {
-                // alert("NEGADO 372");
-                let recado = document.getElementById('dadosInvalidos');
-                recado.style.display = 'block';
-
-                console.log('linha 376 - Resultado: '+resultado);
-                
+                console.log(`SUCCESS: (FALSE); MSG: ${retorno.msg}`);
+                alert(`SUCCESS: (FALSE); MSG: ${retorno.msg}`);
             }
-                
-        } else {
-            recado.style.display = 'block';
 
 
+        } catch (erro) {
+            console.log('ERRO ao processar ou se conectar ao servidor');
+            alert(`ERRO ao processar ou se conectar ao servidor`);
         }
-
-        inputnome.value = '';
-        inputsenha.value = '';
-        dados_recuperados.style.display = 'none';
+        
     }
 
 
+    
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
     async function recuperar() {
         let dados_recuperados = document.getElementById("dados_recuperados");
         let inputnome = document.getElementById('funcionario');
