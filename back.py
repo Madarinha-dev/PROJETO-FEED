@@ -46,7 +46,7 @@ CREATE TABLE IF NOT EXISTS funcionarios_cadastrados (
                    id_funcionario INTEGER PRIMARY KEY AUTOINCREMENT,
                    nome TEXT VARCHAR(255),
                    senha TEXT VARCHAR(255),
-                   cpf int varchar(255),
+                   cpf TEXT VARCHAR(255),
                    funcao varchar(255) 
                    );
 ''')
@@ -458,42 +458,6 @@ def recuperar():
     
     
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 # aqui uma função importante, pós ela vai ser o referêncial para login, recuperação e consulta;
 @app.route('/cadastrar_funcionario', methods=['POST'])
 def cadastrar_funcionario():
@@ -501,7 +465,6 @@ def cadastrar_funcionario():
 
     try:
         dados = request.get_json()
-        # outra forma que aprendi com o bard (dados = request.orgs.json('elemento'))
         criar_tabela()
         conectar = conectar_db()
         cursor = conectar.cursor()
@@ -513,8 +476,7 @@ def cadastrar_funcionario():
             }), 400
         
         
-        
-        if type(dados.get('senhaa')) is not str or dados.get('senhaa') == None:
+        if type(dados.get('senhaa')) is not str or not dados.get('senhaa').strip():
             return jsonify({
                 "success":False,
                 "msg":"Campo senha vázio ou tipo de dado inválido"
@@ -536,19 +498,21 @@ def cadastrar_funcionario():
                 "msg":"CPF não pode ser vazio"
             }), 400
         
+        
+        if not cpf_limpo.isdigit():
+            return jsonify({
+                "success":False,
+                "msg":"O CPF deve conter apenas números"
+            }), 400
+        
 
         if len(cpf_limpo) != 11:
             return jsonify({
                 "success":False,
                 "msg":"Quantidade inválida de dígitos"
             }), 400
-        
-        # LEMBRAR DE COLOCAF A ÚLTIMA VALIDAÇÃO 
-        # MODIFICAR O BANCO DE DADOS
-        # O FRONTEND MANDA NO FORMATO DE NÚMERO, ENTÃO PRECISO CONVERTER TALVEZ // MUDAR O TIPO DO INPUT DO FRONTEND
-        
-        
 
+        
         if type(dados.get('funcao')) is not str or not dados.get('funcao').strip():
             return jsonify({
                 "success":False,
@@ -620,25 +584,128 @@ def cadastrar_funcionario():
 
 
 
+
+
+
 @app.route('/adicionarAtividade', methods=['POST'])
 def adicionarAtividade():
-    print(')')
-    print(')')
-    print(')')
-    print('FUNÇÃO ADICIONAR ATIVIDADE')
-    print(')')
-    print(')')
-    print(')')
-    dados = request.get_json()
-    criar_tabela_atividade()
-    conectar = conectar_db()
-    cursor = conectar.cursor()
-    cursor.execute('INSERT INTO atividades (tipo_de_servico, descricao, quem, armazenna, empresa, data) VALUES (?, ?, ?, ?, ?, ?)', (dados['tipoDeservico'], dados['descricao'], dados['quem'], dados['armazenna'], dados['empresa'], dados['data']))
-    conectar.commit()
-    conectar.close()
-    return jsonify({
-        'msg':'01'
-    }), 200
+    
+
+    conectar = None
+
+    try:
+        dados = request.get_json()
+        criar_tabela_atividade()
+        conectar = conectar_db()
+        cursor = conectar.cursor()
+
+        if type(dados.get('tipoDeservico')) is not str or not dados.get('tipoDeservico').strip():
+            return jsonify({
+                "success":False,
+                "msg":"o Input do tipo de serviço tem que ser do tipo texto"
+            }), 400
+        
+        if type(dados.get('descricao')) is not str or not dados.get('descricao').strip():
+            return jsonify({
+                "success":False,
+                "msg":"o Input descrição tem que ser do tipo TEXT"
+            }), 400
+        
+        if type(dados.get('quem')) is not str or not dados.get('quem').strip():
+            return jsonify({
+                "success":False,
+                "msg":"o Input QUEM tem que ser do tipo TEXT"
+            }), 400
+        
+        if type(dados.get('armazenna')) is not str or not dados.get('armazenna').strip():
+            return jsonify({
+                "success":False,
+                "msg":"o Input armazenna tem que ser do tipo TEXT"
+            }), 400
+        
+        if type(dados.get('empresa')) is not str or not dados.get('empresa').strip():
+            return jsonify({
+                "success":False,
+                "msg":"o Input Empresa tem que ser do tipo TEXT"
+            }), 400
+        
+        if type(dados.get('data')) is not str or not dados.get('data').strip():
+            return jsonify({
+                "success":False,
+                "msg":"o Input Data tem que ser do tipo Text ou convertido para texto"
+            }), 400
+
+
+        cursor.execute('INSERT INTO atividades (tipo_de_servico, descricao, quem, armazenna, empresa, data) VALUES (?, ?, ?, ?, ?, ?)', (dados.get('tipoDeServico'), dados.get('descricao'), dados.get('quem'), dados.get('armazenna'), dados.get('empresa'), dados.get('data')))
+        conectar.commit()
+
+        return jsonify({
+            "success":True,
+            "msg":"Função adicionar atividade realizada com success"
+        }), 200
+
+    except Exception as erro:
+        if conectar:
+            conectar.rollback()
+
+        print('=============================================')
+        print(f'ERRO DETECTADO, FUNÇÃO: ADICIONAR ATIVIDADE')
+        print(f'TIPO DO ERRO: {type(erro)}')
+        print(f'DESCRIÇÃO: {str(erro)}')
+        print('=============================================')
+
+        return jsonify({
+            "success":False,
+            "msg":"Erro ao executar a função"
+        }), 500
+
+
+    finally:
+        if conectar:
+            conectar.close()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

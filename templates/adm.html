@@ -305,7 +305,7 @@
                 <br>
                 <input type="text" name="" id="inputsenha" placeholder="  Senha..">
                 <br>
-                <input type="number" name="" id="inputcpf" placeholder="  CPF...">
+                <input type="text" name="" id="inputcpf" placeholder="  CPF...">
                 <br>
 
                 <select name="" id="inputfuncao">
@@ -398,7 +398,7 @@
             <br>
             <input type="text" name="" id="inputsenhamodificar" placeholder="  Senha..">
             <br>
-            <input type="number" name="" id="inputcpfmodificar" placeholder="  CPF...">
+            <input type="text" name="" id="inputcpfmodificar" placeholder="  CPF...">
             <br>
 
             <select name="" id="inputfuncaomodificar">
@@ -1232,133 +1232,81 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         async function ok() {
-            let inputnome = document.getElementById("inputnome");
-            let inputsenha = document.getElementById("inputsenha");
-            let inputcpf = document.getElementById("inputcpf");
-            let inputfuncao = document.getElementById("inputfuncao");
-            let campovazio = document.getElementById("campovazio");
-            let adicionar = document.getElementById("funcionario");
+            try {
+                let inputnome = document.getElementById("inputnome");
+                let inputsenha = document.getElementById("inputsenha");
+                let inputcpf = document.getElementById("inputcpf");
+                let inputfuncao = document.getElementById("inputfuncao");
+                let campovazio = document.getElementById("campovazio");
+                let adicionar = document.getElementById("funcionario");
 
-            if (inputnome.value == '' || inputsenha.value == '' || inputcpf.value == '' || inputfuncao.value == '') {
-                campovazio.style.display = 'block';
-            } else {
-                campovazio.style.display = 'none';
-                let nome = inputnome.value;
-                let senha = inputsenha.value;
-                let cpf = inputcpf.value;
-                let funcao = inputfuncao.value;
-                // alert("Nome:"+nome+" Senha:"+senha+" CPF:"+cpf+" Função:"+funcao);
-                inputnome.value = '';
-                inputsenha.value = '';
-                inputcpf.value = '';
-                inputfuncao.value = '';
-
-
-                const dados = {
-                    nome: nome,
-                    senhaa: senha,
-                    cpf: cpf,
-                    funcao: funcao
-                }
-        
-                const resposta = await fetch('/cadastrar_funcionario', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(dados)
-                });
-
-                if (resposta.ok) {
-
-                    const resultado = await resposta.json();
-                    // aqui posso consultar o objeto (resultado)
-                    console.log(resultado);
-                    // alert("Resposta: "+resposta);
-                    // alert("mensagem = "+resposta.msg);
-
+                if (inputnome.value == '' || inputsenha.value == '' || inputcpf.value == '' || inputfuncao.value == '') {
+                    campovazio.style.display = 'block';
+                    return;
 
                 } else {
-                    alert("erro ao Cadastrar..(servidor-762)");
+                    campovazio.style.display = 'none';
+                    let nome = inputnome.value;
+                    let senha = inputsenha.value;
+                    let cpf = inputcpf.value;
+                    let funcao = inputfuncao.value;
+                    
+
+                    const dados = {
+                        nome: nome,
+                        senhaa: senha,
+                        cpf:cpf,
+                        funcao:funcao
+                    }
+
+                    const resposta = await fetch('/cadastrar_funcionario', {
+                        method: "POST",
+                        headers: {
+                            'Content-Type':'application/json'
+                        },
+                        body: JSON.stringify(dados)
+                    });
+
+                    if (!resposta.ok) {
+                        const erro = await resposta.json().catch(() => ({}));
+                        console.error(`ERRO HTTP: ${resposta.status}; MSG: ${erro.msg || "Menssagem Indisponível"}`);
+                        alert(`ERRO ao se comunicar com a API, verifique sua conexão`);
+                        return;
+                    }
+
+                    const retorno = await resposta.json();
+
+                    if (retorno.success) {
+                        console.log(`Success ao processar os dados no servidor, MSG: ${retorno.msg}`);
+
+                        inputnome.value = '';
+                        inputsenha.value = '';
+                        inputcpf.value = '';
+                        inputfuncao.value = '';
+
+                    } else {
+                        console.log(`ERRO do servidor, MSG: ${retorno.msg};`);
+                        alert(`ERRO do servidor, MSG: ${retorno.msg};`);
+                    }
+
                 }
 
+            } catch (erro) {
+                console.log(`ERRO ao processar os dados. Verifique a conexão. MSG: ${erro}`);
+                alert(`ERRO ao processar os dados. Verifique sua conexão: ${erro}`);
+
+            } finally {
+                await tabelafuncionario();
             }
-            await tabelafuncionario();
         }
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
         function adicionaratividades(){
             let aba_adicionar_atividades = document.getElementById("aba-atividades");
             let aba_excluir_atividades = document.getElementById("aba-excluir-atividade");
             let aba_alterar_atividades = document.getElementById("aba-alterar-atividade");
-            
-
             
             if (aba_adicionar_atividades.style.display == 'none') {
                 aba_adicionar_atividades.style.display = 'block';
@@ -1370,57 +1318,83 @@
 
         }
 
+
+
         async function dados_da_atividade() {
-            let tipoDeServico = document.getElementById("selectTipodeServico");
-            let descricao = document.getElementById("inputdescricaoDeAtividade");
-            let quem = document.getElementById("inputQuem");
-            let armazenna = document.getElementById("selectArmazenna?");
-            let empresa = document.getElementById("inputEmpresa");
-            let data = document.getElementById("inputDATA");
-            let recado = document.getElementById("campovazioAtividade");
+            try {
+                let tipoDeServico = document.getElementById("selectTipodeServico");
+                let descricao = document.getElementById("inputdescricaoDeAtividade");
+                let quem = document.getElementById("inputQuem");
+                let armazenna = document.getElementById("selectArmazenna?");
+                let empresa = document.getElementById("inputEmpresa");
+                let data = document.getElementById("inputDATA");
+                let recado = document.getElementById("campovazioAtividade");
 
-            
-            if (tipoDeServico.value == '' || descricao.value == '' || quem.value == '' || armazenna.value == '' || empresa.value == '' || data.value == '') {
-                recado.style.display = 'block';
-            } else {
-                recado.style.display = 'none';
+                if (tipoDeServico.value == '' || descricao.value == '' || quem.value == '' || armazenna.value == '' || empresa.value == '' || data.value == '') {
+                    recado.style.display = 'block';
+                    return;
 
-                const dados = {
-                    tipoDeservico: tipoDeServico.value,
-                    descricao: descricao.value,
-                    quem: quem.value,
-                    armazenna: armazenna.value,
-                    empresa: empresa.value,
-                    data: data.value
-                }
-
-                const resposta = await fetch('/adicionarAtividade', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(dados)
-                });
-
-                if (resposta.ok) {
-                    // alert("atividade enviada...");
-
-                    const resultado = await resposta.json();
-                // manipulaçãõ de dados
                 } else {
-                    alert("ERRO AO ADICIONAR A ATIVIDADE (servidor-826)...")
-                }
-                // ATUALIZAR A TABELA APÓS ADICIONAR / EXCLUIR / ALTERAR
-            }
-            tipoDeServico.value = '';
-            descricao.value = '';
-            quem.value = '';
-            armazenna.value = '';
-            empresa.value = '';
-            data.value = '';
-            await tabelaAtividades();
+                    recado.style.display = 'none';
 
+                    const dados = {
+                        tipoDeservico: tipoDeServico.value,
+                        descricao: descricao.value,
+                        quem: quem.value,
+                        armazenna: armazenna.value,
+                        empresa: empresa.value,
+                        data: data.value
+                    }
+
+
+                    const resposta = await fetch('/adicionarAtividade', {
+                        method: "POST",
+                        headers: {
+                            "Content-Type":"application/json"
+                        },
+                        body: JSON.stringify(dados)
+                    });
+
+                    if (!resposta.ok) {
+                        const erro = await resposta.json().catch(() => ({}));
+                        console.error(`ERRO HTTP: ${resposta.status}; MSG: ${erro.msg || "Menssagem indisponível"}`);
+                        alert(`ERRO ao se comunicar com a API, Verifique sua conexão`);
+                        return;
+                    }
+
+                    const retorno = await resposta.json();
+
+                    if (retorno.success) {
+                        console.log(`SUCCESS: TRUE; MSG: ${retorno.msg}`);
+
+
+
+                        tipoDeServico.value = '';
+                        descricao.value = '';
+                        quem.value = '';
+                        armazenna.value = '';
+                        empresa.value = '';
+                        data.value = '';
+                        
+
+
+                    } else {
+                        console.log(`SUCCESS: FALSE; MSG: ${retorno.msg}`);
+                        alert(`SUCCESS: FALSE; MSG: ${retorno.msg}`);
+                    }
+
+                }
+            } catch (erro) {
+                console.log(`ERRO ao processar os dados. Verifique a conexão. MSG: ${erro}`);
+                alert(`ERRO ao processar os dados. Verifique sua conexão: ${erro}`);
+
+            } finally {
+                await tabelaAtividades();
+            }
         }
+
+
+
 
 
         function excluiratividades(){
