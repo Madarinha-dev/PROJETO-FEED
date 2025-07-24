@@ -551,46 +551,8 @@ def cadastrar_funcionario():
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 @app.route('/adicionarAtividade', methods=['POST'])
 def adicionarAtividade():
-    
-
     conectar = None
 
     try:
@@ -667,178 +629,287 @@ def adicionarAtividade():
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 @app.route('/excluirFuncionario', methods=['POST'])
 def excluirFuncionario():
-    print(')')
-    print(')')
-    print(')')
-    print('FUNÇÃO EXCLUIR FUNCIONÁRIO')
-    print(')')
-    print(')')
-    print(')')
-    dados = request.get_json()
-    id = dados['id']
-
-    conectar = conectar_db()
-    cursor = conectar.cursor()
-    cursor.execute("SELECT id_funcionario FROM funcionarios_cadastrados WHERE id_funcionario = ?", (id,))
-    funcionario = cursor.fetchone()
     
-    if funcionario is None:
+    conectar = None
+
+    try:
+        dados = request.get_json()
+        id = dados.get('id')
+
+        if id is None:
+            return jsonify({
+                "success":False,
+                "msg":"o ID não foi fornecido"
+            }), 400
+
+        
+        try:
+            id_convertido = int(id)
+
+        except ValueError:
+            return jsonify({
+                "success":False,
+                "msg":"ID do funcionário inválido, Deve ser um número inteiro"
+            }), 400
+
+        
+        conectar = conectar_db()
+        cursor = conectar.cursor()
+        cursor.execute("SELECT id_funcionario FROM funcionarios_cadastrados WHERE id_funcionario = ?", (id_convertido,))
+        funcionario = cursor.fetchone()
+
+        if funcionario is None:
+            return jsonify({
+                "success":False,
+                "msg":f"Funcionário com o ID: ${id} não foi encontrado."
+            }), 404
+        
+        
+        cursor.execute("DELETE FROM funcionarios_cadastrados WHERE id_funcionario = ?", (id_convertido,))
         conectar.commit()
-        conectar.close()
+
 
         return jsonify({
-            'msg':"0"
+            "success":True,
+            "msg":"Registro do funcionário localizado e deletado com success"
         }), 200
-    
-    else:
-        cursor.execute("DELETE FROM funcionarios_cadastrados WHERE id_funcionario = ?", (id,))
-        conectar.commit()
-        conectar.close()
+        
+
+    except Exception as erro:
+        if conectar:
+            conectar.rollback()
+
+        print('=============================================')
+        print(f'ERRO DETECTADO, FUNÇÃO: EXCLUIR FUNCIONÁRIO')
+        print(f'TIPO DO ERRO: {type(erro)}')
+        print(f'DESCRIÇÃO: {str(erro)}')
+        print('=============================================')
 
         return jsonify({
-            "msg":'1'
-        }), 200
+            "success":False,
+            "msg":"Erro ao executar a função EXCLUIR FUNCIONÁRIO"
+        }), 500
+
+    finally:
+        if conectar:
+            conectar.close()
     
 
 
 
 
-    
 @app.route('/excluiratividade', methods=['POST'])
 def excluiratividade():
-    print(')')
-    print(')')
-    print(')')
-    print('FUNÇÃO EXCLUIR ATIVIDADE')
-    print(')')
-    print(')')
-    print(')')
-    dados = request.get_json()
-    id = dados['id_atividade']
-    conectar = conectar_db()
-    cursor = conectar.cursor()
-    cursor.execute("SELECT id_atividade FROM atividades WHERE id_atividade = ?", (id,))
-    atividade = cursor.fetchone()
+    conectar = None
 
-    if atividade is None:
+    try:
+        dados = request.get_json()
+        id = dados.get('id_atividade')
+
+        if id is None:
+            return jsonify({
+                "success":False,
+                "msg":"O ID não foi fornecido"
+            }), 400
+        
+        try: 
+            id_convertido = int(id)
+
+        except ValueError:
+            return jsonify({
+                "success":False,
+                "msg":"ID da atividade são inválidos, Deve ser um número do tipo inteiro"
+            }), 400
+        
+        conectar = conectar_db()
+        cursor = conectar.cursor()
+        cursor.execute("SELECT id_atividade FROM atividades WHERE id_atividade = ?", (id_convertido,))
+        atividade = cursor.fetchone()
+
+        if atividade is None:
+            return jsonify({
+                "success":False,
+                "msg":f'Atividade com o ID: {id} não encontrado.'
+            }), 400
+        
+        cursor.execute("DELETE FROM atividades WHERE id_atividade = ?", (id_convertido, ))
         conectar.commit()
-        conectar.close()
+
         return jsonify({
-            "msg":"0"
+            "success":True,
+            "msg":f"Atividade de ID: {id} deletada com sucesso"
         }), 200
-    
-    else:
-        cursor.execute("DELETE FROM atividades WHERE id_atividade = ?", (id, ))
-        conectar.commit()
-        conectar.close()
+        
+    except Exception as erro:
+        if conectar:
+            conectar.rollback()
+
+        print('=============================================')
+        print(f'ERRO DETECTADO, FUNÇÃO: EXCLUIR ATIVIDADE')
+        print(f'TIPO DO ERRO: {type(erro)}')
+        print(f'DESCRIÇÃO: {str(erro)}')
+        print('=============================================')
+
         return jsonify({
-            "msg":"1"
-        }), 200
+            "success":False,
+            "msg":"Erro ao executar a função EXCLUIR ATIVIDADE"
+        }), 500
+
+    finally:
+        if conectar:
+            conectar.close()
 
 
 
-@app.route('/alterarfuncionario', methods=['POST'])
-def alterarfuncionario():
-    novosdados = request.get_json()
-    print(')')
-    print(')')
-    print(')')
-    print('FUNÇÃO ALTERAR FUNCIONÁRIO')
-    print(')')
-    print(')')
-    print(')')
 
-    id = novosdados['id']
-    nomenovo = novosdados['nome']
-    senhanovo = novosdados['senha']
-    cpfnovo = novosdados['cpf']
-    funcaonovo = novosdados['funcao']
 
-    conectar = conectar_db()
-    cursor = conectar.cursor()
-    cursor.execute("SELECT id_funcionario, nome, senha, cpf, funcao FROM funcionarios_cadastrados WHERE id_funcionario = ?", (id,))
 
-    velhosdados = cursor.fetchone()
-    nomevelho = velhosdados[1]
-    senhavelho = velhosdados[2]
-    cpfvelho = velhosdados[3]
-    funcaovelho = velhosdados[4]
 
-    if nomenovo == '':
-        print("nome vazio")
-    else:
-        nomevelho = nomenovo
 
-    if senhanovo == '':
-        print("senha vazia")
-    else:
-        senhavelho = senhanovo
 
-    if cpfnovo == '':
-        print("CPF vazio")
-    else:
-        cpfvelho = cpfnovo
 
-    if funcaonovo == '':
-        print("Função vazio")
-    else:
-        funcaovelho = funcaonovo
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# @app.route('/alterarfuncionario', methods=['POST'])
+# def alterarfuncionario():
+#     novosdados = request.get_json()
+#     print(')')
+#     print(')')
+#     print(')')
+#     print('FUNÇÃO ALTERAR FUNCIONÁRIO')
+#     print(')')
+#     print(')')
+#     print(')')
+
+#     id = novosdados['id']
+#     nomenovo = novosdados['nome']
+#     senhanovo = novosdados['senha']
+#     cpfnovo = novosdados['cpf']
+#     funcaonovo = novosdados['funcao']
+
+#     conectar = conectar_db()
+#     cursor = conectar.cursor()
+#     cursor.execute("SELECT id_funcionario, nome, senha, cpf, funcao FROM funcionarios_cadastrados WHERE id_funcionario = ?", (id,))
+
+#     velhosdados = cursor.fetchone()
+#     nomevelho = velhosdados[1]
+#     senhavelho = velhosdados[2]
+#     cpfvelho = velhosdados[3]
+#     funcaovelho = velhosdados[4]
+
+#     if nomenovo == '':
+#         print("nome vazio")
+#     else:
+#         nomevelho = nomenovo
+
+#     if senhanovo == '':
+#         print("senha vazia")
+#     else:
+#         senhavelho = senhanovo
+
+#     if cpfnovo == '':
+#         print("CPF vazio")
+#     else:
+#         cpfvelho = cpfnovo
+
+#     if funcaonovo == '':
+#         print("Função vazio")
+#     else:
+#         funcaovelho = funcaonovo
 
     
-    cursor.execute("UPDATE funcionarios_cadastrados SET nome = ?, senha = ?, cpf = ?, funcao = ? WHERE id_funcionario = ?", (nomevelho, senhavelho, cpfvelho, funcaovelho, id))
-    conectar.commit()
-    conectar.close()
+#     cursor.execute("UPDATE funcionarios_cadastrados SET nome = ?, senha = ?, cpf = ?, funcao = ? WHERE id_funcionario = ?", (nomevelho, senhavelho, cpfvelho, funcaovelho, id))
+#     conectar.commit()
+#     conectar.close()
 
-    return jsonify({
-        'msg':'1'
-    }), 200
+#     return jsonify({
+#         'msg':'1'
+#     }), 200
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1150,7 +1221,6 @@ def receber_dados():
             }), 200
         
         
-
 
     except Exception as erro:
         if conectar:

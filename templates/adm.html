@@ -354,7 +354,7 @@
             font-size: 20px;
             margin: 0px 0px 10px 0px;
                 ">Excluir Funcionário</p>
-            <input type="text" name="" id="inputid" placeholder="  Digite o ID do registro...">
+            <input type="number" name="" id="inputid" placeholder="  Digite o ID do registro...">
             <br>
             
             <button 
@@ -1411,45 +1411,61 @@
             }
         }
 
+
+
         async function excluindoAtividade() {
-            let inputId = document.getElementById('inputIdAtividade');
-            let recado = document.getElementById('recado_excluir_atividade');
+            try {
+                let inputId = document.getElementById('inputIdAtividade');
+                let recado = document.getElementById('recado_excluir_atividade');
 
-        
-            if (inputId.value == '') {
-                recado.style.display = 'block';
-            } else {
-                recado.style.display = 'none';
-
-            
-                const dados = {
-                    id_atividade: inputId.value
-                }
-
-
-                const resposta = await fetch('/excluiratividade', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type':'application/json'
-                    },
-                    body: JSON.stringify(dados)
-                });
-
-
-                if (resposta.ok) {
-                    // ok deu certo
-                    const resultado = await resposta.json()
-                    // aqui faço a manipulação de dados;
+                if (inputId.value == '') {
+                    recado.style.display = 'block';
 
                 } else {
-                    alert("ERRO AO EXCLUIR A ATIVIDADE (servidor-886)...");
-                }
-                inputId.value = '';
-                // atualizar a tabela que aparece no site
+                    recado.style.display = 'none';
+                    
+                    const dados = {
+                        id_atividade: inputId.value.trim()
+                    }
 
+                    const resposta = await fetch('/excluiratividade', {
+                        method: "POST",
+                        headers: {
+                            "Content-Type":"application/json"
+                        },
+                        body: JSON.stringify(dados)
+                    });
+
+                    if (!resposta.ok) {
+                         const erro = await resposta.json().catch(() => ({}));
+                         console.error(`ERRO HTTP: ${resposta.status}; MSG: ${erro.msg || "Mensagem Indisponível"}`);
+                         alert(`ERRO ao se comunicar com a API excluir atividade, Verifique sua conexão`);
+                         return;
+                    }
+
+                    const retorno = await resposta.json();
+
+                    if (retorno.success) {
+                        console.log(`SUCCESS: TRUE; MSG: ${retorno.msg}`);
+                        inputId.value = '';
+
+
+                    } else {
+                        console.log(`SUCCESS: FALSE; MSG: ${retorno.msg}`);
+                        alert(`SUCCESS: FALSE; MSG: ${retorno.msg}`);
+                    }
+                }
+
+            } catch (erro) {
+                console.log(`ERRO ao processar os dados. Verifique a conexão. MSG: ${erro}`);
+                alert(`ERRO ao processar os dados. Verifique sua conexão: ${erro}`);
+
+            } finally {
+                await tabelaAtividades();
             }
-            await tabelaAtividades();
         }
+
+
 
         function alteraratividades() {
             let aba_adicionar_atividades = document.getElementById("aba-atividades");
@@ -1551,49 +1567,62 @@
         
         }
 
+
+
+
         async function botaoexcluirFuncionario() {
-            let inputid = document.getElementById("inputid");
-            let recado = document.getElementById("campovazioid");
-            
+            try {
+                let inputid = document.getElementById("inputid");
+                let recado = document.getElementById("campovazioid");
 
-            if (inputid.value == '') {
-                recado.style.display = 'block';
-            } else {
-                recado.style.display = 'none';
-
-                const dados = {
-                    id: inputid.value
-                }
-
-
-                const resposta = await fetch('/excluirFuncionario', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(dados)
-                });
-
-
-                if (resposta.ok) {
-                    const resultado = await resposta.json();
-
-                    // aqui faço a manipulação
-                    if (resultado.msg == '0') {
-                        // alert("USUÁRIO NÃO ENCONTRADO/ DADOS INVÁLIDOS");
-                        // alert('Posso montar um recado, avisando que deu errado.....');
-                    } else {
-                        console.log("USUÁRIO DELETADO....");
-                    }
+                if (inputid.value == '') {
+                    recado.style.display = 'block';
+                    return;
 
                 } else {
-                    alert("Erro ao tentar excluir...(servidor-1033)");
+                    recado.style.display = 'none';
+
+                    const dados = {
+                        id:inputid.value.trim()
+                    }
+
+                    const resposta = await fetch('/excluirFuncionario', {
+                        method: "POST",
+                        headers: {
+                            "Content-Type":"application/json"
+                        },
+                        body: JSON.stringify(dados)
+                    });
+
+                    if (!resposta.ok) {
+                        const erro = await resposta.json().catch(() => ({}));
+                        console.error(`ERRO HTTP: ${resposta.status}; MSG: ${erro.msg || "Menssagem Indisponível"}`);
+                        alert(`ERRO HTTP: ${resposta.status}; MSG: ${erro.msg || "Menssagem Indisponível"}`);
+                        return;
+                    }
+
+                    const retorno = await resposta.json();
+
+                    if (retorno.success) {
+                        console.log(`Funcionário deletado com success; MSG: ${retorno.msg}`);
+                        inputid.value = '';
+
+
+                    } else {
+                        console.log(`ERRO do servidor: ${retorno.msg}`);
+                        alert(`ERRO do servidor: ${retorno.msg}`);
+                    }
                 }
 
-                inputid.value = '';
+            } catch (erro) {
+                console.log(`ERRO ao processar os dados. Verifique a conexão. MSG: ${erro}`);
+                alert(`ERRO ao processar os dados. Verifique sua conexão: ${erro}`);
+            } finally {
+                await tabelafuncionario();
             }
-            await tabelafuncionario();
         }
+
+        
 
 
 
