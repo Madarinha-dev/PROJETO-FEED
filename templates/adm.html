@@ -1650,63 +1650,83 @@
             tabelaAtividades();
         });
 
+
         async function alterar() {
-            let aviso = document.getElementById("campovaziomodificar");
-            let inputid = document.getElementById("inputidmodificar");
-            let id = inputid.value;
+            try {
+                let aviso = document.getElementById("campovaziomodificar");
+                let inputid = document.getElementById("inputidmodificar");
+                let id = inputid.value.trim();
 
-            let inputnome = document.getElementById("inputnomemodificar");
-            let nome = inputnome.value;
+                let inputnome = document.getElementById("inputnomemodificar");
+                let nome = inputnome.value.trim();
 
-            let inputsenha = document.getElementById("inputsenhamodificar");
-            let senha = inputsenha.value;
+                let inputsenha = document.getElementById("inputsenhamodificar");
+                let senha = inputsenha.value.trim();
 
-            let inputcpf = document.getElementById("inputcpfmodificar");
-            let cpf = inputcpf.value;
+                let inputcpf = document.getElementById("inputcpfmodificar");
+                let cpf = inputcpf.value.trim();
 
-            let inputfuncao = document.getElementById("inputfuncaomodificar");
-            let funcao = inputfuncao.value;
+                let inputfuncao = document.getElementById("inputfuncaomodificar");
+                let funcao = inputfuncao.value.trim();
 
-            if (id == '' ) {
-                aviso.style.display = 'block';
-            } else {
-                aviso.style.display = 'none';
-
-                const dados = {
-                    id: id,
-                    nome: nome,
-                    senha: senha,
-                    cpf: cpf,
-                    funcao: funcao
-                }
-
-                const resposta = await fetch('/alterarfuncionario', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type':'application/json'
-                    },
-                    body: JSON.stringify(dados)
-                });
-
-                if (resposta.ok) {
-                    // aqui eu poderia fazer qualquer coisa com o return, mas nem precisa
-
+                if (id == '') {
+                    aviso.style.display = 'block';
+                    return;
 
                 } else {
-                    alert("ESSE ID NÃO EXISTI (servidor-1110)");
+                    aviso.style.display = 'none';
+
+                    const dados = {
+                        id:id,
+                        nome:nome,
+                        senha:senha,
+                        cpf:cpf,
+                        funcao:funcao
+                    }
+
+
+                    const resposta = await fetch('/alterarfuncionario', {
+                        method: "POST",
+                        headers: {
+                            "Content-Type":"application/json"
+                        },
+                        body: JSON.stringify(dados)
+                    });
+
+                    if (!resposta.ok) {
+                        const erro = await resposta.json().catch(() => ({}));
+                        console.error(`ERRO HTTP: ${resposta.status}; MSG: ${erro.msg || "Mensagem Indisponível"}`);
+                        alert("Erro ao se comunicar com a API (ALTERAR FUNCIONÁRIO)");
+                        return;
+                    }
+
+                    const retorno = await resposta.json();
+
+                    if (retorno.success) {
+                        console.log(`SUCCESS: TRUE; MSG: ${retorno.msg}`);
+
+                        inputid.value = '';
+                        inputsenha.value = '';
+                        inputcpf.value = '';
+                        inputfuncao.value = '';
+
+                    } else {
+                        console.log(`SUCCESS: FALSE; MSG: ${retorno.msg}`);
+                        alert(`SUCCESS: FALSE; ${retorno.msg}`);
+                    }
                 }
 
-            // limpar o formulário; 
-            inputnome.value = '';
-            inputid.value = '';
-            inputsenha.value = '';
-            inputcpf.value = '';
-            inputfuncao.value = '';
-            await tabelafuncionario();
+            } catch (erro) {
+                console.log(`ERRO ao processar os dados. Verifique a conexão. MSG: ${erro}`);
+                alert(`ERRO ao processar os dados. Verifique sua conexão: ${erro}`);
 
+
+            } finally {
+                await tabelafuncionario();
+            }
         }
 
-    }
+
     </script>
 </body>
 </html>

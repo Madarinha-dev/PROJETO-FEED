@@ -766,100 +766,149 @@ def excluiratividade():
 
 
 
+@app.route('/alterarfuncionario', methods=['POST'])
+def alterarfuncionario():
+    conectar = None
+
+    try:
+        novodados = request.get_json()
+        id_ = novodados.get('id').strip()
+
+        if id_ == None:
+            return jsonify({
+                "success":False,
+                "msg":"ID não fornecido, Pfv insira um valor"
+            }), 400
+        
+        try:
+            id = int(id_)
+        
+        except ValueError:
+            return jsonify({
+                "success":False,
+                "msg":f'Id: {id_} inválido, tem que ser um número inteiro'
+            }), 400
+        
 
 
+        nomenovo = novodados.get('nome').strip()
+
+        
+        if type(nomenovo) is not str:
+            return jsonify({
+                "success":False,
+                "msg":"O input nome tem que ser do tipo Texto"
+            }), 400
 
 
+        senhanovo = novodados.get('senha').strip()
+
+        
+        
+        if type(senhanovo) is not str:
+            return jsonify({
+                "success":False,
+                "msg":"Tipo de dado inválido"
+            }), 400
+        
+
+        cpf = novodados.get('cpf').strip()
+        cpfnovo = cpf
+
+        if type(cpfnovo) is not str:
+            return jsonify({
+                "success":False,
+                "msg":"tipo de dado inválido"
+            }), 400
+        
+        cpfnovo = cpfnovo.replace('.', '').replace('-','').replace(' ', '')
+         
+        if not cpfnovo.isdigit():
+            return jsonify({
+                "success":False,
+                "msg":"O CPF deve conter apenas números"
+            }), 400
+        
+
+        if len(cpfnovo) != 11:
+            return jsonify({
+                "success":False,
+                "msg":"Quantidade inválida de dígitos"
+            }), 400
 
 
+        funcaonovo = novodados.get('funcao').strip()
+
+        if type(funcaonovo) is not str:
+            return jsonify({
+                "success":False,
+                "msg":"Input Função tipo de dado inválido"
+            }), 400
+
+        conectar = conectar_db()
+        cursor = conectar.cursor()
+        cursor.execute("SELECT id_funcionario, nome, senha, cpf, funcao FROM funcionarios_cadastrados WHERE id_funcionario = ?", (id,))
+        velhosdados = cursor.fetchone()
+
+        if velhosdados is None:
+            return jsonify({
+                "success":False,
+                "msg":f"Funcionário de id: {id_} não encontrado"
+            }), 404
+        
+        nomevelho = velhosdados[1]
+        senhavelho = velhosdados[2]
+        cpfvelho = velhosdados[3]
+        funcaovelho = velhosdados[4]
+
+        if nomenovo == '':
+            print("nome vazio")
+        else:
+            nomevelho = nomenovo
+
+        if senhanovo == '':
+            print("senha vazia")
+        else:
+            senhavelho = senhanovo
+
+        if cpfnovo == '':
+            print("CPF vazio")
+        else:
+            cpfvelho = cpfnovo
+
+        if funcaonovo == '':
+            print("Função vazio")
+        else:
+            funcaovelho = funcaonovo
+
+        cursor.execute("UPDATE funcionarios_cadastrados SET nome = ?, senha = ?, cpf = ?, funcao = ? WHERE id_funcionario = ?", (nomevelho, senhavelho, cpfvelho, funcaovelho, id))
+        conectar.commit()
+
+        return jsonify({
+            "success":True,
+            "msg":"Funcionário modificado com successo"
+        }), 200
 
 
+    except Exception as erro:
+        if conectar:
+            conectar.rollback()
 
+        print('=============================================')
+        print(f'ERRO DETECTADO, FUNÇÃO: MODIFICAR FUNCIONÁRIO')
+        print(f'TIPO DO ERRO: {type(erro)}')
+        print(f'DESCRIÇÃO: {str(erro)}')
+        print('=============================================')
 
+        return jsonify({
+            "success":False,
+            "msg":"Erro ao executar a função MODIFICAR FUNCIONÁRIO"
+        }), 500
 
+    finally:
+        if conectar:
+            conectar.close()
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# @app.route('/alterarfuncionario', methods=['POST'])
-# def alterarfuncionario():
-#     novosdados = request.get_json()
-#     print(')')
-#     print(')')
-#     print(')')
-#     print('FUNÇÃO ALTERAR FUNCIONÁRIO')
-#     print(')')
-#     print(')')
-#     print(')')
-
-#     id = novosdados['id']
-#     nomenovo = novosdados['nome']
-#     senhanovo = novosdados['senha']
-#     cpfnovo = novosdados['cpf']
-#     funcaonovo = novosdados['funcao']
-
-#     conectar = conectar_db()
-#     cursor = conectar.cursor()
-#     cursor.execute("SELECT id_funcionario, nome, senha, cpf, funcao FROM funcionarios_cadastrados WHERE id_funcionario = ?", (id,))
-
-#     velhosdados = cursor.fetchone()
-#     nomevelho = velhosdados[1]
-#     senhavelho = velhosdados[2]
-#     cpfvelho = velhosdados[3]
-#     funcaovelho = velhosdados[4]
-
-#     if nomenovo == '':
-#         print("nome vazio")
-#     else:
-#         nomevelho = nomenovo
-
-#     if senhanovo == '':
-#         print("senha vazia")
-#     else:
-#         senhavelho = senhanovo
-
-#     if cpfnovo == '':
-#         print("CPF vazio")
-#     else:
-#         cpfvelho = cpfnovo
-
-#     if funcaonovo == '':
-#         print("Função vazio")
-#     else:
-#         funcaovelho = funcaonovo
-
-    
-#     cursor.execute("UPDATE funcionarios_cadastrados SET nome = ?, senha = ?, cpf = ?, funcao = ? WHERE id_funcionario = ?", (nomevelho, senhavelho, cpfvelho, funcaovelho, id))
-#     conectar.commit()
-#     conectar.close()
-
-#     return jsonify({
-#         'msg':'1'
-#     }), 200
 
 
 
@@ -998,6 +1047,41 @@ def alterarAtividade():
         'msg':'ignore',
         'texto':'ignora esse return, se der errado, vai mostrar de outra forma, obg...'
     }), 200
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
