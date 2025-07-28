@@ -244,9 +244,74 @@
 
 
 
+        #notificacao_global {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            width: fit-content; /* novo para mim */
+            max-width: 90%;
+            pointer-events: none; /* novo para mim */
+
+            padding: 12px 25px;
+            border-radius: 8px;
+            /* box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); */
+            color: white;
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+
+            display: flex;
+            align-items: center; /* alinhamento vertical */
+            gap: 10px;
+
+            /* opacity: 0; */
+            /* transform: translateX(-50%) translateY(-20px); */
+            transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+        }
+
+
+        #simbolo_da_notificacao {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin: 0;
+            line-height: 1;
+
+        }
+
+        #mensagem {
+            font-size: 1em;
+            font-weight: bold;
+            text-align: center;
+            margin: 0;
+        }
+
+        .notificacao_success {
+            background-color: #28a745;
+        }
+
+        .notificacao_falha {
+            background-color: #dc3545;
+        }
+
+        .notificacao_visivel {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0); /* DESLIZA PARA A POSICÃO FINAL */
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .notificacao_invisivel {
+            opacity: 0;
+            transform: translateX(-50%) translateY(-20px); /* VOLTA PARA A POSICÃO INICIAL */
+        }
+
     </style>
 </head>
 <body>
+    <div id="notificacao_global">
+    <p id="simbolo_da_notificacao"></p>
+    <p id="mensagem"></p>
+   </div>
+
     <p id="eletrica">ELÉTRICA</p>
     <div id="corpo-principal">
         <p id="programacao">
@@ -335,6 +400,55 @@
 
     </div>
     <script>
+
+
+
+        function notificacao(texto, status, duration = 3000) {
+        const container_da_notificacao = document.getElementById('notificacao_global');
+        const simbolo = document.getElementById('simbolo_da_notificacao');
+        const mensagem = document.getElementById('mensagem');
+
+        if (!container_da_notificacao || !simbolo || !mensagem) {
+            console.error(`Um ou mais elementos de notificação não foram encontrados`);
+            return;
+        }
+
+
+        if (status === "success") {
+            simbolo.textContent = '✔';
+        } else if (status === "error") {
+            simbolo.textContent = '✖';
+        } else {
+            simbolo.textContent = '';
+        }
+
+        mensagem.textContent = texto;
+
+        container_da_notificacao.classList.remove('notificacao_success', 'notificacao_falha');
+        if (status === 'success') {
+            container_da_notificacao.classList.add('notificacao_success');
+        } else if (status === 'error') {
+            container_da_notificacao.classList.add('notificacao_falha');
+        } 
+
+
+        container_da_notificacao.classList.add('notificacao_visivel');
+        container_da_notificacao.classList.remove('notificacao_invisivel');
+
+        setTimeout(() => {
+            container_da_notificacao.classList.remove('notificacao_visivel');
+            container_da_notificacao.classList.add('notificacao_invisivel');
+
+            setTimeout(() => {
+                simbolo.textContent = '';
+                mensagem.textContent = '';
+            }, 500)
+        }, duration);
+    }
+
+
+
+
         let registrar = document.getElementById('registrar');
         const video = document.getElementById('videoStream');
         const canvas = document.getElementById('photoCanvas');
@@ -382,48 +496,56 @@
 
         
 
+
+
         async function tabelaEletrica() {
-            // OBJETO
-            const dados = {
-                'msg':'atividades de elétrica'
+            // atividades de mecanica
+            // atividades de pintura
+            // atividades de telhado
+
+            try {
+                const dados = {
+                    'msg':'atividades de elétrica'
+                }
+
+                const resposta = await fetch('/mostrar_atividades', {method: "POST", headers: {"Content-Type":"application/json"}, body: JSON.stringify(dados)});
+
+                if (!resposta.ok) {
+                    const erro = await resposta.json().catch(() => ({}));
+                    console.error(`FUNÇÃO MOSTRAR ATIVIDADES; ERRO HTTP: ${resposta.status}; MSG: ${erro.msg || "Mensagem Indisponível"}`);
+                    return;
+                }
+
+                const retorno = await resposta.json();
+
+                if (retorno.success) {
+                    console.log(`SUCCESS: TRUE; MSG: ${retorno.msg}`);
+                    tbody.innerHTML = '';
+                    retorno.lista.forEach(registro => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                        <td class="n${registro.status}">${registro.id}</td>
+                        <td class="n${registro.status}">${registro.descricao}</td>
+                        <td class="n${registro.status}">${registro.quem}</td>
+                        <td class="n${registro.status}">${registro.armazenna}</td>
+                        <td class="n${registro.status}">${registro.empresa}</td>
+                        <td class="n${registro.status}">${registro.data}</td>
+                        <td id="n${registro.status}" class="n${registro.status}">${registro.status}</td>
+                        `
+                        tbody.appendChild(row);
+                    });
+
+                } else {
+                    console.log(`SUCCESS: FALSE; MSG: ${retorno.msg}`);
+                    // alert(`SUCCESS: FALSE; MSG: ${retorno.msg}`);
+                    return;
+                }
+
+            } catch (erro) {
+                console.log('ERRO ao processar ou se conectar ao servidor');
             }
-
-            // ENVIO
-            const resposta = await fetch('/mostrar_atividades', {
-                method: 'POST',
-                headers: {
-                    'Content-Type':'application/json'
-                },
-                body: JSON.stringify(dados)
-            });
-
-            // RESPOSTA - CASO DE CERTO
-            if (resposta.ok) {
-            
-                const resultado = await resposta.json();
-
-                // MANIPULAR OS DADOS
-                tbody.innerHTML = '';
-                resultado.forEach(registro => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                    <td class="n${registro.status}">${registro.id}</td>
-                    <td class="n${registro.status}">${registro.descricao}</td>
-                    <td class="n${registro.status}">${registro.quem}</td>
-                    <td class="n${registro.status}">${registro.armazenna}</td>
-                    <td class="n${registro.status}">${registro.empresa}</td>
-                    <td class="n${registro.status}">${registro.data}</td>
-                    <td id="n${registro.status}" class="n${registro.status}">${registro.status}</td>
-                    `
-                    tbody.appendChild(row);
-                });
-
-            // RESPOSTA - CASO DE ERRADO
-            } else {
-                console.log('erro ao exibir as (tabela) atividades de elétrica (servidor)');
-            }
-
         }
+
 
         setInterval(tabelaEletrica, 3000);
 
@@ -481,7 +603,7 @@
 
                     
                     pID.id = 'id-fotos';
-                    pID.textContent = `ID: ${id.value}`;
+                    pID.textContent = `${id.value}`;
                     // pID.innerHTML = `ID: ${id.value}`;
 
 
@@ -543,13 +665,15 @@
                 if (!resposta.ok) {
                     const erro = await resposta.json().catch(() => ({}));
                     console.error(`ERRO HTTP: ${resposta.status}: MSG: ${erro.msg}`);
-                    alert(`ERRO ao se comunicar com a API, verifique sua conexão`);
+                    // alert(`ERRO HTTP: ${resposta.status}: MSG: ${erro.msg}`);
+                    notificacao(`${resposta.status}; ${erro.msg || "Erro ao enviar"}`,'error');
                     return;
                 }
 
                 const retorno = await resposta.json();
                 if (retorno.success) {
                     console.log(`Mensagem do servidor: ${retorno.msg}`);
+                    notificacao(`${retorno.msg}`,"success");
 
                     id.value = '';
                     legenda.value = '';
@@ -558,29 +682,22 @@
 
                 } else {
                     console.log(`ERRO do servidor: ${retorno.msg}`);
-                    alert(`ERRO do servidor: ${retorno.msg}`);
+                    notificacao(`${retorno.msg}`,'error');
                 }
 
             } catch (erro) {
                 console.log(`ERRO ao processar os dados. Verifique a conexão. MSG: ${erro}`);
-                alert(`ERRO ao processar os dados. Verifique sua conexão: ${erro}`);
+                // alert(`ERRO ao processar os dados. Verifique sua conexão: ${erro}`);
+                notificacao(`Verifique sua conexão, ${erro}`,'error');
             }
         }
 
 
+
+
+
         let grupo = document.getElementById('fotoscapturadas');
         grupo.addEventListener('click', function(event) {
-            // alert('0000');
-            
-            // console.log(' ');
-            // console.log(' ');
-            // console.log('grupo: ',grupo);
-            // console.log(' ');
-            // console.log(' ');
-            // console.log(' ');
-            // console.log('onde toquei: ', event.target);
-            // console.log(' ');
-            // console.log(' ');
         
             let objeto = event.target;
 
@@ -634,7 +751,7 @@
                     try {
                         const stream = await navigator.mediaDevices.getUserMedia({
                             video: {
-                                facingMode: 'user' // 'user' para câmera frontal e 'environment' para câmera traseira
+                                facingMode: 'environment' // 'user' para câmera frontal e 'environment' para câmera traseira
                             }
                         });
                         video.srcObject = stream;

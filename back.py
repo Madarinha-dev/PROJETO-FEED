@@ -264,6 +264,10 @@ def album():
         if conectar:
             conectar.close()
 
+# ERRO DETECTADO, FUNÇÃO: ALBUM
+# TIPO DO ERRO: <class 'ValueError'>
+# DESCRIÇÃO: invalid literal for int() with base 10: 'ID: 16'
+
         
 
 @app.route('/exibir_tabela_frequencia', methods=['GET'])
@@ -560,8 +564,8 @@ def adicionarAtividade():
         criar_tabela_atividade()
         conectar = conectar_db()
         cursor = conectar.cursor()
-
-        if type(dados.get('tipoDeservico')) is not str or not dados.get('tipoDeservico').strip():
+        
+        if type(dados.get('tipoDeServico')) is not str:
             return jsonify({
                 "success":False,
                 "msg":"o Input do tipo de serviço tem que ser do tipo texto"
@@ -766,6 +770,8 @@ def excluiratividade():
 
 
 
+
+
 @app.route('/alterarfuncionario', methods=['POST'])
 def alterarfuncionario():
     conectar = None
@@ -794,7 +800,7 @@ def alterarfuncionario():
         nomenovo = novodados.get('nome').strip()
 
         
-        if type(nomenovo) is not str:
+        if type(nomenovo) != str:
             return jsonify({
                 "success":False,
                 "msg":"O input nome tem que ser do tipo Texto"
@@ -803,8 +809,6 @@ def alterarfuncionario():
 
         senhanovo = novodados.get('senha').strip()
 
-        
-        
         if type(senhanovo) is not str:
             return jsonify({
                 "success":False,
@@ -823,18 +827,18 @@ def alterarfuncionario():
         
         cpfnovo = cpfnovo.replace('.', '').replace('-','').replace(' ', '')
          
-        if not cpfnovo.isdigit():
-            return jsonify({
-                "success":False,
-                "msg":"O CPF deve conter apenas números"
-            }), 400
+        # if not cpfnovo.isdigit() or cpfnovo != '':
+        #     return jsonify({
+        #         "success":False,
+        #         "msg":"O CPF deve conter apenas números"
+        #     }), 400
         
 
-        if len(cpfnovo) != 11:
-            return jsonify({
-                "success":False,
-                "msg":"Quantidade inválida de dígitos"
-            }), 400
+        # if len(cpfnovo) != 11:
+        #     return jsonify({
+        #         "success":False,
+        #         "msg":"Quantidade inválida de dígitos"
+        #     }), 400
 
 
         funcaonovo = novodados.get('funcao').strip()
@@ -913,88 +917,96 @@ def alterarfuncionario():
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 @app.route('/alterarAtividade', methods=['POST'])
 def alterarAtividade():
-    print(')')
-    print(')')
-    print(')')
-    print('FUNÇÃO ALTERAR ATIVIDADE')
-    print(')')
-    print(')')
-    print(')')
+    conectar = None
 
-   
-    dadosnovos = request.get_json()
-    id = dadosnovos['id']
-    servicoatual = dadosnovos['servico']
-    desscricaoatual = dadosnovos['descricao']
-    pessoaatual = dadosnovos['pessoas']
-    armazennaatual = dadosnovos['armazenna']
-    empresaatual = dadosnovos['empresa']
-    dataatual = dadosnovos['data']
-    statusatual = dadosnovos['status']
-
-    conectar = conectar_db()
-    cursor = conectar.cursor()
-    cursor.execute("SELECT * FROM atividades WHERE id_atividade = ?", (id, ))
-    tabela = cursor.fetchone()
+    try:
+        dadosnovos = request.get_json()
+        id_ = (dadosnovos.get('id') or '').strip()
+        servicoatual = (dadosnovos.get('servico') or '').strip()
+        descricaoatual = (dadosnovos.get('descricao') or '').strip()
+        pessoaatual = (dadosnovos.get('pessoas') or '').strip()
+        armazennaatual = (dadosnovos.get('armazenna') or '').strip()
+        empresaatual = (dadosnovos.get('empresa') or '').strip()
+        dataatual = (dadosnovos.get('data') or '').strip()
+        statusatual = (dadosnovos.get('status') or '').strip()
 
 
-    if tabela is None:
-        conectar.commit()
-        conectar.close()
+        # Validar se está vazio 
+        if id_ == None:
+            return jsonify({
+                "success":False,
+                "msg":"ID não fornecido, PFV insira um valor"
+            }), 400
         
-    else:
+        # Validar se veio em forma de str e converter pra int, e se n der é inválido
+        try:
+            id = int(id_)
+
+        except ValueError:
+            return jsonify({
+                "success":False,
+                "msg":f"ID: {id_} inválido tem que ser um número inteiro"
+            }), 400
+        
+        
+        if type(servicoatual) is not str and servicoatual is not None:
+            return jsonify({
+                "success":False,
+                "msg":"Dado inválido, o input serviço tem que ser do tipo text"
+            }), 400
+    
+
+        if type(descricaoatual) is not str and descricaoatual is not None:
+            return jsonify({
+                "success":False,
+                "msg":"Dado inválido, input descrição tem que ser do tipo texto"
+            }), 400        
+        
+        
+        if type(pessoaatual) is not str and pessoaatual is not None:
+            return jsonify({
+                "success":False,
+                "msg":"Dado inválido, o input Pessoa tem que ser do tipo texto"
+            }), 400
+        
+        if type(armazennaatual) is not str and armazennaatual is not None:
+            return jsonify({ 
+                "success":False,
+                "msg":"Dado inválido, o input armazenna tem que ser do tipo texto"
+            }), 400
+        
+        if type(empresaatual) is not str and empresaatual is not None:
+            return jsonify({
+                "success":False,
+                "msg":"Dado inválido, o input empresa tem que ser do tipo texto;"
+            }), 400
+        
+        if type(dataatual) is not str and dataatual is not None:
+            return jsonify({
+                "success":False,
+                "msg":"Dado inválido, o input data, tem que ser formatado para str"
+            }), 400
+        
+        if type(statusatual) is not str and statusatual is not None:
+            return jsonify({
+                "success":False,
+                "msg":"Dado inválido, o input status, tem que ser formatado para str"
+            }), 400
+        
+        
+        conectar = conectar_db()
+        cursor = conectar.cursor()
+        cursor.execute("SELECT * FROM atividades WHERE id_atividade = ?", (id, ))
+        tabela = cursor.fetchone()
+
+        if tabela == None:
+            return jsonify({
+                "success":False,
+                "msg":f"Atividade de id:{id_} não localizado"
+            }), 404
+        
         id = tabela[0]
         servico = tabela[1]
         descricao = tabela[2]
@@ -1003,17 +1015,18 @@ def alterarAtividade():
         empresa = tabela[5]
         data = tabela[6]
         status = tabela[7]
-        
+
         if servicoatual == '':
             print('serviço vazio')
         else:
             servico = servicoatual
 
-        if desscricaoatual == '':
-            print('descrição vazio')
+        if descricaoatual == '':
+             print('descrição vazio')
+        
         else:
-            descricao = desscricaoatual
-                
+            descricao = descricaoatual
+
         if pessoaatual == '':
             print('pessoa vazio')
         else:
@@ -1038,227 +1051,264 @@ def alterarAtividade():
             print('status vazio')
         else:
             status = statusatual
-            
+
         cursor.execute("UPDATE atividades SET id_atividade = ?, tipo_de_servico = ?, descricao = ?, quem = ?, armazenna = ?, empresa = ?, data = ?, STATUS = ? WHERE id_atividade = ?", (id, servico, descricao, pessoa, armazenna, empresa, data, status, id))
         conectar.commit()
-        conectar.close()
         
-    return jsonify({
-        'msg':'ignore',
-        'texto':'ignora esse return, se der errado, vai mostrar de outra forma, obg...'
-    }), 200
+        return jsonify({
+            "success":True,
+            "msg":"Atividade modificada com successo"
+        }), 200
+    
+    except Exception as erro:
+        if conectar:
+            conectar.rollback()
 
+        print('=============================================')
+        print(f'ERRO DETECTADO, FUNÇÃO: MODIFICAR ATIVIDADE')
+        print(f'TIPO DO ERRO: {type(erro)}')
+        print(f'DESCRIÇÃO: {str(erro)}')
+        print('=============================================')
 
+        return jsonify({
+            "success":False,
+            "msg":"Erro ao executar a função MODIFICAR ATIVIDADE"
+        }), 500
+    
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    finally:
+        if conectar:
+            conectar.close()
+    
+    
 
 
 
 
 @app.route('/ordenarAtividades', methods=['POST'])
 def ordenarAtividades():
-    dados = request.get_json()
-    orde = dados['ordenar_por']
-    print(')')
-    print(')')
-    print(')')
-    print('FUNÇÃO ORDENAR ATIVIDADES')
-    print(')')
-    print(')')
-    print(f'dados: {dados}')
-    print('')
-    print(f'Ordenar por: {orde}')
-    print('aqui vou montar a lógica para ordenar os dados e mandar para o FRONT END')
 
-    conectar = conectar_db()
-    cursor = conectar.cursor()
+    conectar = None
 
-    if orde == 'id_atividade':
-        cursor.execute("SELECT * FROM atividades ORDER BY id_atividade")
+    try:
+        dados = request.get_json()
+        orde = dados.get('ordenar_por')
+        print(f'Dados: {dados};           Ordernar por: {orde}')
+        conectar = conectar_db()
+        cursor = conectar.cursor()
 
-    elif orde == 'tipo_de_servico':
-        cursor.execute("SELECT * FROM atividades ORDER BY tipo_de_servico")
+        if orde == 'id_atividade':
+            cursor.execute("SELECT * FROM atividades ORDER BY id_atividade")
 
-    elif orde == 'descricao':
-        cursor.execute("SELECT * FROM atividades ORDER BY descricao")
+        elif orde == 'tipo_de_servico':
+            cursor.execute("SELECT * FROM atividades ORDER BY tipo_de_servico")
 
-    elif orde == 'quem':
-        cursor.execute("SELECT * FROM atividades ORDER BY quem")
+        elif orde == 'descricao':
+            cursor.execute("SELECT * FROM atividades ORDER BY descricao")
 
-    elif orde == 'armazenna':
-        cursor.execute("SELECT * FROM atividades ORDER BY armazenna")
+        elif orde == 'quem':
+            cursor.execute("SELECT * FROM atividades ORDER BY quem")
 
-    elif orde == 'empresa':
-        cursor.execute("SELECT * FROM atividades ORDER BY empresa")
+        elif orde == 'armazenna':
+            cursor.execute("SELECT * FROM atividades ORDER BY armazenna")
 
-    elif orde == 'data':
-        cursor.execute("SELECT * FROM atividades ORDER BY data")
+        elif orde == 'empresa':
+            cursor.execute("SELECT * FROM atividades ORDER BY empresa")
 
-    elif orde == 'STATUS':
-        cursor.execute("SELECT * FROM atividades ORDER BY STATUS")
-    else:
-        cursor.execute("SELECT * FROM atividades ORDER BY id_atividade") 
+        elif orde == 'data':
+            cursor.execute("SELECT * FROM atividades ORDER BY data")
 
-    ordenado = cursor.fetchall()
-    nova_lista = []
-    for a in ordenado:
-        dicionario = {
-            'id_atividade':a[0],
-            'tipo_de_servico':a[1],
-            'descricao':a[2],
-            'quem':a[3],
-            'armazenna':a[4],
-            'empresa':a[5],
-            'data':a[6],
-            'status':a[7]
-        }
-        nova_lista.append(dicionario)
-
-    return jsonify(nova_lista), 200
-
-
-
+        elif orde == 'STATUS':
+            cursor.execute("SELECT * FROM atividades ORDER BY STATUS")
+        else:
+            cursor.execute("SELECT * FROM atividades ORDER BY id_atividade") 
         
+        ordenado = cursor.fetchall()
+        nova_lista = []
+
+        for a in ordenado:
+            dicionario = {
+                'id_atividade':a[0],
+                'tipo_de_servico':a[1],
+                'descricao':a[2],
+                'quem':a[3],
+                'armazenna':a[4],
+                'empresa':a[5],
+                'data':a[6],
+                'status':a[7]
+            }
+            nova_lista.append(dicionario)
+
+        return jsonify({
+            "success":True,
+            "msg":f"Atividades ordenadas por: ${orde}",
+            "lista":nova_lista
+        }), 200
+
+    except Exception as erro:
+        if conectar:
+            conectar.rollback()
+
+        print('=============================================')
+        print(f'ERRO DETECTADO, FUNÇÃO: ORDENAR ATIVIDADE')
+        print(f'TIPO DO ERRO: {type(erro)}')
+        print(f'DESCRIÇÃO: {str(erro)}')
+        print('=============================================')
+
+        return jsonify({
+            "success":False,
+            "msg":"Erro ao executar a função ORDENAR ATIVIDADE"
+        }), 500        
+
+    finally:
+        if conectar:
+            conectar.close()
 
 
+
+
+    
 @app.route('/ordenarfuncionarios', methods=['POST'])
 def ordenarfuncionarios():
-    dados = request.get_json()
-    print(")")
-    print(")")
-    print('FUNção /ordernarFuncionarios')
-    print(")")
-    print(")")
-    print(")")
-    print(")")
-    print(f'dados informados: {dados}')
-    conectar = conectar_db()
-    cursor = conectar.cursor()
 
-    if dados['ordenar_por'] == 'nome':
-        cursor.execute("SELECT * FROM funcionarios_cadastrados ORDER BY nome")
+    conectar = None
 
-    elif dados['ordenar_por'] == 'senha':
-        cursor.execute("SELECT * FROM funcionarios_cadastrados ORDER BY senha")
+    try:
+        dados = request.get_json()
+        print(f'Dados informados: {dados}')
+        conectar = conectar_db()
+        cursor = conectar.cursor()
+
+        orde = dados.get('ordenar_por')
+
+        if orde == 'nome':
+            cursor.execute("SELECT * FROM funcionarios_cadastrados ORDER BY nome")
+
+        elif orde == 'senha':
+            cursor.execute("SELECT * FROM funcionarios_cadastrados ORDER BY senha")
     
-    elif dados['ordenar_por'] == 'cpf':
-        cursor.execute("SELECT * FROM funcionarios_cadastrados ORDER BY cpf")
+        elif orde == 'cpf':
+            cursor.execute("SELECT * FROM funcionarios_cadastrados ORDER BY cpf")
 
-    elif dados['ordenar_por'] == 'funcao':
-        cursor.execute("SELECT * FROM funcionarios_cadastrados ORDER BY funcao")
-    else:
-        cursor.execute("SELECT * FROM funcionarios_cadastrados ORDER BY id_funcionario")
+        elif orde == 'funcao':
+            cursor.execute("SELECT * FROM funcionarios_cadastrados ORDER BY funcao")
+        else:
+            cursor.execute("SELECT * FROM funcionarios_cadastrados ORDER BY id_funcionario")
 
-    orde = cursor.fetchall()
+        ordenados = cursor.fetchall()
+        dados_para_json = []
 
-    dados_para_json = []
-    for a in orde:
+        for a in ordenados:
+            dicionario = {
+                "id":a[0],
+                "nome":a[1],
+                "senha":a[2],
+                "cpf":a[3],
+                "funcao":a[4],
+            }
+            dados_para_json.append(dicionario)
+        return jsonify({
+            "success":True,
+            "msg":"Funcionários ordenados com SUCCESSO",
+            "lista":dados_para_json
+        }), 200
 
-        dicionario = {
-            "id": a[0],
-            "nome": a[1],
-            "senha": a[2],
-            "cpf": a[3],
-            "funcao": a[4]
-        }
-        dados_para_json.append(dicionario)
+    except Exception as erro:
+        if conectar:
+            conectar.rollback()
 
-    return jsonify(dados_para_json), 200
+        print('=============================================')
+        print(f'ERRO DETECTADO, FUNÇÃO: ORDENAR FUNCIONÁRIOS')
+        print(f'TIPO DO ERRO: {type(erro)}')
+        print(f'DESCRIÇÃO: {str(erro)}')
+        print('=============================================')
+
+        return jsonify({
+            "success":False,
+            "msg":"Erro ao executar a função ORDENAR FUNCIONÁRIOS"
+        }), 500
+        
+
+    finally:
+        if conectar:
+            conectar.close()
 
 
 
 
 
 
-    
 
 @app.route('/mostrar_atividades', methods=['POST'])
-def mostrar_tabela_eletrica():
-    dados = request.get_json()
-    print(')(')
-    print(')(')
-    print(')(')
-    # print(f'DADOS: {dados}')
-    # DADOS: {'msg': 'atividades de elétrica'}
+def mostrar_atividades():
+    conectar = None
 
-    conectar = conectar_db()
-    cursor = conectar.cursor()
+    try:
+        dados = request.get_json()
+        conectar = conectar_db()
+        cursor = conectar.cursor()
+        dados_para_json = []
 
+        msg = dados.get('msg')
 
-    dados_para_json = []
-
-    if dados['msg'] == 'atividades de elétrica':
-        cursor.execute("SELECT id_atividade, descricao, quem, armazenna, empresa, data, STATUS FROM atividades WHERE tipo_de_servico = 'ELÉTRICA'")
+        if msg == 'atividades de elétrica':
+            cursor.execute("SELECT id_atividade, descricao, quem, armazenna, empresa, data, STATUS FROM atividades WHERE tipo_de_servico = 'ELÉTRICA'")
+        
+        elif msg == 'atividades de mecanica':
+            cursor.execute("SELECT id_atividade, descricao, quem, armazenna, empresa, data, STATUS FROM atividades WHERE tipo_de_servico = 'MECÂNICA'" )
+            
+        elif msg == 'atividades de pintura':
+            cursor.execute("SELECT id_atividade, descricao, quem, armazenna, empresa, data, STATUS FROM atividades WHERE tipo_de_servico = 'PINTURA'")
+            
+        elif msg == 'atividades de telhado':
+            cursor.execute("SELECT id_atividade, descricao, quem, armazenna, empresa, data, STATUS FROM atividades WHERE tipo_de_servico = 'TELHADO'")
+            
+        else:
+            return jsonify({
+                "success":False,
+                "msg":"erro ao identificar qual área da atividade pegar"
+            }), 404
+        
         resultado = cursor.fetchall()
+        for a in resultado:
+            dicionario = {
+                'id':a[0],
+                'descricao':a[1],
+                'quem':a[2],
+                'armazenna':a[3],
+                'empresa':a[4],
+                'data':a[5],
+                'status':a[6]
+            }
+            dados_para_json.append(dicionario)
+        
+        return jsonify({
+            "success":True,
+            "msg":"Atividade localizadas com success.",
+            "lista":dados_para_json
+        }), 200
+    # return jsonify(dados_para_json), 200
         
         
-    elif dados['msg'] == 'atividades de mecanica':
-        cursor.execute("SELECT id_atividade, descricao, quem, armazenna, empresa, data, STATUS FROM atividades WHERE tipo_de_servico = 'MECÂNICA'" )
-        resultado = cursor.fetchall()
+    except Exception as erro:
+        if conectar:
+            conectar.rollback()
 
+        
+        print('=============================================')
+        print(f'ERRO DETECTADO, FUNÇÃO: MOSTRAR ATIVIDADES')
+        print(f'TIPO DO ERRO: {type(erro)}')
+        print(f'DESCRIÇÃO: {str(erro)}')
+        print('=============================================')
 
-    elif dados['msg'] == 'atividades de pintura':
-        cursor.execute("SELECT id_atividade, descricao, quem, armazenna, empresa, data, STATUS FROM atividades WHERE tipo_de_servico = 'PINTURA'")
-        resultado = cursor.fetchall()
+        return jsonify({
+            "success":False,
+            "msg":"Erro ao executar a função MOSTRAR ATIVIDADES"
+        }), 500
 
-
-    elif dados['msg'] == 'atividades de telhado':
-        cursor.execute("SELECT id_atividade, descricao, quem, armazenna, empresa, data, STATUS FROM atividades WHERE tipo_de_servico = 'TELHADO'")
-        resultado = cursor.fetchall()
-
-
-    # caso especial pós eu preciso de todas as áreas
-    # elif dados['msg'] == 'atividades de relatório':
-    #     cursor.execute("")
-
-    elif dados['msg'] == 'atividades de montagem':
-        cursor.execute("SELECT id_atividade, descricao, quem, armazenna, empresa, data, STATUS FROM atividades WHERE tipo_de_servico = 'MONTAGEM'")
-        resultado = cursor.fetchall()
-
-    for a in resultado:
-        dicionario = {
-            'id':a[0],
-            'descricao':a[1],
-            'quem':a[2],
-            'armazenna':a[3],
-            'empresa':a[4],
-            'data':a[5],
-            'status':a[6]
-        }
-        dados_para_json.append(dicionario)
-    return jsonify(dados_para_json), 200
-
+    finally:
+        if conectar:
+            conectar.close()
 
 
 
@@ -1360,6 +1410,9 @@ def adm():
     return render_template('adm.html')
 
 
+
+# UMA FORMA ESTRANHA DE FAZER CONDICIONAL
+# --> status_final = status_novo if status_novo else status_existente
 
 
 

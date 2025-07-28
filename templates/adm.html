@@ -246,11 +246,78 @@
             background-color: rgb(59, 59, 59);
         }
 
+
+        #notificacao_global {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            width: fit-content; /* novo para mim */
+            max-width: 90%;
+            pointer-events: none; /* novo para mim */
+
+            padding: 12px 25px;
+            border-radius: 8px;
+            /* box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); */
+            color: white;
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+
+            display: flex;
+            align-items: center; /* alinhamento vertical */
+            gap: 10px;
+
+            /* opacity: 0; */
+            /* transform: translateX(-50%) translateY(-20px); */
+            transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+        }
+
+
+        #simbolo_da_notificacao {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin: 0;
+            line-height: 1;
+
+        }
+
+        #mensagem {
+            font-size: 1em;
+            font-weight: bold;
+            text-align: center;
+            margin: 0;
+        }
+
+        .notificacao_success {
+            background-color: #28a745;
+        }
+
+        .notificacao_falha {
+            background-color: #dc3545;
+        }
+
+        .notificacao_visivel {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0); /* DESLIZA PARA A POSICÃO FINAL */
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .notificacao_invisivel {
+            opacity: 0;
+            transform: translateX(-50%) translateY(-20px); /* VOLTA PARA A POSICÃO INICIAL */
+        }
         
 
     </style>
 </head>
 <body>
+
+    <div id="notificacao_global">
+    <p id="simbolo_da_notificacao"></p>
+    <p id="mensagem"></p>
+   </div>
+
+
     <div id="superior">
         <div id="controle">Sala de Controle</div>
     </div>
@@ -483,7 +550,7 @@
             
              <select name="" id="selectTipodeServico" style="
              width: 160px;">
-                <option value="">TIPO DE SERVIÇO</option>
+                <option value="vazio">TIPO DE SERVIÇO</option>
                 <option value="MECÂNICA">Mecânica</option>
                 <option value="ELETRICA">Elétrica</option>
                 <option value="PINTURA">Pintura</option>
@@ -723,6 +790,52 @@
         let tbodyfrequencia = document.getElementById('tbodyfrequencia');
         let divAlbum = document.getElementById('album'); // onde vou colocar os itens (divFilhos)
 
+
+        function notificacao(texto, status, duration = 3000) {
+        const container_da_notificacao = document.getElementById('notificacao_global');
+        const simbolo = document.getElementById('simbolo_da_notificacao');
+        const mensagem = document.getElementById('mensagem');
+
+        if (!container_da_notificacao || !simbolo || !mensagem) {
+            console.error(`Um ou mais elementos de notificação não foram encontrados`);
+            return;
+        }
+
+
+        if (status === "success") {
+            simbolo.textContent = '✔';
+        } else if (status === "error") {
+            simbolo.textContent = '✖';
+        } else {
+            simbolo.textContent = '';
+        }
+
+        mensagem.textContent = texto;
+
+        container_da_notificacao.classList.remove('notificacao_success', 'notificacao_falha');
+        if (status === 'success') {
+            container_da_notificacao.classList.add('notificacao_success');
+        } else if (status === 'error') {
+            container_da_notificacao.classList.add('notificacao_falha');
+        } 
+
+
+        container_da_notificacao.classList.add('notificacao_visivel');
+        container_da_notificacao.classList.remove('notificacao_invisivel');
+
+        setTimeout(() => {
+            container_da_notificacao.classList.remove('notificacao_visivel');
+            container_da_notificacao.classList.add('notificacao_invisivel');
+
+            setTimeout(() => {
+                simbolo.textContent = '';
+                mensagem.textContent = '';
+            }, 500)
+        }, duration);
+    }
+
+
+
         function excluirCima(event) {
             // alert('em cima');
             if (event.target.tagName == 'BUTTON') {
@@ -768,7 +881,8 @@
 
                 if (!divDoRegistro) {
                     console.log('ERRO: Não foi possível encontrar o conteiner do registro');
-                    alert('Não foi possível excluir esse registro, informações incompletas');
+                    // alert('');
+                    notificacao(`Não foi possível excluir esse registro, informações incompletas`,'error');
                     return;
                 }
 
@@ -777,7 +891,8 @@
 
                 if (!idDoRegistro) {
                     console.log('ERRO: ID inválido ou vázio');
-                    alert('Não foi possível exluir esse registro. ID inválido');
+                    // alert('Não foi possível exluir esse registro. ID inválido');
+                    notificacao(`Não foi possível excluir esse registro. ID inválido`,'error');
                 }
 
                 const dadosParaEnviar = {'alt':idDoRegistro};
@@ -793,24 +908,29 @@
                 if (!resultado.ok) {
                     const erro = await resultado.json().catch(() => ({}));
                     console.error(`ERRO HTTP: ${resultado.status}: MSG: ${erro.msg}`);
-                    alert('ERRO ao se comunicar com a API, verifique sua conexão');
+                    // alert(`ERRO HTTP: ${resultado.status}: MSG: ${erro.msg}`);
+                    notificacao(`${resultado.status}; ${erro.msg || "ERRO ao excluir"}`,'error');
                     return;
                 }
 
                 const retorno = await resultado.json();
                 if (retorno.success) {
                     console.log(`MENSAGEM DO SERVIDOR: ${retorno.msg}`);
-                    alert(`MENSAGEM: ${retorno.msg}`);
+                    // alert(`MENSAGEM: ${retorno.msg}`);
+                    notificacao(`${retorno.success}; ${retorno.msg}`,'success');
                     divDoRegistro.remove();
+                    notificacao(`Imagem excluida`,'success');
 
                 } else {
                     console.log(`ERRO do backend: ${retorno.msg}`);
-                    alert(`ERRO AO EXCLUIR O REGISTRO, MENSAGEM: ${retorno.msg}`);
+                    // alert(`ERRO AO EXCLUIR O REGISTRO, MENSAGEM: ${retorno.msg}`);
+                    notificacao(`${retorno,msg}`,'error');
                 }
 
             } catch (erro) {
                 console.log('ERRO AO PROCESSAR OU SE CONECTAR COM O SERVIDOR');
-                console.error(`ERRO inesperado: ${erro}`);
+                // console.error(`ERRO inesperado: ${erro}`);
+                notificacao(`${erro}`,'error');
             }
         }
 
@@ -875,6 +995,7 @@
                 a.href = src;
                 a.download = `${dia}/${mes}/${ano}.jpeg`;
                 a.click();
+                notificacao(`Foto baixada`,'success');
                 
 
             } else if (event.target.tagName == 'IMG') {
@@ -898,6 +1019,7 @@
                 a.href = img.src;
                 a.download = `${dia}/${mes}/${ano}.jpeg`;
                 a.click();
+                notificacao(`Foto baixada`,'success');
             } 
 
         }
@@ -919,7 +1041,8 @@
                 if (!resultado.ok) {
                     const erro = await resultado.json().catch(() => ({}));
                     console.error(`ERRO HTTP: ${resultado.status}: MSG: ${erro.msg}`);
-                    alert(`ERRO ao se comunicar com a API, verifique sua conexão`);
+                    alert(`ERRO HTTP: ${resultado.status}: MSG: ${erro.msg}`);
+                    notificacao(`${resultado.status}; ${erro.msg || "Erro ao conectar"}`,'error');
                     return;
                 }
 
@@ -1017,17 +1140,20 @@
 
                     } else {
                         console.log('ERRO, o retorno deu Sucesso mas não é uma lista:',retorno);
-                        alert('ERRO, O retorno deu success, mas não retornou uma lista: ', retorno);
+                        // alert('ERRO, O retorno deu success, mas não retornou uma lista: ', retorno);
+                        notificacao(`Não é uma lista`,'error');
                     }
 
                 } else {
                     console.log(`ERRO do servidor: ${retorno.msg}`);
-                    alert(`ERRO do servidor: ${retorno.msg}`);
+                    // alert(`ERRO do servidor: ${retorno.msg}`);
+                    notificacao(`${retorno.msg}`,'error');
                 }
                
             } catch (erro) {
                 console.log(`ERRO ao processar os dados. Verifique a conexão. MSG: ${erro}`);
-                alert(`ERRO ao processar os dados. Verifique sua conexão: ${erro}`);
+                // alert(`ERRO ao processar os dados. Verifique sua conexão: ${erro}`);
+                notificacao(`${erro}; Verifique sua conexão`,'error');
             }
         }
         
@@ -1049,7 +1175,8 @@
                 if (!resposta.ok) {
                     const erro = await resposta.json().catch(() => ({}));
                     console.log(`ERRO HTTP: ${resposta.status}; MSG: ${erro.msg || 'Mensagem indisponível'}`);
-                    alert("ERRO ao Limpar os dados (frequência), Verifique sua conexão;");
+                    // alert("ERRO ao Limpar os dados (frequência), Verifique sua conexão;");
+                    notificacao(`Erro ao limpar a frequência, Verifique sua conexão`,'error');
                     return;
                 }
 
@@ -1057,16 +1184,19 @@
 
                 if (retorno.success) {
                     console.log(`SUCCESS: (TRUE); MSG: ${retorno.msg};`);
+                    notificacao(`${retorno.msg}`,'success');
                     
 
                 } else {
                     console.log(`SUCCESS: (FALSE); MSG: ${retorno.msg}`);
-                    alert(`SUCCESS: (FALSE); MSG: ${retorno.msg};`);
+                    // alert(`SUCCESS: (FALSE); MSG: ${retorno.msg};`);
+                    notificacao(`${retorno.msg}`,'error');
                 }
 
             } catch (erro) {
                 console.log(`ERRO ao processar ou se conectar ao servidor, ERRO: ${erro}`);
-                alert(`ERRO ao processar ou se conectar ao servidor, ERRO: ${erro}`);
+                // alert(`ERRO ao processar ou se conectar ao servidor, ERRO: ${erro}`);
+                notificacao(`${erro || "Erro com o servidor"}`,'error');
             }
         }
 
@@ -1085,7 +1215,7 @@
                 if (!resposta.ok) {
                     const erro = await resposta.json().catch(() => ({}));
                     console.error(`Erro HTTP: ${resposta.status}: MSG: ${erro.msg}`);
-                    alert('Erro ao carregar os dados, Verifique sua conexão');
+                    // alert('Erro ao carregar os dados, Verifique sua conexão');
                     return;
                 }
 
@@ -1113,16 +1243,18 @@
 
                     } else {
                         console.log('NENHUM REGISTRO ENCONTRADO PARA EXIBIR');
-                        alert('NENHUM REGISTRO ENCONTRADO PARA EXIBIR');
+                        // alert('NENHUM REGISTRO ENCONTRADO PARA EXIBIR');
                     }
 
                 } else {
                     console.error(`Erro do Backend (SUCCESSO: FALSE): ${DadosDaResposta.msg}`);
-                    alert(`ERRO do backend (SUCCESS: FALSE): ${DadosDaResposta.msg}`);
+                    // alert(`ERRO do backend (SUCCESS: FALSE): ${DadosDaResposta.msg}`);
+                    notificacao(`${DadosDaResposta.msg}`,'error');
                 }
             } catch (erro) {
                 console.log('ERRO ao processar ou se conectar ao servidor');
-                alert(`ERRO ao processar ou se conectar ao servidor`);
+                // alert(`ERRO ao processar ou se conectar ao servidor`);
+                notificacao(`Falha na conexão`,'error');
             }
         }
 
@@ -1132,85 +1264,104 @@
         setInterval(registro, 3000);
 
 
+
+
         async function tabelaAtividades() {
-        
-            const orde = {
-                ordenar_por: selecaoAtividade.value
-            }
+            try {
+                const orde = {
+                    ordenar_por: selecaoAtividade.value.trim()
+                }
 
-            const resposta = await fetch('/ordenarAtividades', {
-                method: 'POST',
-                headers: {
-                    'Content-Type':'application/json'
-                },
-                body: JSON.stringify(orde)
-            });
+                const resposta = await fetch('/ordenarAtividades', {method: "POST", headers: {"Content-Type":"application/json"}, body: JSON.stringify(orde)});
 
-            if (resposta.ok) {
-                const atividades = await resposta.json();
-                console.log('atividade'+atividades);
+                if (!resposta.ok) {
+                    const erro = await resposta.json().catch(() => ({}));
+                    console.error(`API: ORDENAR ATIVIDADES ERRO HTTP: ${resposta.status}; MSG: ${erro.msg || "Mensagem Indisponível"}`);
+                    return;
+                }
 
-                tbodyAtividades.innerHTML = '';
-                atividades.forEach(atividade => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                    <td>${atividade.id_atividade}</td>
-                    <td>${atividade.tipo_de_servico}</td>
-                    <td>${atividade.descricao}</td>
-                    <td>${atividade.quem}</td>
-                    <td>${atividade.armazenna}</td>
-                    <td>${atividade.empresa}</td>
-                    <td>${atividade.data}</td>
-                    <td id="n${atividade.status}">${atividade.status}</td>
-                    `;
-                    // <td id="n1">1</td>
-                    tbodyAtividades.appendChild(row)
-                });
+                const retorno = await resposta.json();
 
-            } else {
-                console.log('Erro ao exibir as atividades (servidor.LP- 655)');
+                if (retorno.success) {
+                    console.log(`SUCCESS: TRUE; MSG: ${retorno.msg}`);
+
+                    tbodyAtividades.innerHTML = '';
+                    
+                    retorno.lista.forEach(atividade => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                        <td>${atividade.id_atividade}</td>
+                        <td>${atividade.tipo_de_servico}</td>
+                        <td>${atividade.descricao}</td>
+                        <td>${atividade.quem}</td>
+                        <td>${atividade.armazenna}</td>
+                        <td>${atividade.empresa}</td>
+                        <td>${atividade.data}</td>
+                        <td id="n${atividade.status}">${atividade.status}</td>
+                        `;
+                        tbodyAtividades.appendChild(row)
+                    });
+
+                } else {
+                    console.log(`SUCCESS: FALSE; MSG: ${retorno.msg}`);
+                    // alert(`SUCCESS: FALSE; MSG: ${retorno.msg}`);
+                    notificacao(`${retorno.msg}`,'error');
+                }
+
+            } catch (erro) {
+                console.log('ERRO ao processar ou se conectar ao servidor');
+                // alert(`ERRO ao processar ou se conectar ao servidor`);
+                notificacao(`Erro na conexão`,'error');
             }
         }
+
             
 
         async function tabelafuncionario() {
-            // montar o pacote
-            const orde = {
-                ordenar_por: selecao.value
-            }
-            
-            const resposta = await fetch('/ordenarfuncionarios', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(orde)
-            });
+            try {
 
-            if (resposta.ok){
-                // alert("RECEBEMOS dados");
-                const funcionarios = await resposta.json();
-                console.log(funcionarios);
+                const orde = {
+                    ordenar_por: selecao.value.trim()
+                }
 
-                tbody.innerHTML = '';
-                funcionarios.forEach(funcionario => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                    <td>${funcionario.id}</td>
-                    <td>${funcionario.nome}</td>
-                    <td>${funcionario.senha}</td>
-                    <td>${funcionario.cpf}</td>
-                    <td>${funcionario.funcao}</td>
-                    `;
-                    tbody.appendChild(row);
-                });
-                
+                const resposta = await fetch('/ordenarfuncionarios', {method: "POST", headers: {"Content-Type":"application/json"}, body: JSON.stringify(orde)});
 
-            } else {
-                // alert("ERRO AO RECEBER A LISTA...(servidor)");
-                console.log("ERRO AO RECEBER A LISTA..(SERVIDOR)");
-            }
+                if (!resposta.ok) {
+                    const erro = await resposta.json().catch(() => ({}));
+                    console.error(`ERRO HTTP: ${resposta.status}; MSG: ${erro.msg || "Mensagem Indisponível"}`);
+                    return;
+                }
+
+                const retorno = await resposta.json();
+
+                if (retorno.success) {
+                    tbody.innerHTML = '';
+                    retorno.lista.forEach(funcionario => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                        <td>${funcionario.id}</td>
+                        <td>${funcionario.nome}</td>
+                        <td>${funcionario.senha}</td>
+                        <td>${funcionario.cpf}</td>
+                        <td>${funcionario.funcao}</td>
+                        `;
+                        tbody.appendChild(row);
+                    });
+                } else {
+                    console.log(`SUCCESS: FALSE; MSG: ${retorno.msg}`);
+                    // alert(`SUCCESS: FALSE; MSG: ${retorno.msg}`);
+                    notificacao(`${retorno.msg}`,'error');
+                    return;
+                }
+
+
+            } catch (erro) {
+                console.log('ERRO ao processar ou se conectar ao servidor');
+                // alert(`ERRO ao processar ou se conectar ao servidor`);
+                notificacao(`Erro de conexão`,'error');
+            } 
         }
+       
 
 
         function adicionarFuncionario() {
@@ -1271,7 +1422,8 @@
                     if (!resposta.ok) {
                         const erro = await resposta.json().catch(() => ({}));
                         console.error(`ERRO HTTP: ${resposta.status}; MSG: ${erro.msg || "Menssagem Indisponível"}`);
-                        alert(`ERRO ao se comunicar com a API, verifique sua conexão`);
+                        // alert(`ERRO HTTP: ${resposta.status}; MSG: ${erro.msg || "Menssagem Indisponível"}`);
+                        notificacao(`${resposta.status}; ${erro.msg || "ERRO ao se comunicar com o servidor"}`,'error');
                         return;
                     }
 
@@ -1279,6 +1431,7 @@
 
                     if (retorno.success) {
                         console.log(`Success ao processar os dados no servidor, MSG: ${retorno.msg}`);
+                        notificacao(`${retorno.msg}`,'success');
 
                         inputnome.value = '';
                         inputsenha.value = '';
@@ -1287,14 +1440,16 @@
 
                     } else {
                         console.log(`ERRO do servidor, MSG: ${retorno.msg};`);
-                        alert(`ERRO do servidor, MSG: ${retorno.msg};`);
+                        // alert(`ERRO do servidor, MSG: ${retorno.msg};`);
+                        notificacao(`${retorno.success}; ${retorno.msg}`,'error');
                     }
 
                 }
 
             } catch (erro) {
                 console.log(`ERRO ao processar os dados. Verifique a conexão. MSG: ${erro}`);
-                alert(`ERRO ao processar os dados. Verifique sua conexão: ${erro}`);
+                // alert(`ERRO ao processar os dados. Verifique sua conexão: ${erro}`);
+                notificacao(`Erro de conexão`,'error');
 
             } finally {
                 await tabelafuncionario();
@@ -1331,14 +1486,16 @@
                 let recado = document.getElementById("campovazioAtividade");
 
                 if (tipoDeServico.value == '' || descricao.value == '' || quem.value == '' || armazenna.value == '' || empresa.value == '' || data.value == '') {
-                    recado.style.display = 'block';
+                    // recado.style.display = 'block';
+                    notificacao(`Todos os campos são obrigatórios`,'error');
                     return;
 
                 } else {
-                    recado.style.display = 'none';
+                    // recado.style.display = 'none';
+                    notificacao(`Atividade adicionada`,'success');
 
                     const dados = {
-                        tipoDeservico: tipoDeServico.value,
+                        tipoDeServico:tipoDeServico.value,
                         descricao: descricao.value,
                         quem: quem.value,
                         armazenna: armazenna.value,
@@ -1358,7 +1515,8 @@
                     if (!resposta.ok) {
                         const erro = await resposta.json().catch(() => ({}));
                         console.error(`ERRO HTTP: ${resposta.status}; MSG: ${erro.msg || "Menssagem indisponível"}`);
-                        alert(`ERRO ao se comunicar com a API, Verifique sua conexão`);
+                        // alert(`ERRO ao se comunicar com a API, Verifique sua conexão`);
+                        notificacao(`${resposta.status}; ${resposta.msg || "Erro ao se comunicar com a API"}`,'error');
                         return;
                     }
 
@@ -1366,7 +1524,7 @@
 
                     if (retorno.success) {
                         console.log(`SUCCESS: TRUE; MSG: ${retorno.msg}`);
-
+                        notificacao(`${retorno.msg}`,'success');
 
 
                         tipoDeServico.value = '';
@@ -1377,16 +1535,17 @@
                         data.value = '';
                         
 
-
                     } else {
                         console.log(`SUCCESS: FALSE; MSG: ${retorno.msg}`);
-                        alert(`SUCCESS: FALSE; MSG: ${retorno.msg}`);
+                        // alert(`SUCCESS: FALSE; MSG: ${retorno.msg}`);
+                        notificacao(`${retorno.msg}`,'error');
                     }
 
                 }
             } catch (erro) {
                 console.log(`ERRO ao processar os dados. Verifique a conexão. MSG: ${erro}`);
-                alert(`ERRO ao processar os dados. Verifique sua conexão: ${erro}`);
+                // alert(`ERRO ao processar os dados. Verifique sua conexão: ${erro}`);
+                notificacao(`Erro de conexão`,'error');
 
             } finally {
                 await tabelaAtividades();
@@ -1439,7 +1598,8 @@
                     if (!resposta.ok) {
                          const erro = await resposta.json().catch(() => ({}));
                          console.error(`ERRO HTTP: ${resposta.status}; MSG: ${erro.msg || "Mensagem Indisponível"}`);
-                         alert(`ERRO ao se comunicar com a API excluir atividade, Verifique sua conexão`);
+                        //  alert(`ERRO ao se comunicar com a API excluir atividade, Verifique sua conexão`);
+                        notificacao(`${resposta.status}`,'error');
                          return;
                     }
 
@@ -1448,17 +1608,20 @@
                     if (retorno.success) {
                         console.log(`SUCCESS: TRUE; MSG: ${retorno.msg}`);
                         inputId.value = '';
+                        notificacao(`${retorno.msg}`,'success');
 
 
                     } else {
                         console.log(`SUCCESS: FALSE; MSG: ${retorno.msg}`);
-                        alert(`SUCCESS: FALSE; MSG: ${retorno.msg}`);
+                        // alert(`SUCCESS: FALSE; MSG: ${retorno.msg}`);
+                        notificacao(`${retorno.msg}`,'error');
                     }
                 }
 
             } catch (erro) {
                 console.log(`ERRO ao processar os dados. Verifique a conexão. MSG: ${erro}`);
-                alert(`ERRO ao processar os dados. Verifique sua conexão: ${erro}`);
+                // alert(`ERRO ao processar os dados. Verifique sua conexão: ${erro}`);
+                notificacao(`${erro||"erro de conexão"}`, 'error');
 
             } finally {
                 await tabelaAtividades();
@@ -1479,76 +1642,91 @@
             } else {
                 aba_alterar_atividades.style.display = 'none';
             }
-
-
         }
+
+
 
 
         async function alterarAtividade() {
-            let id = document.getElementById('inputAlterarID');
-            let servico = document.getElementById('alterarTipodeservico');
-            let descricao = document.getElementById('inputAlterarDescricao');
-            let pessoas = document.getElementById('inputAlterarPessoasAtividade');
-            let armazenna = document.getElementById('alterarArmazenna');
-            let empresa = document.getElementById('alterarEmpresaAtividade');
-            let data = document.getElementById('AlterarDataAtividade');
-            let status = document.getElementById('AlterarStatusAtividade');
-            let recado = document.getElementById('recadoAlterarAtividade');
+            try {
+                let id = document.getElementById('inputAlterarID');
+                let servico = document.getElementById('alterarTipodeservico');
+                let descricao = document.getElementById('inputAlterarDescricao');
+                let pessoas = document.getElementById('inputAlterarPessoasAtividade');
+                let armazenna = document.getElementById('alterarArmazenna');
+                let empresa = document.getElementById('alterarEmpresaAtividade');
+                let data = document.getElementById('AlterarDataAtividade');
+                let status = document.getElementById('AlterarStatusAtividade');
+                let recado = document.getElementById('recadoAlterarAtividade');
 
-            if (id.value == '') {
-                recado.style.display = 'block';
-            } else {
-                recado.style.display = 'none';
 
-                const dados = {
-                    id: id.value,
-                    servico: servico.value,
-                    descricao: descricao.value,
-                    pessoas: pessoas.value,
-                    armazenna: armazenna.value,
-                    empresa:empresa.value,
-                    data:data.value,
-                    status:status.value
-                }
+                if (id.value.trim() == '') {
+                    recado.style.display = 'block';
 
-                const resposta = await fetch('/alterarAtividade', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type':'application/json'
-                    },
-                    body: JSON.stringify(dados)
-                });
-
-                if (resposta.ok) {
-                    // deu certo
-
-                    const resultado = await resposta.json()
-                    // aqui faço a manipulação
                 } else {
-                    // deu errado
-                    // posso colocar um recado aqui se eu quiser talvez
-                    alert("ERRO AO ALTERAR A ATIVIDADE (servidor-955)....");
-                }
-            }
+                    recado.style.display = 'none';
 
-            id.value = '';
-            servico.value = '';
-            descricao.value = '';
-            pessoas.value = '';
-            armazenna.value = '';
-            empresa.value = '';
-            data.value = '';
-            status.value = '';
-            await tabelaAtividades();
-            // atualizar a tabela que aparece para ele
+                    const dados = {
+                        id:id.value.trim(),
+                        servico: servico.value.trim(),
+                        descricao: descricao.value.trim(),
+                        pessoas: pessoas.value.trim(),
+                        armazenna: armazenna.value.trim(),
+                        empresa:empresa.value.trim(),
+                        data:data.value.trim(),
+                        status:status.value.trim()
+                    }
+
+                    const resposta = await fetch('/alterarAtividade', {
+                        method: "POST",
+                        headers: {
+                            "Content-Type":"application/json"
+                        },
+                        body: JSON.stringify(dados)
+                    });
+
+                    if (!resposta.ok) {
+                        const erro = await resposta.json().catch(() => ({}));
+                        console.error(`ERRO HTTP: ${resposta.status}; MSG: ${erro.msg || "Mensagem indisponível"}`);
+                        // alert(`ERRO HTTP: ${resposta.status}; MSG: ${erro.msg || "Mensagem indisponível"}`);
+                        notificacao(`${resposta.status}`,'error');
+                        return;
+                    }
+
+                    const retorno = await resposta.json();
+
+                    if (retorno.success) {
+                        console.log(`SUCCESS: TRUE; MSG: ${retorno.msg}`);
+                        notificacao('Atividade alterada', 'success');
+                        
+                        id.value = '';
+                        servico.value = '';
+                        descricao.value = '';
+                        pessoas.value = '';
+                        armazenna.value = '';
+                        empresa.value = '';
+                        data.value = '';
+                        status.value = '';
+
+
+                    } else {
+                        console.log(`FUNÇÃO: ALTERAR ATIVIDADE; SUCCESS: FALSE; MSG: ${retorno.msg};`);
+                        // alert(`FUNÇÃO: ALTERAR ATIVIDADE; SUCCESS: FALSE; MSG: ${retorno.msg};`);
+                        notificacao(`${retorno.msg}`,'error');
+                        return;
+                    }
+
+
+                }
+            } catch (erro) {
+                console.log(`ERRO ao processar os dados. Verifique a conexão. MSG: ${erro}`);
+                // alert(`ERRO ao processar os dados. Verifique sua conexão: ${erro}`);
+                notificacao(`${erro || "Erro de conexão"}`,'error');
+            } finally {
+                await tabelaAtividades();
+            }
         }
         
-
-
-
-
-
-
 
         function excluirFuncionario(){
             let aba_excluirFuncionario = document.getElementById("aba-excluir-funcionario");
@@ -1597,7 +1775,8 @@
                     if (!resposta.ok) {
                         const erro = await resposta.json().catch(() => ({}));
                         console.error(`ERRO HTTP: ${resposta.status}; MSG: ${erro.msg || "Menssagem Indisponível"}`);
-                        alert(`ERRO HTTP: ${resposta.status}; MSG: ${erro.msg || "Menssagem Indisponível"}`);
+                        // alert(`ERRO HTTP: ${resposta.status}; MSG: ${erro.msg || "Menssagem Indisponível"}`);
+                        notificacao(`${resposta.status}; ${erro.msg || "Erro ao se comunicar com a API"}`,'error');
                         return;
                     }
 
@@ -1605,18 +1784,22 @@
 
                     if (retorno.success) {
                         console.log(`Funcionário deletado com success; MSG: ${retorno.msg}`);
+                        notificacao(`${retorno.msg}`,'success');
                         inputid.value = '';
 
 
                     } else {
                         console.log(`ERRO do servidor: ${retorno.msg}`);
-                        alert(`ERRO do servidor: ${retorno.msg}`);
+                        // alert(`ERRO do servidor: ${retorno.msg}`);
+                        notificacao(`${retorno.msg}`,'error');
                     }
                 }
 
             } catch (erro) {
                 console.log(`ERRO ao processar os dados. Verifique a conexão. MSG: ${erro}`);
-                alert(`ERRO ao processar os dados. Verifique sua conexão: ${erro}`);
+                // alert(`ERRO ao processar os dados. Verifique sua conexão: ${erro}`);
+                notificacao(`${erro || "Erro de conexão"};`,'error');
+
             } finally {
                 await tabelafuncionario();
             }
@@ -1696,7 +1879,8 @@
                     if (!resposta.ok) {
                         const erro = await resposta.json().catch(() => ({}));
                         console.error(`ERRO HTTP: ${resposta.status}; MSG: ${erro.msg || "Mensagem Indisponível"}`);
-                        alert("Erro ao se comunicar com a API (ALTERAR FUNCIONÁRIO)");
+                        // alert(`ERRO HTTP: ${resposta.status}; MSG: ${erro.msg || "Mensagem Indisponível"}`);
+                        notificacao(`${resposta.status}; ${erro.msg || "Erro ao se comunicar com a API"}`,'error');
                         return;
                     }
 
@@ -1704,6 +1888,7 @@
 
                     if (retorno.success) {
                         console.log(`SUCCESS: TRUE; MSG: ${retorno.msg}`);
+                        notificacao(`${retorno.msg}`,'success');
 
                         inputid.value = '';
                         inputsenha.value = '';
@@ -1712,13 +1897,15 @@
 
                     } else {
                         console.log(`SUCCESS: FALSE; MSG: ${retorno.msg}`);
-                        alert(`SUCCESS: FALSE; ${retorno.msg}`);
+                        // alert(`SUCCESS: FALSE; ${retorno.msg}`);
+                        notificacao(`${retorno.msg}`,'error');
                     }
                 }
 
             } catch (erro) {
                 console.log(`ERRO ao processar os dados. Verifique a conexão. MSG: ${erro}`);
-                alert(`ERRO ao processar os dados. Verifique sua conexão: ${erro}`);
+                // alert(`ERRO ao processar os dados. Verifique sua conexão: ${erro}`);
+                notificacao(`Erro de conexão`,'error');
 
 
             } finally {
