@@ -11,7 +11,8 @@
         }
 
         body {
-            background-color: rgb(18, 18, 235);
+            /* background-color: rgb(18, 18, 235); */
+            background-color: black;
             margin: 0;
             padding: 0;
             z-index: 1;
@@ -20,6 +21,17 @@
             overflow-x: hidden;
         }
 
+        #imagem_de_fundo {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            /* backdrop-filter: calc(100%); */
+        }
+
+        
         .video-background {
             position: fixed;
             top: 0;
@@ -44,6 +56,8 @@
             transform: translate(-50%, -50%);
             object-fit: cover;
             min-height: 100dvh;
+
+            opacity: 0.6;
         }
 
         .video-overlay {
@@ -53,6 +67,7 @@
             width: 100%;
             height: 100%;
             background-color: rgba(0, 0, 0, 0.7);
+            /* background-color: red; */
             z-index: -1;
         }
 
@@ -117,7 +132,8 @@
             margin-top: 20px;
             /* border-radius: 10px; */
 
-            background-color: rgba(255, 255, 255, 0.1);
+            /* background-color: rgba(255, 255, 255, 0.1); */
+            background-color: rgba(0, 0, 0, 0.285);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.2);
@@ -226,42 +242,6 @@
         }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         #tela {
             margin-top: 10px;
             padding: 20px;
@@ -277,12 +257,30 @@
             margin-top: 50px;
             left: 50%;
             transform: translate(-50%);
+
+            opacity: 0;
+            visibility: hidden;
         }
 
-        #tela, #tela02 {
-            opacity: 0;
-            visibility: hidden; /* Não é clicável e n ocupa espaço*/
-            transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out; /* TRANSIÇÃO SUAVE */
+        #tela02 {
+            margin-top: 10px;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0px 8px 32px 0 rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            color: white;
+            position: fixed;
+            display: none;
+            left: 50%;
+            transform: translate(-50%);
+            width: 80dvw;
+            margin-top: 100dvh;
+
+            opacity:0;
+            visibility: hidden;
+            transform: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
         }
 
         .tela_ativa {
@@ -291,42 +289,6 @@
         }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-       
-        
 
         #camera {
             background-color: black;
@@ -369,12 +331,6 @@
 
 
 
-
-
-
-
-
-
         #div-input-legenda {
             width: 80dvw;
             justify-self: center;
@@ -392,26 +348,7 @@
 
         
 
-        #tela02 {
-            margin-top: 10px;
-            padding: 20px;
-            background-color: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            box-shadow: 0px 8px 32px 0 rgba(0, 0, 0, 0.3);
-            border-radius: 10px;
-            color: white;
-            
-
-            position: fixed;
-            display: none;
-            left: 50%;
-            transform: translate(-50%);
-            /* top: 280%; */
-            /* top: 850px; */
-            width: 80dvw;
-            margin-top: 100dvh;
-        }
+        
 
     
         #div-texto-fotos {
@@ -634,15 +571,17 @@
 
 
     
-    <video autoplay muted loop playsinline id="background-video">
+    <!-- <video autoplay muted loop playsinline id="background-video">
         <source src="/PROJETO FEED/static/videos/video_principal.mp4" type="video/mp4">
-    
+
 
         <source src="{{ url_for('static', filename='videos/video_principal.mp4')}}" type="video/mp4" >
         Seu navegador não suporta vídeos de fundo.
-    </video>
+    </video> -->
 
     <div id="video-overlay"></div>
+
+    <img id="imagem_de_fundo" src="/PROJETO FEED/static/images/eletricista.jpg" alt="eletrica">
 
 
 
@@ -1190,82 +1129,162 @@
 
 
 
-
-
+        let valor = 0;
         registrar.addEventListener('click', function() {
+            console.log('FUNÇÃO REGISTRAR CHAMADA');
             let tela = document.getElementById('tela');
             let tela02 = document.getElementById('tela02');
             let tirarfoto = document.getElementsByClassName('tirarfoto');
+            
 
-            if (tela.classList.contains('tela_ativa')) {
-                tela.classList.remove('tela_ativa');
-                tela02.classList.remove('tela_ativa');
-
-                tela.addEventListener('transitionend', function esconder() {
-                    if (!tela.classList('tela_ativa')) {
-                        tela.style.display = 'none';
-                        tela02.style.display = 'none';
-                        tela.removeEventListener('transitionend', esconder);
-                    }
-                });
-                stopCamera();
-                
-            } else {
+            if (valor == 0) {
+                // alert('IF 01');
+                // alert(`valor: ${valor}`);
+                valor = 1;
                 tela.style.display = 'block';
-                tela02.style.display = 'block';
+                tela.style.opacity = '1';
+                tela.style.visibility = 'visible';
 
-                setTimeout(() => {
-                    tela.classList.add('tela_ativa');
-                    tela02.classList.add('tela_ativa');
-                }, 10);
+                tela02.style.display = 'block';
+                tela02.style.opacity = '1';
+                tela02.style.visibility = 'visible';
+
+                startCamera(tirarfoto);
+                
+                // tela.classList.remove('tela_ativa');
+                // tela02.classList.remove('tela_ativa');
+
+                // tela.addEventListener('transitionend', function esconderHande() {
+                //     if (!tela.classList.contains('tela_ativa')) {
+                //         alert('IF 02');
+                //         tela.style.display = 'none';
+                //         tela02.style.display = 'none';
+                //         tela.removeEventListener('transitionend', esconderHande);
+                //     }
+                // });
+                // stopCamera();
+            } else {
+                // alert('ELSE 01');
+                // alert(`valor: ${valor}`);
+                valor = 0;
+                tela.style.display = 'none';
+                tela.style.opacity = '0';
+                tela.style.visibility = 'hidden';
+
+                tela02.style.display = 'none';
+                tela02.style.opacity = '1';
+                tela02.style.visibility = 'visible';
+
+                stopCamera(tirarfoto);
+                notificacao(`Câmera desligada`,'success');
             }
 
             async function startCamera() {
+                // alert('Função [ startCamera ] chamada');
+                console.log('FUNÇÃO START CAMERA() CHAMADA');
+
                 try {
                     const stream = await navigator.mediaDevices.getUserMedia({
                         video: {
-                            facingMode: 'environment' // 'user' para câmera frontal e 'environment' = traseira
+                            facingMode: 'environment' // 'user' para camera frontal
                         }
                     });
-
                     video.srcObject = stream;
                     currentStream = stream;
+                    notificacao(`Câmera acessada`,'success');
 
                 } catch (err) {
-                    console.error('erro ao processar a câmera: ', err);
+                    notificacao(`Falha ao conectar com a Câmera;`,'error');
                     tirarfoto.disabled = true;
                 }
-                stopCamera();
             }
+
         })
 
-            
-            // if (tela.style.display == 'none') {
-            //     tela.style.display = 'block';
-            //     tela02.style.display = 'block';
 
-            //     async function startCamera() {
-            //         try {
-            //             const stream = await navigator.mediaDevices.getUserMedia({
-            //                 video: {
-            //                     facingMode: 'environment' // 'user' para câmera frontal e 'environment' para câmera traseira
-            //                 }
-            //             });
-            //             video.srcObject = stream;
-            //             currentStream = stream;
-            //         } catch (err) {
-            //             console.erro('erro ao acessar a câmera: ', err);
-            //             tirarfoto.disabled = true;
-            //         }
-            //     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        //     if (tela.classList.contains('tela_ativa')) {
+        //         tela.classList.remove('tela_ativa');
+        //         tela02.classList.remove('tela_ativa');
+
+        //         tela.addEventListener('transitionend', function esconder() {
+        //             if (!tela.classList('tela_ativa')) {
+        //                 tela.style.display = 'none';
+        //                 tela02.style.display = 'none';
+        //                 tela.removeEventListener('transitionend', esconder);
+        //             }
+        //         });
+        //         stopCamera();
+                
+        //     } else {
+        //         tela.style.display = 'block';
+        //         tela02.style.display = 'block';
+
+        //         setTimeout(() => {
+        //             tela.classList.add('tela_ativa');
+        //             tela02.classList.add('tela_ativa');
+        //         }, 10);
+        //     }
+
+        //     async function startCamera() {
+        //         try {
+        //             const stream = await navigator.mediaDevices.getUserMedia({
+        //                 video: {
+        //                     facingMode: 'environment' // 'user' para câmera frontal e 'environment' = traseira
+        //                 }
+        //             });
+
+        //             video.srcObject = stream;
+        //             currentStream = stream;
+
+        //         } catch (err) {
+        //             console.error('erro ao processar a câmera: ', err);
+        //             tirarfoto.disabled = true;
+        //         }
+        //         stopCamera();
+        //     }
+        // })
+
+            
+        //     if (tela.style.display == 'none') {
+        //         tela.style.display = 'block';
+        //         tela02.style.display = 'block';
+
+        //         async function startCamera() {
+        //             try {
+        //                 const stream = await navigator.mediaDevices.getUserMedia({
+        //                     video: {
+        //                         facingMode: 'environment' // 'user' para câmera frontal e 'environment' para câmera traseira
+        //                     }
+        //                 });
+        //                 video.srcObject = stream;
+        //                 currentStream = stream;
+        //             } catch (err) {
+        //                 console.erro('erro ao acessar a câmera: ', err);
+        //                 tirarfoto.disabled = true;
+        //             }
+        //         }
                 
 
-            // } else {
-            //     tela.style.display = 'none';
-            //     tela02.style.display = 'none';
-            //     stopCamera();
-            //     // alert('desligar');
-            // }
+        //     } else {
+        //         tela.style.display = 'none';
+        //         tela02.style.display = 'none';
+        //         stopCamera();
+        //         // alert('desligar');
+        //     }
         // })
 
     </script>
