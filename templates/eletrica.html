@@ -225,6 +225,43 @@
             position: relative;
         }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         #tela {
             margin-top: 10px;
             padding: 20px;
@@ -241,6 +278,52 @@
             left: 50%;
             transform: translate(-50%);
         }
+
+        #tela, #tela02 {
+            opacity: 0;
+            visibility: hidden; /* Não é clicável e n ocupa espaço*/
+            transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out; /* TRANSIÇÃO SUAVE */
+        }
+
+        .tela_ativa {
+            opacity: 1;
+            visibility: visible;
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
        
         
@@ -1012,39 +1095,178 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         registrar.addEventListener('click', function() {
             let tela = document.getElementById('tela');
             let tela02 = document.getElementById('tela02');
             let tirarfoto = document.getElementsByClassName('tirarfoto');
 
-            
-            if (tela.style.display == 'none') {
+            if (tela.classList.contains('tela_ativa')) {
+                tela.classList.remove('tela_ativa');
+                tela02.classList.remove('tela_ativa');
+
+                tela.addEventListener('transitionend', function esconder() {
+                    if (!tela.classList('tela_ativa')) {
+                        tela.style.display = 'none';
+                        tela02.style.display = 'none';
+                        tela.removeEventListener('transitionend', esconder);
+                    }
+                });
+                stopCamera();
+                
+            } else {
                 tela.style.display = 'block';
                 tela02.style.display = 'block';
 
-                async function startCamera() {
-                    try {
-                        const stream = await navigator.mediaDevices.getUserMedia({
-                            video: {
-                                facingMode: 'environment' // 'user' para câmera frontal e 'environment' para câmera traseira
-                            }
-                        });
-                        video.srcObject = stream;
-                        currentStream = stream;
-                    } catch (err) {
-                        console.erro('erro ao acessar a câmera: ', err);
-                        tirarfoto.disabled = true;
-                    }
-                }
-                startCamera();
+                setTimeout(() => {
+                    tela.classList.add('tela_ativa');
+                    tela02.classList.add('tela_ativa');
+                }, 10);
+            }
 
-            } else {
-                tela.style.display = 'none';
-                tela02.style.display = 'none';
+            async function startCamera() {
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({
+                        video: {
+                            facingMode: 'environment' // 'user' para câmera frontal e 'environment' = traseira
+                        }
+                    });
+
+                    video.srcObject = stream;
+                    currentStream = stream;
+
+                } catch (err) {
+                    console.error('erro ao processar a câmera: ', err);
+                    tirarfoto.disabled = true;
+                }
                 stopCamera();
-                // alert('desligar');
             }
         })
+
+            
+            // if (tela.style.display == 'none') {
+            //     tela.style.display = 'block';
+            //     tela02.style.display = 'block';
+
+            //     async function startCamera() {
+            //         try {
+            //             const stream = await navigator.mediaDevices.getUserMedia({
+            //                 video: {
+            //                     facingMode: 'environment' // 'user' para câmera frontal e 'environment' para câmera traseira
+            //                 }
+            //             });
+            //             video.srcObject = stream;
+            //             currentStream = stream;
+            //         } catch (err) {
+            //             console.erro('erro ao acessar a câmera: ', err);
+            //             tirarfoto.disabled = true;
+            //         }
+            //     }
+                
+
+            // } else {
+            //     tela.style.display = 'none';
+            //     tela02.style.display = 'none';
+            //     stopCamera();
+            //     // alert('desligar');
+            // }
+        // })
 
     </script>
 </body>
